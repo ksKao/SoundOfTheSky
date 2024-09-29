@@ -6,5 +6,6 @@ public partial class GameplayScreen : VisualElement
     public GameplayScreen()
     {
         Add(new AssetsBar());
+        Add(new MissionTypeTab());
     }
 }
