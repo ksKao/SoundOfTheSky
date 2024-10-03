@@ -5,7 +5,26 @@ public partial class GameplayScreen : VisualElement
 {
     public GameplayScreen()
     {
-        Add(new AssetsBar());
-        Add(new MissionTypeTab());
+        VisualElement left = new()
+        {
+            style =
+            {
+                width = new StyleLength()
+                {
+                    value = new Length()
+                    {
+                        unit = LengthUnit.Percent,
+                        value = 50
+                    }
+                }
+            }
+        };
+        VisualElement right = new();
+
+        left.Add(new AssetsBar());
+        left.Add(new MissionTypeTab());
+
+        Add(left);
+        Add(right);
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeatherSO", menuName = "Scriptable Objects/Weathers")]
+[CreateAssetMenu(fileName = "WeatherSO", menuName = "Scriptable Objects/Weather")]
 public class WeatherSO : ScriptableObject
 {
     public new readonly string name;

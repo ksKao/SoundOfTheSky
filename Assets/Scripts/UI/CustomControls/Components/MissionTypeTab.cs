@@ -21,6 +21,14 @@ public partial class MissionTypeTab : VisualElement
             }
         };
 
+        tabView.activeTabChanged += (Tab _, Tab selected) =>
+        {
+            if (selected is not null)
+            {
+                Debug.Log(selected.label);
+            }
+        };
+
         Button refreshButton = new()
         {
             text = "Refresh",
