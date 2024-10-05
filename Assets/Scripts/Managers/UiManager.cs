@@ -14,7 +14,7 @@ public class UiManager : Singleton<UiManager>
 
         if (uiDocument == null)
         {
-            Debug.LogWarning("Could not find UIDocument object in scene.");
+            Debug.LogWarning($"Could not find {nameof(UIDocument)} object in scene.");
             GameplayScreen = new GameplayScreen();
         }
         else

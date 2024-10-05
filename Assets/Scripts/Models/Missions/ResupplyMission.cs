@@ -1,9 +1,9 @@
 public class ResupplyMission : Mission
 {
-    private TrainSO _train = DataManager.Instance.GetRandomTrain();
-    private int _numberOfSupplies;
-    private int _numberOfCrews;
-    private int _numberOfResources;
+    private readonly TrainSO _train = DataManager.Instance.GetRandomTrain();
+    private int _numberOfSupplies = 0;
+    private int _numberOfCrews = 0;
+    private int _numberOfResources = 0;
 
     public override MissionType Type => MissionType.Resupply;
 

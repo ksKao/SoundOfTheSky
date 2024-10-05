@@ -1,6 +1,6 @@
 public class RescueMission : Mission
 {
-    private TrainSO _train = DataManager.Instance.GetRandomTrain();
+    private readonly TrainSO _train = DataManager.Instance.GetRandomTrain();
     private int _numberOfSupplies = 0;
     private int _numberOfCrews = 0;
 

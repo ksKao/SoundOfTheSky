@@ -1,9 +1,9 @@
 public class DocumentationMission : Mission
 {
-    private LocationSO _destinationLocation = DataManager.Instance.GetRandomDestinationLocation();
-    private int _numberOfResources;
-    private int _numberOfSupplies;
-    private int _numberOfPayments;
+    private readonly LocationSO _destinationLocation = DataManager.Instance.GetRandomDestinationLocation();
+    private int _numberOfResources = 0;
+    private int _numberOfSupplies = 0;
+    private int _numberOfPayments = 0;
 
     public override MissionType Type => MissionType.Documentation;
 

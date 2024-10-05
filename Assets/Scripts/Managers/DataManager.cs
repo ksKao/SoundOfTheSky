@@ -22,6 +22,13 @@ public class DataManager : Singleton<DataManager>
     {
         LocationSO location = null;
 
+        // prevent infinite loop below
+        if (_allLocations.Length == 1)
+        {
+            Debug.LogWarning($"{nameof(_allLocations)}.Length is 1. Could not {nameof(GetRandomDestinationLocation)} with only 1 element.");
+            return _allLocations[0];
+        }
+
         // cannot pick the first location as destination
         while (location != _allLocations[0])
         {
