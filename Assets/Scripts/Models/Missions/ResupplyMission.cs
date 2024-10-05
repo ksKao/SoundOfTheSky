@@ -1,16 +1,16 @@
-using UnityEngine.UIElements;
-
 public class ResupplyMission : Mission
 {
-    private TrainSO _train;
+    private TrainSO _train = DataManager.Instance.GetRandomTrain();
     private int _numberOfSupplies;
     private int _numberOfCrews;
     private int _numberOfResources;
 
     public override MissionType Type => MissionType.Resupply;
 
-    public override void FillMissionUi(VisualElement parent)
+    protected override (LocationSO, LocationSO) Route => (_train.routeStartLocation, _train.routeEndLocation);
+
+    protected override void GeneratePendingMissionUi()
     {
-        parent.Add(new Label(Type.ToString()));
+        base.GeneratePendingMissionUi();
     }
 }

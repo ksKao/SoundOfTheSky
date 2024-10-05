@@ -43,12 +43,7 @@ public class UiManager : Singleton<UiManager>
             {
                 if (mission.Type != selectedType) continue;
 
-                VisualElement missionUi = new();
-                missionUi.style.height = UiUtils.GetLengthPercentage(100 / GameManager.NUMBER_OF_PENDING_MISSIONS_PER_TYPE);
-
-                mission.FillMissionUi(missionUi);
-
-                GameplayScreen.PendingMissionList.Add(missionUi);
+                GameplayScreen.PendingMissionList.Add(mission.PendingMissionUi);
             }
         }
     }
