@@ -180,6 +180,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4597a117a9cd7c145a8727eb5aaaad62, type: 2}
   _allWeathers:
   - {fileID: 11400000, guid: 940d56d30aa7d7949ad08cdd06588354, type: 2}
+  _allLocations:
+  - {fileID: 11400000, guid: 657f5b326e8a94c4e82f24acfe5abb26, type: 2}
+  - {fileID: 11400000, guid: ffa7ebc4d5807c4468c01ae4c4e17b66, type: 2}
 --- !u!114 &241244944
 MonoBehaviour:
   m_ObjectHideFlags: 0
