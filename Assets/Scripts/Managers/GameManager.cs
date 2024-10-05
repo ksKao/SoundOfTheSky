@@ -10,41 +10,15 @@ public class GameManager : Singleton<GameManager>
 
     public List<Mission> DeployedMissions { get; private set; } = new List<Mission>();
     public List<Mission> PendingMissions { get; private set; } = new List<Mission>();
-    public GameplayScreen GameplayScreen { get; private set; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        UIDocument uiDocument = FindFirstObjectByType<UIDocument>();
-
-        if (uiDocument == null)
-        {
-            Debug.LogWarning("Could not find uiDocument object in scene.");
-            GameplayScreen = new GameplayScreen();
-        }
-        else
-        {
-            GameplayScreen = uiDocument.rootVisualElement.Q<GameplayScreen>();
-        }
-    }
-
-
-    private void OnEnable()
-    {
-        GameplayScreen.MissionTypeTab.TabView.activeTabChanged += OnMissionTabChanged;
-    }
 
     private void Start()
     {
         RefreshMission<RescueMission>();
         RefreshMission<ResupplyMission>();
         RefreshMission<DocumentationMission>();
-    }
 
-    private void OnDisable()
-    {
-        GameplayScreen.MissionTypeTab.TabView.activeTabChanged -= OnMissionTabChanged;
+        // need to update UI after generating the data
+        UiManager.Instance.OnMissionTabChanged(new Tab(), UiManager.Instance.GameplayScreen.MissionTypeTab.TabView.activeTab);
     }
 
     public void RefreshMission<T>() where T : Mission, new()
@@ -63,22 +37,6 @@ public class GameManager : Singleton<GameManager>
         for (int i = 0; i < NUMBER_OF_PENDING_MISSIONS_PER_TYPE; i++)
         {
             PendingMissions.Add(new T());
-        }
-    }
-
-    private void OnMissionTabChanged(Tab _, Tab selectedTab)
-    {
-        //VisualElement pendingMissionList = GameplayScreen.PendingMissionList
-        if (Enum.TryParse(selectedTab.label, out MissionType selectedType))
-        {
-            GameplayScreen.PendingMissionList.Clear();
-
-            foreach (Mission mission in PendingMissions)
-            {
-                if (mission.Type != selectedType) continue;
-
-                GameplayScreen.PendingMissionList.Add(mission.GenerateMissionUI());
-            }
         }
     }
 }

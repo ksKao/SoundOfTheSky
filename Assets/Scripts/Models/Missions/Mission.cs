@@ -13,7 +13,7 @@ public abstract class Mission
         _weather = DataManager.Instance.GetRandomWeather();
     }
 
-    public abstract VisualElement GenerateMissionUI();
+    public abstract void FillMissionUi(VisualElement parent);
 }
 
 public enum MissionType

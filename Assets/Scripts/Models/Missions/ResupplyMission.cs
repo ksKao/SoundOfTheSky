@@ -9,12 +9,8 @@ public class ResupplyMission : Mission
 
     public override MissionType Type => MissionType.Resupply;
 
-    public override VisualElement GenerateMissionUI()
+    public override void FillMissionUi(VisualElement parent)
     {
-        VisualElement root = new();
-
-        root.Add(new Label(Type.ToString()));
-
-        return root;
+        parent.Add(new Label(Type.ToString()));
     }
 }

@@ -8,12 +8,8 @@ public class DocumentationMission : Mission
 
     public override MissionType Type => MissionType.Documentation;
 
-    public override VisualElement GenerateMissionUI()
+    public override void FillMissionUi(VisualElement parent)
     {
-        VisualElement root = new();
-
-        root.Add(new Label(MissionType.Documentation.ToString()));
-
-        return root;
+        parent.Add(new Label(MissionType.Documentation.ToString()));
     }
 }
