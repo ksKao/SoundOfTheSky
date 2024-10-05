@@ -8,37 +8,21 @@ public partial class GameplayScreen : VisualElement
 
     public GameplayScreen()
     {
-        style.minHeight = new Length()
-        {
-            unit = LengthUnit.Percent,
-            value = 100
-        };
+        style.minHeight = UiUtils.GetLengthPercentage(100);
 
         VisualElement left = new()
         {
             style =
             {
-                width = new Length()
-                {
-                    unit = LengthUnit.Percent,
-                    value = 50
-                },
-                height = new Length()
-                {
-                    unit = LengthUnit.Percent,
-                    value = 100
-                },
+                width = UiUtils.GetLengthPercentage(50),
+                height = UiUtils.GetLengthPercentage(100),
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column
             }
         };
         VisualElement right = new();
 
-        PendingMissionList.style.height = new Length()
-        {
-            unit = LengthUnit.Percent,
-            value = 100
-        };
+        PendingMissionList.style.height = UiUtils.GetLengthPercentage(100);
 
         left.Add(new AssetsBar());
         left.Add(MissionTypeTab);

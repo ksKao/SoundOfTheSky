@@ -17,14 +17,7 @@ public partial class MissionTypeTab : VisualElement
 
         VisualElement tabViewHeaderContainer = TabView.Q("unity-tab-view__header-container");
 
-        tabViewHeaderContainer.style.minHeight = new()
-        {
-            value = new()
-            {
-                unit = LengthUnit.Percent,
-                value = 100
-            }
-        };
+        tabViewHeaderContainer.style.minHeight = UiUtils.GetLengthPercentage(100);
 
         string[] missionTypes = Enum.GetNames(typeof(MissionType));
 
@@ -32,11 +25,7 @@ public partial class MissionTypeTab : VisualElement
         {
             Tab tab = new() { label = missionType };
             VisualElement tabHeader = tab.Q(Tab.tabHeaderUssClassName);
-            tabHeader.style.minHeight = new Length()
-            {
-                unit = LengthUnit.Percent,
-                value = 100
-            };
+            tabHeader.style.minHeight = UiUtils.GetLengthPercentage(100);
             TabView.Add(tab);
         }
 
