@@ -1,64 +1,60 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class MissionTypeTab : VisualElement
 {
+    public static Action<Tab, Tab> OnMissionTabChanged;
+
+    public TabView TabView { get; private set; } = new();
+    public Button RefreshButton { get; private set; } = new();
+
     public MissionTypeTab()
     {
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
 
-        TabView tabView = new();
-        VisualElement tabViewHeaderContainer = tabView.Q("unity-tab-view__header-container");
+        VisualElement tabViewHeaderContainer = TabView.Q("unity-tab-view__header-container");
 
-        tabViewHeaderContainer.style.minHeight = new StyleLength()
+        tabViewHeaderContainer.style.minHeight = new()
         {
-            value = new Length()
+            value = new()
             {
                 unit = LengthUnit.Percent,
                 value = 100
             }
         };
 
-        tabView.activeTabChanged += (Tab _, Tab selected) =>
-        {
-            if (selected is not null)
-            {
-                Debug.Log(selected.label);
-            }
-        };
-
-        Button refreshButton = new()
-        {
-            text = "Refresh",
-            style =
-            {
-                flexGrow = 1,
-                unityTextAlign = new StyleEnum<TextAnchor>
-                {
-                    value = TextAnchor.MiddleLeft
-                }
-            }
-        };
-
-        string[] missionTypes = { "Rescue", "Resupply", "Documentation" };
+        string[] missionTypes = Enum.GetNames(typeof(MissionType));
 
         foreach (string missionType in missionTypes)
         {
             Tab tab = new() { label = missionType };
-            tab.Q(Tab.tabHeaderUssClassName).style.minHeight = new StyleLength()
+            VisualElement tabHeader = tab.Q(Tab.tabHeaderUssClassName);
+            tabHeader.style.minHeight = new Length()
             {
-                value = new Length
-                {
-                    unit = LengthUnit.Percent,
-                    value = 100
-                }
+                unit = LengthUnit.Percent,
+                value = 100
             };
-            tabView.Add(tab);
+            TabView.Add(tab);
         }
 
-        Add(tabView);
-        Add(refreshButton);
+        Add(TabView);
+
+        GenerateRefreshButton();
+    }
+
+    private void GenerateRefreshButton()
+    {
+        RefreshButton.text = "Refresh";
+        RefreshButton.style.flexGrow = 1;
+        RefreshButton.style.unityTextAlign = TextAnchor.MiddleLeft;
+        RefreshButton.style.marginLeft = 0;
+        RefreshButton.style.marginRight = 0;
+        RefreshButton.style.marginTop = 0;
+        RefreshButton.style.marginBottom = 0;
+
+        Add(RefreshButton);
     }
 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2b76eb4a5779ca4b92224ddfdb14183, type: 3}
+  m_Name: DenaliStar7
+  m_EditorClassIdentifier: 
+  name: Denali Star 7
+  routeStartLocation: {fileID: 11400000, guid: 657f5b326e8a94c4e82f24acfe5abb26, type: 2}
+  routeEndLocation: {fileID: 11400000, guid: ffa7ebc4d5807c4468c01ae4c4e17b66, type: 2}

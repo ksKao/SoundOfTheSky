@@ -3,26 +3,40 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class GameplayScreen : VisualElement
 {
+    public VisualElement PendingMissionList { get; private set; } = new VisualElement();
+    public MissionTypeTab MissionTypeTab { get; private set; } = new();
+
     public GameplayScreen()
     {
+        style.minHeight = new Length()
+        {
+            unit = LengthUnit.Percent,
+            value = 100
+        };
+
         VisualElement left = new()
         {
             style =
             {
-                width = new StyleLength()
+                width = new Length()
                 {
-                    value = new Length()
-                    {
-                        unit = LengthUnit.Percent,
-                        value = 50
-                    }
-                }
+                    unit = LengthUnit.Percent,
+                    value = 50
+                },
+                height = new Length()
+                {
+                    unit = LengthUnit.Percent,
+                    value = 100
+                },
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column
             }
         };
         VisualElement right = new();
 
         left.Add(new AssetsBar());
-        left.Add(new MissionTypeTab());
+        left.Add(MissionTypeTab);
+        left.Add(PendingMissionList);
 
         Add(left);
         Add(right);
