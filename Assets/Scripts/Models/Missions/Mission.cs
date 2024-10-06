@@ -27,6 +27,8 @@ public abstract class Mission
     {
         PendingMissionUi.UnregisterCallback<ClickEvent>(OnSelectMissionPendingUi);
     }
+
+    public abstract void OnDeploy();
     
     public void OnDeselectMissionPendingUi()
     {

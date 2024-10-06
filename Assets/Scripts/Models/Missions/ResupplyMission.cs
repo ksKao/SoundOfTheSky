@@ -9,6 +9,10 @@ public class ResupplyMission : Mission
 
     protected override (LocationSO, LocationSO) Route => (_train.routeStartLocation, _train.routeEndLocation);
 
+    public override void OnDeploy()
+    {
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();

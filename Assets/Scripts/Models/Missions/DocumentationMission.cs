@@ -9,6 +9,10 @@ public class DocumentationMission : Mission
 
     protected override (LocationSO, LocationSO) Route => (DataManager.Instance.AllLocations[0], _destinationLocation);
 
+    public override void OnDeploy()
+    {
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();

@@ -25,28 +25,31 @@ public class UiManager : Singleton<UiManager>
 
     private void OnEnable()
     {
-        GameplayScreen.MissionTypeTab.TabView.activeTabChanged += OnMissionTabChanged;
+        GameplayScreen.missionTypeTab.tabView.activeTabChanged += OnMissionActiveTabChange;
     }
 
     private void OnDisable()
     {
-        GameplayScreen.MissionTypeTab.TabView.activeTabChanged -= OnMissionTabChanged;
+        GameplayScreen.missionTypeTab.tabView.activeTabChanged -= OnMissionActiveTabChange;
     }
 
-    public void OnMissionTabChanged(Tab _, Tab selectedTab)
+    public void OnMissionActiveTabChange(Tab _, Tab selected)
     {
-        if (Enum.TryParse(selectedTab.label, out MissionType selectedType))
+        if (Enum.TryParse(selected.label, out MissionType selectedType))
+            RefreshMissionList(selectedType);
+    }
+
+    public void RefreshMissionList(MissionType selectedType)
+    {
+        GameplayScreen.pendingMissionList.Clear();
+
+        foreach (Mission mission in GameManager.Instance.PendingMissions)
         {
-            GameplayScreen.PendingMissionList.Clear();
+            if (mission.Type != selectedType) continue;
 
-            foreach (Mission mission in GameManager.Instance.PendingMissions)
-            {
-                if (mission.Type != selectedType) continue;
-
-                GameplayScreen.PendingMissionList.Add(mission.PendingMissionUi);
-            }
-
-            GameManager.Instance.SelectedPendingMission = null;
+            GameplayScreen.pendingMissionList.Add(mission.PendingMissionUi);
         }
+
+        GameManager.Instance.SelectedPendingMission = null;
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine.UIElements;
 public class RescueMission : Mission
 {
     private readonly TrainSO _train = DataManager.Instance.GetRandomTrain();
+    private readonly NumberInput _supplyNumberInput = new("Supply");
+    private readonly NumberInput _crewNumberInput = new("Crew");
     private int _numberOfSupplies = 0;
     private int _numberOfCrews = 0;
 
@@ -10,13 +12,19 @@ public class RescueMission : Mission
 
     protected override (LocationSO, LocationSO) Route => (_train.routeStartLocation, _train.routeEndLocation);
 
+    public override void OnDeploy()
+    {
+        _numberOfSupplies = _supplyNumberInput.Value;
+        _numberOfCrews = _crewNumberInput.Value;
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();
 
         PendingMissionUi.Add(new Label(_train.name));
 
-        PendingMissionUi.Add(new NumberInput("Supply"));
-        PendingMissionUi.Add(new NumberInput("Crew"));
+        PendingMissionUi.Add(_supplyNumberInput);
+        PendingMissionUi.Add(_crewNumberInput);
     }
 }

@@ -7,15 +7,15 @@ public partial class MissionTypeTab : VisualElement
 {
     public static Action<Tab, Tab> OnMissionTabChanged;
 
-    public TabView TabView { get; private set; } = new();
-    public Button RefreshButton { get; private set; } = new();
+    public readonly TabView tabView = new();
+    public readonly Button refreshButton = new();
 
     public MissionTypeTab()
     {
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
 
-        VisualElement tabViewHeaderContainer = TabView.Q("unity-tab-view__header-container");
+        VisualElement tabViewHeaderContainer = tabView.Q("unity-tab-view__header-container");
 
         tabViewHeaderContainer.style.minHeight = UiUtils.GetLengthPercentage(100);
 
@@ -26,24 +26,24 @@ public partial class MissionTypeTab : VisualElement
             Tab tab = new() { label = missionType };
             VisualElement tabHeader = tab.Q(Tab.tabHeaderUssClassName);
             tabHeader.style.minHeight = UiUtils.GetLengthPercentage(100);
-            TabView.Add(tab);
+            tabView.Add(tab);
         }
 
-        Add(TabView);
+        Add(tabView);
 
         GenerateRefreshButton();
     }
 
     private void GenerateRefreshButton()
     {
-        RefreshButton.text = "Refresh";
-        RefreshButton.style.flexGrow = 1;
-        RefreshButton.style.unityTextAlign = TextAnchor.MiddleLeft;
-        RefreshButton.style.marginLeft = 0;
-        RefreshButton.style.marginRight = 0;
-        RefreshButton.style.marginTop = 0;
-        RefreshButton.style.marginBottom = 0;
+        refreshButton.text = "Refresh";
+        refreshButton.style.flexGrow = 1;
+        refreshButton.style.unityTextAlign = TextAnchor.MiddleLeft;
+        refreshButton.style.marginLeft = 0;
+        refreshButton.style.marginRight = 0;
+        refreshButton.style.marginTop = 0;
+        refreshButton.style.marginBottom = 0;
 
-        Add(RefreshButton);
+        Add(refreshButton);
     }
 }

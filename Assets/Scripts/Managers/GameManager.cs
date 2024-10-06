@@ -10,19 +10,28 @@ public class GameManager : Singleton<GameManager>
 
     private Mission _selectedPendingMission = null;
 
-    public List<Mission> DeployedMissions { get; private set; } = new List<Mission>();
-    public List<Mission> PendingMissions { get; private set; } = new List<Mission>();
+    public readonly List<Mission> deployedMissions = new();
+
+    public List<Mission> PendingMissions { get; private set; } = new();
+
     public Mission SelectedPendingMission
     {
         get => _selectedPendingMission;
         set
         {
+            UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.visible = value is not null;
+
             // no need to do anything if selected the same one
             if (_selectedPendingMission == value) return;
 
             _selectedPendingMission?.OnDeselectMissionPendingUi();
             _selectedPendingMission = value;
         }
+    }
+
+    private void OnEnable()
+    {
+        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked += DeploySelectedMission;
     }
 
     private void Start()
@@ -32,7 +41,12 @@ public class GameManager : Singleton<GameManager>
         RefreshMission<DocumentationMission>();
 
         // need to update UI after generating the data
-        UiManager.Instance.OnMissionTabChanged(new Tab(), UiManager.Instance.GameplayScreen.MissionTypeTab.TabView.activeTab);
+        UiManager.Instance.OnMissionActiveTabChange(new Tab(), UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab);
+    }
+
+    private void OnDisable()
+    {
+        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked -= DeploySelectedMission;
     }
 
     public void RefreshMission<T>() where T : Mission, new()
@@ -52,5 +66,22 @@ public class GameManager : Singleton<GameManager>
         {
             PendingMissions.Add(new T());
         }
+    }
+
+    private void DeploySelectedMission()
+    {
+        if (_selectedPendingMission is null)
+        {
+            Debug.LogWarning($"Could not deploy {nameof(_selectedPendingMission)}, variable is null");
+            return;
+        }
+
+        // move selected mission from pending to deployed
+        PendingMissions.Remove(_selectedPendingMission);
+        deployedMissions.Add(_selectedPendingMission);
+
+        PendingMissions.Add((Mission) Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
+        UiManager.Instance.RefreshMissionList(_selectedPendingMission.Type);
+        _selectedPendingMission = null;
     }
 }
