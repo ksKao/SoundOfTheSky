@@ -1,3 +1,5 @@
+using UnityEngine.UIElements;
+
 public class RescueMission : Mission
 {
     private readonly TrainSO _train = DataManager.Instance.GetRandomTrain();
@@ -11,5 +13,10 @@ public class RescueMission : Mission
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();
+
+        PendingMissionUi.Add(new Label(_train.name));
+
+        PendingMissionUi.Add(new NumberInput("Supply"));
+        PendingMissionUi.Add(new NumberInput("Crew"));
     }
 }

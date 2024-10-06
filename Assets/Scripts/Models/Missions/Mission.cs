@@ -12,6 +12,12 @@ public abstract class Mission
     {
         _weather = DataManager.Instance.GetRandomWeather();
         GeneratePendingMissionUi();
+
+        // after finish generating UI, make sure the elements are evenly spaced
+        foreach (VisualElement child in PendingMissionUi.Children())
+        {
+            child.style.flexGrow = 1;
+        }
     }
 
     protected virtual void GeneratePendingMissionUi()
@@ -23,14 +29,12 @@ public abstract class Mission
         VisualElement routeElement = new();
         routeElement.Add(new Label(Route.start.name));
         routeElement.Add(new Label(Route.end.name));
-        routeElement.style.flexGrow = 1;
 
         PendingMissionUi.Add(routeElement);
 
         VisualElement weatherElement = new();
         weatherElement.Add(new Label(_weather.name));
         weatherElement.Add(new Label(_weather.decisionMakingProbability * 100 + "%"));
-        weatherElement.style.flexGrow = 1;
 
         PendingMissionUi.Add(weatherElement);
 
