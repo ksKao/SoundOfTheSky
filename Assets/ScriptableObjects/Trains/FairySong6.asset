@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2b76eb4a5779ca4b92224ddfdb14183, type: 3}
-  m_Name: DenaliStar7
+  m_Name: FairySong6
   m_EditorClassIdentifier: 
-  name: Denali Star 7
+  name: Fairy Song 6
   routeStartLocation: {fileID: 11400000, guid: 657f5b326e8a94c4e82f24acfe5abb26, type: 2}
-  routeEndLocation: {fileID: 11400000, guid: 60533f31d25e2ff4e8b4ebafc905fbaf, type: 2}
+  routeEndLocation: {fileID: 11400000, guid: 258279432fa01e24bb07c44bfdb70bee, type: 2}
