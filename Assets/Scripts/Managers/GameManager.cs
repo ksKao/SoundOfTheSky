@@ -8,8 +8,22 @@ public class GameManager : Singleton<GameManager>
 {
     public const int NUMBER_OF_PENDING_MISSIONS_PER_TYPE = 5;
 
+    private Mission _selectedPendingMission = null;
+
     public List<Mission> DeployedMissions { get; private set; } = new List<Mission>();
     public List<Mission> PendingMissions { get; private set; } = new List<Mission>();
+    public Mission SelectedPendingMission
+    {
+        get => _selectedPendingMission;
+        set
+        {
+            // no need to do anything if selected the same one
+            if (_selectedPendingMission == value) return;
+
+            _selectedPendingMission?.OnDeselectMissionPendingUi();
+            _selectedPendingMission = value;
+        }
+    }
 
     private void Start()
     {

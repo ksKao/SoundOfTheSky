@@ -44,8 +44,10 @@ public partial class NumberInput : VisualElement
         Value = value;
         IncrementButton.clicked += IncrementValue;
         IncrementButton.text = ">";
+        IncrementButton.visible = false;
         DecrementButton.clicked += DecrementValue;
         DecrementButton.text = "<";
+        DecrementButton.visible = false;
 
         Add(TextLabel);
         Add(IncrementButton);

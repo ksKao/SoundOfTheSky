@@ -45,6 +45,8 @@ public class UiManager : Singleton<UiManager>
 
                 GameplayScreen.PendingMissionList.Add(mission.PendingMissionUi);
             }
+
+            GameManager.Instance.SelectedPendingMission = null;
         }
     }
 }

@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public abstract class Mission
@@ -18,6 +19,28 @@ public abstract class Mission
         {
             child.style.flexGrow = 1;
         }
+
+        PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
+    }
+
+    ~Mission()
+    {
+        PendingMissionUi.UnregisterCallback<ClickEvent>(OnSelectMissionPendingUi);
+    }
+    
+    public void OnDeselectMissionPendingUi()
+    {
+        PendingMissionUi.Query<Button>().ForEach(button => button.visible = false);
+
+        PendingMissionUi.style.borderTopColor = Color.clear;
+        PendingMissionUi.style.borderBottomColor = Color.clear;
+        PendingMissionUi.style.borderLeftColor = Color.clear;
+        PendingMissionUi.style.borderRightColor = Color.clear;
+
+        PendingMissionUi.style.borderTopWidth = 0;
+        PendingMissionUi.style.borderBottomWidth = 0;
+        PendingMissionUi.style.borderLeftWidth = 0;
+        PendingMissionUi.style.borderRightWidth = 0;
     }
 
     protected virtual void GeneratePendingMissionUi()
@@ -39,6 +62,23 @@ public abstract class Mission
         PendingMissionUi.Add(weatherElement);
 
         PendingMissionUi.Add(new Label(Type.ToString()));
+    }
+
+    private void OnSelectMissionPendingUi(ClickEvent evt)
+    {
+        PendingMissionUi.Query<Button>().ForEach(button => button.visible = true);
+
+        PendingMissionUi.style.borderTopColor = Color.black;
+        PendingMissionUi.style.borderBottomColor = Color.black;
+        PendingMissionUi.style.borderLeftColor = Color.black;
+        PendingMissionUi.style.borderRightColor = Color.black;
+
+        PendingMissionUi.style.borderTopWidth = 2;
+        PendingMissionUi.style.borderBottomWidth = 2;
+        PendingMissionUi.style.borderLeftWidth = 2;
+        PendingMissionUi.style.borderRightWidth = 2;
+
+        GameManager.Instance.SelectedPendingMission = this;
     }
 }
 
