@@ -1,9 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public abstract class Mission
 {
+    private const int SECONDS_PER_MILE = 5;
+    private const int MILES_PER_INTERVAL = 5;
+    private float secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+    private bool _isCompleted = false;
+
     protected readonly WeatherSO _weather;
+    protected readonly int _initialMiles = 0;
+    protected int _milesRemaining = 0;
 
     public abstract MissionType Type { get; }
     public VisualElement PendingMissionUi { get; } = new();
@@ -12,6 +20,10 @@ public abstract class Mission
     protected Mission()
     {
         _weather = DataManager.Instance.GetRandomWeather();
+
+        CalculateMilesRemaining();
+        _initialMiles = _milesRemaining;
+
         GeneratePendingMissionUi();
 
         // after finish generating UI, make sure the elements are evenly spaced
@@ -29,6 +41,27 @@ public abstract class Mission
     }
 
     public abstract void OnDeploy();
+    protected abstract void EventOccur();
+
+    public void Update()
+    {
+        if (_isCompleted) return;
+
+        secondsRemainingUntilNextMile -= Time.deltaTime;
+
+        if (secondsRemainingUntilNextMile <= 0)
+        {
+            // reset the timer
+            secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+
+            _milesRemaining--;
+
+            if (_milesRemaining == 0)
+                _isCompleted = true;
+            else if ((_initialMiles - _milesRemaining) % MILES_PER_INTERVAL == 0 && new System.Random().NextDouble() <= _weather.decisionMakingProbability)
+                EventOccur();
+        }
+    }
     
     public void OnDeselectMissionPendingUi()
     {
@@ -64,6 +97,14 @@ public abstract class Mission
         PendingMissionUi.Add(weatherElement);
 
         PendingMissionUi.Add(new Label(Type.ToString()));
+    }
+
+    private void CalculateMilesRemaining()
+    {
+        int startIndex = Array.IndexOf(DataManager.Instance.AllLocations, Route.start);
+
+        for (int i = startIndex; DataManager.Instance.AllLocations[i] != Route.end; i++)
+            _milesRemaining += DataManager.Instance.AllLocations[i].milesToNextStop;
     }
 
     private void OnSelectMissionPendingUi(ClickEvent evt)

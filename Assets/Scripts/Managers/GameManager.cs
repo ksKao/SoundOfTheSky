@@ -10,6 +10,10 @@ public class GameManager : Singleton<GameManager>
 
     private Mission _selectedPendingMission = null;
 
+    public int numberOfPayments = 0;
+    public int numberOfSupplies = 0;
+    public int numberOfResources = 0;
+    public int numberOfCrews = 0;
     public readonly List<Mission> deployedMissions = new();
 
     public List<Mission> PendingMissions { get; private set; } = new();
@@ -42,6 +46,12 @@ public class GameManager : Singleton<GameManager>
 
         // need to update UI after generating the data
         UiManager.Instance.OnMissionActiveTabChange(new Tab(), UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab);
+    }
+
+    private void Update()
+    {
+        foreach (Mission mission in deployedMissions)
+            mission.Update();
     }
 
     private void OnDisable()

@@ -19,6 +19,10 @@ public class DocumentationMission : Mission
         _numberOfPayments = _paymentNumberInput.Value;
     }
 
+    protected override void EventOccur()
+    {
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();

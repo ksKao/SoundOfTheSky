@@ -18,6 +18,10 @@ public class RescueMission : Mission
         _numberOfCrews = _crewNumberInput.Value;
     }
 
+    protected override void EventOccur()
+    {
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();

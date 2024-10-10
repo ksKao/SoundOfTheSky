@@ -21,6 +21,10 @@ public class ResupplyMission : Mission
         _numberOfResources = _resourceNumberInput.Value;
     }
 
+    protected override void EventOccur()
+    {
+    }
+
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();
