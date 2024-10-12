@@ -30,7 +30,7 @@ public class DataManager : Singleton<DataManager>
         }
 
         // cannot pick the first location as destination
-        while (location != _allLocations[0])
+        while (location == _allLocations[0] || location == null)
         {
             location = GetRandomFromArray(_allLocations);
         }

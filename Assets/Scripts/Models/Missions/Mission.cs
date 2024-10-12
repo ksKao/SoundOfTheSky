@@ -14,6 +14,7 @@ public abstract class Mission
     protected int _milesRemaining = 0;
 
     public abstract MissionType Type { get; }
+    public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
     public VisualElement PendingMissionUi { get; } = new();
     protected abstract (LocationSO start, LocationSO end) Route { get; }
 
@@ -40,7 +41,11 @@ public abstract class Mission
         PendingMissionUi.UnregisterCallback<ClickEvent>(OnSelectMissionPendingUi);
     }
 
-    public abstract void OnDeploy();
+    /// <summary>
+    /// Initialize a mission when it is deployed
+    /// </summary>
+    /// <returns>A boolean which represents whether the deployment is successful</returns>
+    public abstract bool Deploy();
     protected abstract void EventOccur();
 
     public void Update()

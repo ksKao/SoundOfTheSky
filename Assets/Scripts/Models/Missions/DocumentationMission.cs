@@ -1,6 +1,6 @@
 public class DocumentationMission : Mission
 {
-    private readonly LocationSO _destinationLocation = DataManager.Instance.GetRandomDestinationLocation();
+    private readonly LocationSO _destination = DataManager.Instance.GetRandomDestinationLocation();
     private readonly NumberInput _resourceNumberInput = new("Resource");
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _paymentNumberInput = new("Payment");
@@ -8,15 +8,17 @@ public class DocumentationMission : Mission
     private int _numberOfSupplies = 0;
     private int _numberOfPayments = 0;
 
-    public override MissionType Type => MissionType.Documentation;
+    public override MissionType Type { get; } = MissionType.Documentation;
+    public override TrainSO Train { get; } = null;
+    protected override (LocationSO, LocationSO) Route => (DataManager.Instance.AllLocations[0], _destination);
 
-    protected override (LocationSO, LocationSO) Route => (DataManager.Instance.AllLocations[0], _destinationLocation);
-
-    public override void OnDeploy()
+    public override bool Deploy()
     {
         _numberOfResources = _resourceNumberInput.Value;
         _numberOfSupplies = _supplyNumberInput.Value;
         _numberOfPayments = _paymentNumberInput.Value;
+
+        return true;
     }
 
     protected override void EventOccur()

@@ -86,9 +86,12 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
+        if (!_selectedPendingMission.Deploy()) return;
+
         // move selected mission from pending to deployed
         PendingMissions.Remove(_selectedPendingMission);
         deployedMissions.Add(_selectedPendingMission);
+
 
         PendingMissions.Add((Mission) Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
         UiManager.Instance.RefreshMissionList(_selectedPendingMission.Type);
