@@ -12,7 +12,7 @@ public class ResupplyMission : Mission
     private int _numberOfResources = 0;
 
     public override MissionType Type { get; } = MissionType.Resupply;
-    protected override (LocationSO, LocationSO) Route => (Train.routeStartLocation, Train.routeEndLocation);
+    protected override (LocationSO start, LocationSO end) Route => (Train.routeStartLocation, Train.routeEndLocation);
 
 
     public override bool Deploy()
@@ -29,6 +29,13 @@ public class ResupplyMission : Mission
         _numberOfResources = _resourceNumberInput.Value;
 
         return true;
+    }
+
+    public override VisualElement GenerateDeployedMissionUi()
+    {
+        VisualElement root = new();
+        root.Add(new Label(Route.start.name + " " + Route.end.name));
+        return root;
     }
 
     protected override void EventOccur()

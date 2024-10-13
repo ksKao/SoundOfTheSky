@@ -31,10 +31,11 @@ public partial class BottomNavigationBar : VisualElement
         buttonGroup.Add(deployButton);
         Add(buttonGroup);
 
-        Button missionListButton = new()
+        Button deployedMissionListButton = new()
         {
-            text = "Train Button"
+            text = "Train Button",
         };
-        Add(missionListButton);
+        deployedMissionListButton.clicked += () => UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        Add(deployedMissionListButton);
     }
 }

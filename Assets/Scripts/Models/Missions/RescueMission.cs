@@ -10,7 +10,7 @@ public class RescueMission : Mission
     private int _numberOfCrews = 0;
 
     public override MissionType Type { get; } = MissionType.Rescue;
-    protected override (LocationSO, LocationSO) Route => (Train.routeStartLocation, Train.routeEndLocation);
+    protected override (LocationSO start, LocationSO end) Route => (Train.routeStartLocation, Train.routeEndLocation);
 
     public override bool Deploy()
     {
@@ -25,6 +25,13 @@ public class RescueMission : Mission
         _numberOfCrews = _crewNumberInput.Value;
 
         return true;
+    }
+
+    public override VisualElement GenerateDeployedMissionUi()
+    {
+        VisualElement root = new();
+        root.Add(new Label(Route.start.name + " " + Route.end.name));
+        return root;
     }
 
     protected override void EventOccur()

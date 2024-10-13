@@ -91,6 +91,7 @@ public class GameManager : Singleton<GameManager>
         // move selected mission from pending to deployed
         PendingMissions.Remove(_selectedPendingMission);
         deployedMissions.Add(_selectedPendingMission);
+        UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
 
 
         PendingMissions.Add((Mission) Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one

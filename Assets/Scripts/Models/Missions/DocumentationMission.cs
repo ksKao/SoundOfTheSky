@@ -1,3 +1,5 @@
+using UnityEngine.UIElements;
+
 public class DocumentationMission : Mission
 {
     private readonly LocationSO _destination = DataManager.Instance.GetRandomDestinationLocation();
@@ -10,7 +12,7 @@ public class DocumentationMission : Mission
 
     public override MissionType Type { get; } = MissionType.Documentation;
     public override TrainSO Train { get; } = null;
-    protected override (LocationSO, LocationSO) Route => (DataManager.Instance.AllLocations[0], _destination);
+    protected override (LocationSO start, LocationSO end) Route => (DataManager.Instance.AllLocations[0], _destination);
 
     public override bool Deploy()
     {
@@ -19,6 +21,13 @@ public class DocumentationMission : Mission
         _numberOfPayments = _paymentNumberInput.Value;
 
         return true;
+    }
+
+    public override VisualElement GenerateDeployedMissionUi()
+    {
+        VisualElement root = new();
+        root.Add(new Label(Route.start.name + " " + Route.end.name));
+        return root;
     }
 
     protected override void EventOccur()

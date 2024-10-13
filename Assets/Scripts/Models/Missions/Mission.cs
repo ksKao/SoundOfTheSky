@@ -46,6 +46,7 @@ public abstract class Mission
     /// </summary>
     /// <returns>A boolean which represents whether the deployment is successful</returns>
     public abstract bool Deploy();
+    public abstract VisualElement GenerateDeployedMissionUi();
     protected abstract void EventOccur();
 
     public void Update()

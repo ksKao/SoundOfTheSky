@@ -3,12 +3,17 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class GameplayScreen : VisualElement
 {
-    public readonly VisualElement pendingMissionList = new();
     public readonly MissionTypeTab missionTypeTab = new();
     public readonly BottomNavigationBar bottomNavigationBar = new();
+    public readonly VisualElement pendingMissionList = new();
+    public readonly DeployedMissionList deployedMissionList = new();
+
+    private readonly VisualElement _right = new();
 
     public GameplayScreen()
     {
+        style.display = DisplayStyle.Flex;
+        style.flexDirection = FlexDirection.Row;
         style.minHeight = UiUtils.GetLengthPercentage(100);
 
         VisualElement left = new()
@@ -21,8 +26,6 @@ public partial class GameplayScreen : VisualElement
                 flexDirection = FlexDirection.Column
             }
         };
-        VisualElement right = new();
-
         pendingMissionList.style.height = UiUtils.GetLengthPercentage(100);
 
         left.Add(new AssetsBar());
@@ -31,6 +34,12 @@ public partial class GameplayScreen : VisualElement
         left.Add(bottomNavigationBar);
 
         Add(left);
-        Add(right);
+        Add(_right);
+    }
+
+    public void ChangeRightPanel(VisualElement element)
+    {
+        _right.Clear();
+        _right.Add(element);
     }
 }
