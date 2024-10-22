@@ -12,7 +12,7 @@ public class DocumentationMission : Mission
 
     public override MissionType Type { get; } = MissionType.Documentation;
     public override TrainSO Train { get; } = null;
-    protected override (LocationSO start, LocationSO end) Route => (DataManager.Instance.AllLocations[0], _destination);
+    public override Route Route => new(DataManager.Instance.AllLocations[0], _destination);
 
     public override bool Deploy()
     {
@@ -23,11 +23,9 @@ public class DocumentationMission : Mission
         return true;
     }
 
-    public override VisualElement GenerateDeployedMissionUi()
+    public override void GenerateDeployedMissionUi()
     {
-        VisualElement root = new();
-        root.Add(new Label(Route.start.name + " " + Route.end.name));
-        return root;
+        base.GenerateDeployedMissionUi();
     }
 
     protected override void EventOccur()

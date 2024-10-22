@@ -16,6 +16,6 @@ public partial class DeployedMissionList : VisualElement
         Clear();
 
         foreach (Mission mission in GameManager.Instance.deployedMissions)
-            Add(mission.GenerateDeployedMissionUi());
+            Add(mission.DeployedMissionUi);
     }
 }

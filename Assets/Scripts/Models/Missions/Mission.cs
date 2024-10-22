@@ -6,26 +6,47 @@ public abstract class Mission
 {
     private const int SECONDS_PER_MILE = 5;
     private const int MILES_PER_INTERVAL = 5;
-    private float secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+    private int _milesRemaining = 0;
+    private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;
 
-    protected readonly WeatherSO _weather;
-    protected readonly int _initialMiles = 0;
-    protected int _milesRemaining = 0;
+    protected readonly WeatherSO weather;
+    protected readonly int initialMiles = 0;
 
     public abstract MissionType Type { get; }
+    public abstract Route Route { get; }
     public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
+    public int NumberOfPassengers { get; protected set; } = 0;
+    public bool EventPending { get; private set; } = false;
     public VisualElement PendingMissionUi { get; } = new();
-    protected abstract (LocationSO start, LocationSO end) Route { get; }
+    public DeployedMission DeployedMissionUi { get; protected set; }
+    public int MilesRemaining 
+    { 
+        get
+        {
+            return _milesRemaining;
+        }
+        protected set 
+        {
+            _milesRemaining = value;
+
+            if (DeployedMissionUi is null) return;
+            DeployedMissionUi.milesRemainingLabel.text = _milesRemaining.ToString();
+        }
+    }
 
     protected Mission()
     {
-        _weather = DataManager.Instance.GetRandomWeather();
+        weather = DataManager.Instance.GetRandomWeather();
+
+        // each tier of the weather will increase the chance by 5%
+        int currentWeatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
 
         CalculateMilesRemaining();
-        _initialMiles = _milesRemaining;
+        initialMiles = MilesRemaining;
 
         GeneratePendingMissionUi();
+        GenerateDeployedMissionUi();
 
         // after finish generating UI, make sure the elements are evenly spaced
         foreach (VisualElement child in PendingMissionUi.Children())
@@ -46,26 +67,36 @@ public abstract class Mission
     /// </summary>
     /// <returns>A boolean which represents whether the deployment is successful</returns>
     public abstract bool Deploy();
-    public abstract VisualElement GenerateDeployedMissionUi();
+
     protected abstract void EventOccur();
+
+    public virtual void GenerateDeployedMissionUi()
+    {
+        DeployedMissionUi = new(this);
+    }
 
     public void Update()
     {
-        if (_isCompleted) return;
+        if (_isCompleted || EventPending) return;
 
-        secondsRemainingUntilNextMile -= Time.deltaTime;
+        _secondsRemainingUntilNextMile -= Time.deltaTime;
 
-        if (secondsRemainingUntilNextMile <= 0)
+        if (_secondsRemainingUntilNextMile <= 0)
         {
             // reset the timer
-            secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+            _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
 
-            _milesRemaining--;
+            MilesRemaining--;
 
-            if (_milesRemaining == 0)
+            if (MilesRemaining == 0)
+            {
                 _isCompleted = true;
-            else if ((_initialMiles - _milesRemaining) % MILES_PER_INTERVAL == 0 && new System.Random().NextDouble() <= _weather.decisionMakingProbability)
+            }
+            else if ((initialMiles - MilesRemaining) % MILES_PER_INTERVAL == 0 && Random.ShouldOccur(weather.decisionMakingProbability))
+            {
+                EventPending = true;
                 EventOccur();
+            }
         }
     }
     
@@ -97,8 +128,8 @@ public abstract class Mission
         PendingMissionUi.Add(routeElement);
 
         VisualElement weatherElement = new();
-        weatherElement.Add(new Label(_weather.name));
-        weatherElement.Add(new Label(_weather.decisionMakingProbability * 100 + "%"));
+        weatherElement.Add(new Label(weather.name));
+        weatherElement.Add(new Label(weather.decisionMakingProbability * 100 + "%"));
 
         PendingMissionUi.Add(weatherElement);
 
@@ -110,7 +141,7 @@ public abstract class Mission
         int startIndex = Array.IndexOf(DataManager.Instance.AllLocations, Route.start);
 
         for (int i = startIndex; DataManager.Instance.AllLocations[i] != Route.end; i++)
-            _milesRemaining += DataManager.Instance.AllLocations[i].milesToNextStop;
+            MilesRemaining += DataManager.Instance.AllLocations[i].milesToNextStop;
     }
 
     private void OnSelectMissionPendingUi(ClickEvent evt)

@@ -7,15 +7,16 @@ public class DataManager : Singleton<DataManager>
     [SerializeField] private LocationSO[] _allLocations;
 
     public LocationSO[] AllLocations => _allLocations;
+    public WeatherSO[] AllWeathers => _allWeathers;
 
     public TrainSO GetRandomTrain()
     {
-        return GetRandomFromArray(_allTrains);
+        return Random.GetFromArray(_allTrains);
     }
 
     public WeatherSO GetRandomWeather()
     {
-        return GetRandomFromArray(_allWeathers);
+        return Random.GetFromArray(_allWeathers);
     }
 
     public LocationSO GetRandomDestinationLocation()
@@ -32,14 +33,9 @@ public class DataManager : Singleton<DataManager>
         // cannot pick the first location as destination
         while (location == _allLocations[0] || location == null)
         {
-            location = GetRandomFromArray(_allLocations);
+            location = Random.GetFromArray(_allLocations);
         }
 
         return location;
-    }
-
-    private T GetRandomFromArray<T>(T[] arr)
-    {
-        return arr[new System.Random().Next(arr.Length)];
     }
 }

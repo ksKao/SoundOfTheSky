@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -6,11 +7,19 @@ public class RescueMission : Mission
 {
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _crewNumberInput = new("Crew");
+    private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
+    private int _numberOfPassengers = 0;
     private int _numberOfSupplies = 0;
     private int _numberOfCrews = 0;
 
     public override MissionType Type { get; } = MissionType.Rescue;
-    protected override (LocationSO start, LocationSO end) Route => (Train.routeStartLocation, Train.routeEndLocation);
+    public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+
+    public RescueMission() : base()
+    {
+        int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
+        _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
+    }
 
     public override bool Deploy()
     {
@@ -27,15 +36,15 @@ public class RescueMission : Mission
         return true;
     }
 
-    public override VisualElement GenerateDeployedMissionUi()
+    public override void GenerateDeployedMissionUi()
     {
-        VisualElement root = new();
-        root.Add(new Label(Route.start.name + " " + Route.end.name));
-        return root;
+        base.GenerateDeployedMissionUi();
     }
 
     protected override void EventOccur()
     {
+        if (Random.ShouldOccur(_passengerIncreaseProbability))
+            _numberOfPassengers++;
     }
 
     protected override void GeneratePendingMissionUi()
