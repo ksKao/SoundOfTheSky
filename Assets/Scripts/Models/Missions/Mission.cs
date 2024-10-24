@@ -161,10 +161,3 @@ public abstract class Mission
         GameManager.Instance.SelectedPendingMission = this;
     }
 }
-
-public enum MissionType
-{
-    Rescue,
-    Resupply,
-    Documentation
-}

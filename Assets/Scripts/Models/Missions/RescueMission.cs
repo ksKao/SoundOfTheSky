@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,7 +9,7 @@ public class RescueMission : Mission
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
-    private int _numberOfPassengers = 0;
+    private readonly List<Passenger> _passengers = new();
     private int _numberOfSupplies = 0;
     private int _numberOfCrews = 0;
 
@@ -44,7 +45,23 @@ public class RescueMission : Mission
     protected override void EventOccur()
     {
         if (Random.ShouldOccur(_passengerIncreaseProbability))
-            _numberOfPassengers++;
+            _passengers.Add(new());
+
+        foreach (Passenger passenger in _passengers)
+        {
+            // 50% chance for a passenger health to change
+            if (Random.ShouldOccur(0.5))
+            {
+                // 50% to increase health, 50% to decrease health
+                if (Random.ShouldOccur(0.5))
+                    passenger.IncrementStatus();
+                else
+                    passenger.DecrementStatus();
+            }
+        }
+
+        // remove all dead passengers
+        _passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
     }
 
     protected override void GeneratePendingMissionUi()
