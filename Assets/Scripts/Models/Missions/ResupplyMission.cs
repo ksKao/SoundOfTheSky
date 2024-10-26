@@ -36,6 +36,11 @@ public class ResupplyMission : Mission
         base.GenerateDeployedMissionUi();
     }
 
+    protected override void OnMileChange()
+    {
+        base.OnMileChange();
+    }
+
     protected override void EventOccur()
     {
     }

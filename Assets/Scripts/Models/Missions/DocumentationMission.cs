@@ -1,5 +1,3 @@
-using UnityEngine.UIElements;
-
 public class DocumentationMission : Mission
 {
     private readonly LocationSO _destination = DataManager.Instance.GetRandomDestinationLocation();
@@ -26,6 +24,11 @@ public class DocumentationMission : Mission
     public override void GenerateDeployedMissionUi()
     {
         base.GenerateDeployedMissionUi();
+    }
+
+    protected override void OnMileChange()
+    {
+        base.OnMileChange();
     }
 
     protected override void EventOccur()

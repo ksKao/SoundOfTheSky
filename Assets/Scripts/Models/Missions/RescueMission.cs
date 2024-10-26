@@ -6,20 +6,23 @@ using UnityEngine.UIElements;
 
 public class RescueMission : Mission
 {
+    private const int MILES_PER_PASSENGER_INCREASE = 5;
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
-    private readonly List<Passenger> _passengers = new();
+    private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
     private int _numberOfSupplies = 0;
     private int _numberOfCrews = 0;
 
-    public override MissionType Type { get; } = MissionType.Rescue;
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+    public override MissionType Type { get; } = MissionType.Rescue;
+    public List<Passenger> Passengers { get; } = new();
 
     public RescueMission() : base()
     {
         int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
+        _rescueMissionResolvePanel = new(this);
     }
 
     public override bool Deploy()
@@ -42,12 +45,33 @@ public class RescueMission : Mission
         base.GenerateDeployedMissionUi();
     }
 
+    public override void OnResolveButtonClicked()
+    {
+        // cannot call base here since need to wait until player make a decision before continuing
+        _rescueMissionResolvePanel.RefreshUi();
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
+    }
+
+    protected override void OnMileChange()
+    {
+        base.OnMileChange();
+
+        if (IsMilestoneReached(MILES_PER_PASSENGER_INCREASE) && Random.ShouldOccur(_passengerIncreaseProbability))
+            Passengers.Add(new());
+    }
+
     protected override void EventOccur()
     {
-        if (Random.ShouldOccur(_passengerIncreaseProbability))
-            _passengers.Add(new());
+        // if there are no passengers, can set event pending back to false
+        // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur
+        // which can cause confusion as there are no passengers but there is still an event
+        if (Passengers.Count == 0)
+        {
+            EventPending = false;
+            return;
+        }
 
-        foreach (Passenger passenger in _passengers)
+        foreach (Passenger passenger in Passengers)
         {
             // 50% chance for a passenger health to change
             if (Random.ShouldOccur(0.5))
@@ -61,7 +85,7 @@ public class RescueMission : Mission
         }
 
         // remove all dead passengers
-        _passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
+        Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
     }
 
     protected override void GeneratePendingMissionUi()
