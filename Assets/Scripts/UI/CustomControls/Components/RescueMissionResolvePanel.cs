@@ -18,6 +18,7 @@ public partial class RescueMissionResolvePanel : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
         style.height = UiUtils.GetLengthPercentage(100);
+        style.width = UiUtils.GetLengthPercentage(100);
 
         RefreshUi();
     }
@@ -53,6 +54,8 @@ public partial class RescueMissionResolvePanel : VisualElement
             {
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
+                width = UiUtils.GetLengthPercentage(100),
+                backgroundColor = Color.red
             }
         };
         Button supplyButton = new() { text = "Supply" };
@@ -63,7 +66,7 @@ public partial class RescueMissionResolvePanel : VisualElement
             text = "Finish",
             style =
             {
-                alignSelf = Align.FlexEnd
+                marginLeft = new StyleLength(StyleKeyword.Auto)
             }
         };
 

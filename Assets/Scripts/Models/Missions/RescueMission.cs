@@ -29,10 +29,7 @@ public class RescueMission : Mission
     {
         // check if this train has already been deployed
         if (GameManager.Instance.deployedMissions.Any(m => m.Train != null && m.Train.name == Train.name))
-        {
-            Debug.Log("Train has already been deployed.");
             return false;
-        }
 
         _numberOfSupplies = _supplyNumberInput.Value;
         _numberOfCrews = _crewNumberInput.Value;
@@ -57,7 +54,10 @@ public class RescueMission : Mission
         base.OnMileChange();
 
         if (IsMilestoneReached(MILES_PER_PASSENGER_INCREASE) && Random.ShouldOccur(_passengerIncreaseProbability))
+        {
+            Debug.Log(initialMiles + " " + MilesRemaining + " " + ((initialMiles - MilesRemaining) % 5));
             Passengers.Add(new());
+        }
     }
 
     protected override void EventOccur()

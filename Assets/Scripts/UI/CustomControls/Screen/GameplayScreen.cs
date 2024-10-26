@@ -33,6 +33,8 @@ public partial class GameplayScreen : VisualElement
         left.Add(pendingMissionList);
         left.Add(bottomNavigationBar);
 
+        _right.style.width = UiUtils.GetLengthPercentage(50);
+
         Add(left);
         Add(_right);
     }
