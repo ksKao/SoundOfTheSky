@@ -11,12 +11,12 @@ public class RescueMission : Mission
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
-    private int _numberOfSupplies = 0;
-    private int _numberOfCrews = 0;
 
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
+    public int NumberOfSupplies { get; private set; } = 0;
+    public int NumberOfCrews { get; private set; } = 0;
 
     public RescueMission() : base()
     {
@@ -31,8 +31,8 @@ public class RescueMission : Mission
         if (GameManager.Instance.deployedMissions.Any(m => m.Train != null && m.Train.name == Train.name))
             return false;
 
-        _numberOfSupplies = _supplyNumberInput.Value;
-        _numberOfCrews = _crewNumberInput.Value;
+        NumberOfSupplies = _supplyNumberInput.Value;
+        NumberOfCrews = _crewNumberInput.Value;
 
         return true;
     }
@@ -45,7 +45,7 @@ public class RescueMission : Mission
     public override void OnResolveButtonClicked()
     {
         // cannot call base here since need to wait until player make a decision before continuing
-        _rescueMissionResolvePanel.RefreshUi();
+        _rescueMissionResolvePanel.RegenerateDeployedMissionUi();
         UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
     }
 
@@ -54,10 +54,7 @@ public class RescueMission : Mission
         base.OnMileChange();
 
         if (IsMilestoneReached(MILES_PER_PASSENGER_INCREASE) && Random.ShouldOccur(_passengerIncreaseProbability))
-        {
-            Debug.Log(initialMiles + " " + MilesRemaining + " " + ((initialMiles - MilesRemaining) % 5));
             Passengers.Add(new());
-        }
     }
 
     protected override void EventOccur()

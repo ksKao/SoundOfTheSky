@@ -7,12 +7,12 @@ public class ResupplyMission : Mission
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly NumberInput _resourceNumberInput = new("Resource");
-    private int _numberOfSupplies = 0;
-    private int _numberOfCrews = 0;
-    private int _numberOfResources = 0;
 
     public override MissionType Type { get; } = MissionType.Resupply;
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+    public int NumberOfSupplies { get; private set; } = 0;
+    public int NumberOfCrews { get; private set; } = 0;
+    public int NumberOfResources { get; private set; } = 0;
 
 
     public override bool Deploy()
@@ -24,9 +24,9 @@ public class ResupplyMission : Mission
             return false;
         }
 
-        _numberOfSupplies = _supplyNumberInput.Value;
-        _numberOfCrews = _crewNumberInput.Value;
-        _numberOfResources = _resourceNumberInput.Value;
+        NumberOfSupplies = _supplyNumberInput.Value;
+        NumberOfCrews = _crewNumberInput.Value;
+        NumberOfResources = _resourceNumberInput.Value;
 
         return true;
     }

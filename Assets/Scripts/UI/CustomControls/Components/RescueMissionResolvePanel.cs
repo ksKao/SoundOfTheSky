@@ -5,6 +5,8 @@ using UnityEngine.UIElements;
 public partial class RescueMissionResolvePanel : VisualElement
 {
     private readonly RescueMission _mission;
+    private DeployedMissionUi _deployedMissionUi;
+    private readonly VisualElement _passengerListContainer = new();
 
     public RescueMissionResolvePanel()
     {
@@ -20,32 +22,12 @@ public partial class RescueMissionResolvePanel : VisualElement
         style.height = UiUtils.GetLengthPercentage(100);
         style.width = UiUtils.GetLengthPercentage(100);
 
-        RefreshUi();
-    }
-
-    public void RefreshUi()
-    {
-        Clear();
-
-        // deployed mission ui
-        DeployedMissionUi deployedMissionUi = new(_mission);
-        deployedMissionUi.resolveButton.visible = false;
-        Add(deployedMissionUi);
+        _deployedMissionUi = new(mission);
+        Add(_deployedMissionUi);
 
         // passenger list
-        VisualElement passengerListContainer = new()
-        {
-            style =
-            {
-                flexGrow = 1,
-            }
-        };
-        Add(passengerListContainer);
-
-        foreach(Passenger passenger in _mission.Passengers)
-        {
-            passengerListContainer.Add(new Label(passenger.Status.ToString()));
-        }
+        _passengerListContainer.style.flexGrow = 1;
+        Add(_passengerListContainer);
 
         // bottom buttons
         VisualElement bottomButtonsContainer = new()
@@ -58,8 +40,8 @@ public partial class RescueMissionResolvePanel : VisualElement
                 backgroundColor = Color.red
             }
         };
-        Button supplyButton = new() { text = "Supply" };
-        Button crewButton = new() { text = "Crew" };
+        Button supplyButton = new() { text = $"Supply {_mission.NumberOfSupplies}" };
+        Button crewButton = new() { text = $"Crew {_mission.NumberOfCrews}" };
         Button ignoreButton = new() { text = "Ignore" };
         Button finishButton = new() 
         { 
@@ -67,13 +49,43 @@ public partial class RescueMissionResolvePanel : VisualElement
             style =
             {
                 marginLeft = new StyleLength(StyleKeyword.Auto)
-            }
+            },
         };
+        finishButton.SetEnabled(false);
 
         bottomButtonsContainer.Add(supplyButton);
         bottomButtonsContainer.Add(crewButton);
         bottomButtonsContainer.Add(ignoreButton);
         bottomButtonsContainer.Add(finishButton);
         Add(bottomButtonsContainer);
+
+        RegisterCallback<AttachToPanelEvent>(OnAttach);
+    }
+
+    ~RescueMissionResolvePanel()
+    {
+        UnregisterCallback<AttachToPanelEvent>(OnAttach);
+    }
+
+    private void OnAttach(AttachToPanelEvent e)
+    {
+        RegenerateDeployedMissionUi();
+
+        _passengerListContainer.Clear();
+        foreach(Passenger passenger in _mission.Passengers)
+        {
+            _passengerListContainer.Add(passenger.passengerUi);
+        }
+    }
+
+    public void RegenerateDeployedMissionUi()
+    {
+        // deployed mission ui
+        if (_deployedMissionUi is not null) Remove(_deployedMissionUi);
+
+        _deployedMissionUi = new(_mission);
+        _deployedMissionUi.resolveButton.visible = false;
+        Add(_deployedMissionUi);
+        _deployedMissionUi.SendToBack();
     }
 }

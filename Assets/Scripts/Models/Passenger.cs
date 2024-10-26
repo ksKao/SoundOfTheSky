@@ -1,10 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UIElements;
 
 public class Passenger
 {
-    public PassengerStatus Status { get; private set; } = PassengerStatus.Comfortable;
+    private readonly Label _statusLabel = new();
+    private bool _selected = false;
+    private PassengerStatus _status = PassengerStatus.Comfortable;
+
+    public readonly VisualElement passengerUi = new();
+
+    public Passenger()
+    {
+        passengerUi.Add(_statusLabel);
+        _statusLabel.text = _status.ToString();
+    }
+
+    public PassengerStatus Status 
+    {
+        get => _status;
+        private set
+        {
+            _status = value;
+            _statusLabel.text = _status.ToString();
+        }
+    }
+    public bool Selected 
+    {
+        get => _selected;
+        private set
+        {
+            _selected = value;
+        }
+    }
 
     public void IncrementStatus()
     {
