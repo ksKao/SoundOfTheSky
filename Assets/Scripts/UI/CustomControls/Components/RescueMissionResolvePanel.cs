@@ -7,6 +7,8 @@ public partial class RescueMissionResolvePanel : VisualElement
     private readonly RescueMission _mission;
     private DeployedMissionUi _deployedMissionUi;
     private readonly VisualElement _passengerListContainer = new();
+    private readonly Button _supplyButton = new();
+    private readonly Button _crewButton = new();
 
     public RescueMissionResolvePanel()
     {
@@ -37,11 +39,8 @@ public partial class RescueMissionResolvePanel : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
                 width = UiUtils.GetLengthPercentage(100),
-                backgroundColor = Color.red
             }
         };
-        Button supplyButton = new() { text = $"Supply {_mission.NumberOfSupplies}" };
-        Button crewButton = new() { text = $"Crew {_mission.NumberOfCrews}" };
 
         Button ignoreButton = new() { text = "Ignore" };
         ignoreButton.clicked += () => _mission.Ignore();
@@ -56,8 +55,8 @@ public partial class RescueMissionResolvePanel : VisualElement
         };
         finishButton.SetEnabled(false);
 
-        bottomButtonsContainer.Add(supplyButton);
-        bottomButtonsContainer.Add(crewButton);
+        bottomButtonsContainer.Add(_supplyButton);
+        bottomButtonsContainer.Add(_crewButton);
         bottomButtonsContainer.Add(ignoreButton);
         bottomButtonsContainer.Add(finishButton);
         Add(bottomButtonsContainer);
@@ -79,6 +78,9 @@ public partial class RescueMissionResolvePanel : VisualElement
         {
             _passengerListContainer.Add(passenger.passengerUi);
         }
+
+        _supplyButton.text = $"Supply {_mission.NumberOfSupplies}";
+        _crewButton.text = $"Crew {_mission.NumberOfCrews}";
     }
 
     public void RegenerateDeployedMissionUi()
