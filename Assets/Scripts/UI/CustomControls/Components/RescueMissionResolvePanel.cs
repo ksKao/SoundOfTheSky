@@ -42,7 +42,10 @@ public partial class RescueMissionResolvePanel : VisualElement
         };
         Button supplyButton = new() { text = $"Supply {_mission.NumberOfSupplies}" };
         Button crewButton = new() { text = $"Crew {_mission.NumberOfCrews}" };
+
         Button ignoreButton = new() { text = "Ignore" };
+        ignoreButton.clicked += () => _mission.Ignore();
+
         Button finishButton = new() 
         { 
             text = "Finish",

@@ -42,6 +42,12 @@ public class RescueMission : Mission
         base.GenerateDeployedMissionUi();
     }
 
+    public void Ignore()
+    {
+        EventPending = false;
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+    }
+
     public override void OnResolveButtonClicked()
     {
         // cannot call base here since need to wait until player make a decision before continuing
