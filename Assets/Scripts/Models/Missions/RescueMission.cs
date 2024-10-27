@@ -65,15 +65,6 @@ public class RescueMission : Mission
 
     protected override void EventOccur()
     {
-        // if there are no passengers, can set event pending back to false
-        // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur
-        // which can cause confusion as there are no passengers but there is still an event
-        if (Passengers.Count == 0)
-        {
-            EventPending = false;
-            return;
-        }
-
         foreach (Passenger passenger in Passengers)
         {
             // 50% chance for a passenger health to change
@@ -89,6 +80,13 @@ public class RescueMission : Mission
 
         // remove all dead passengers
         Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
+
+        // if there are no passengers, can set event pending back to false
+        // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur
+        // which can cause confusion as there are no passengers but there is still an event
+        // also check for if all passengers have status of comfortable, otherwise there is no reason for an event to happen
+        if (Passengers.Count == 0 || Passengers.All(p => p.Status == PassengerStatus.Comfortable))
+            EventPending = false;
     }
 
     protected override void GeneratePendingMissionUi()
