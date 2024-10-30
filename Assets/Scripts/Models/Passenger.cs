@@ -14,7 +14,15 @@ public class Passenger
     public Passenger()
     {
         passengerUi.Add(_statusLabel);
+        UiUtils.SetBorderWidth(passengerUi, 1);
         _statusLabel.text = _status.ToString();
+
+        passengerUi.RegisterCallback<ClickEvent>(OnClick);
+    }
+
+    ~Passenger()
+    {
+        passengerUi.UnregisterCallback<ClickEvent>(OnClick);
     }
 
     public PassengerStatus Status 
@@ -31,6 +39,7 @@ public class Passenger
         get => _selected;
         private set
         {
+            UiUtils.ToggleBorder(passengerUi, value);
             _selected = value;
         }
     }
@@ -52,5 +61,13 @@ public class Passenger
         int max = values.Max();
 
         Status = (PassengerStatus)Math.Clamp(newStatus, min, max);
+    }
+
+    private void OnClick(ClickEvent _)
+    {
+        // do not select this if passenger is comfortable as there is no reason for player to use supply/crew on them anyways
+        if (Status == PassengerStatus.Comfortable) return;
+
+        Selected = !Selected;
     }
 }
