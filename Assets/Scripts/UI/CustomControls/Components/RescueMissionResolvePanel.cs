@@ -47,6 +47,8 @@ public partial class RescueMissionResolvePanel : VisualElement
 
         _supplyButton.clicked += () => _mission.UseSupply();
 
+        _crewButton.clicked += () => _mission.UseCrew();
+
         ignoreButton.text = "Ignore";
         ignoreButton.clicked += () => _mission.Ignore();
 

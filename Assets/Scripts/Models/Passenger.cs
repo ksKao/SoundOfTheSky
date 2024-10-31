@@ -44,12 +44,12 @@ public class Passenger
         }
     }
 
-    public void IncrementStatus()
+    public void MakeWorse()
     {
         ChangeStatus((int)Status + 1);
     }
 
-    public void DecrementStatus()
+    public void MakeBetter()
     {
         ChangeStatus((int)Status - 1);
     }

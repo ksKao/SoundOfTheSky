@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 using UnityEngine.UIElements;
 
 public class RescueMission : Mission
@@ -72,13 +73,44 @@ public class RescueMission : Mission
 
         foreach (Passenger passenger in selectedPassengers)
         {
-            passenger.DecrementStatus();
+            passenger.MakeBetter();
             passenger.Selected = false;
         }
 
         NumberOfSupplies -= selectedPassengers.Length;
         _rescueMissionResolvePanel.RefreshButtonText();
 
+        ActionTakenDuringThisEvent = true;
+    }
+
+    public void UseCrew()
+    {
+        Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
+
+        if (selectedPassengers.Length == 0)
+        {
+            Debug.Log("No passengers selected");
+            return;
+        }
+
+        if (NumberOfCrews < selectedPassengers.Length)
+        {
+            Debug.Log("Not enough crews.");
+            return;
+        }
+
+        foreach (Passenger passenger in selectedPassengers)
+        {
+            // the chance of passenger's health decreasing is same as the weather event occur probability
+            if (Random.ShouldOccur(weather.decisionMakingProbability))
+                passenger.MakeWorse();
+            else
+                passenger.MakeBetter();
+            passenger.Selected = false;
+        }
+
+        NumberOfCrews -= selectedPassengers.Length;
+        _rescueMissionResolvePanel.RefreshButtonText();
         ActionTakenDuringThisEvent = true;
     }
 
@@ -138,9 +170,9 @@ public class RescueMission : Mission
             {
                 // 50% to increase health, 50% to decrease health
                 if (Random.ShouldOccur(0.5))
-                    passenger.IncrementStatus();
+                    passenger.MakeWorse();
                 else
-                    passenger.DecrementStatus();
+                    passenger.MakeBetter();
             }
         }
 
