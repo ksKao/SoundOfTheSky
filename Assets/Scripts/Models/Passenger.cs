@@ -37,7 +37,7 @@ public class Passenger
     public bool Selected 
     {
         get => _selected;
-        private set
+        set
         {
             UiUtils.ToggleBorder(passengerUi, value);
             _selected = value;

@@ -42,6 +42,8 @@ public partial class RescueMissionResolvePanel : VisualElement
             }
         };
 
+        _supplyButton.clicked += () => _mission.UseSupply();
+
         Button ignoreButton = new() { text = "Ignore" };
         ignoreButton.clicked += () => _mission.Ignore();
 
@@ -69,6 +71,23 @@ public partial class RescueMissionResolvePanel : VisualElement
         UnregisterCallback<AttachToPanelEvent>(OnAttach);
     }
 
+    public void RegenerateDeployedMissionUi()
+    {
+        // deployed mission ui
+        if (_deployedMissionUi is not null) Remove(_deployedMissionUi);
+
+        _deployedMissionUi = new(_mission);
+        _deployedMissionUi.resolveButton.visible = false;
+        Add(_deployedMissionUi);
+        _deployedMissionUi.SendToBack();
+    }
+
+    public void RefreshButtonText()
+    {
+        _supplyButton.text = $"Supply {_mission.NumberOfSupplies}";
+        _crewButton.text = $"Crew {_mission.NumberOfCrews}";
+    }
+
     private void OnAttach(AttachToPanelEvent e)
     {
         RegenerateDeployedMissionUi();
@@ -79,18 +98,6 @@ public partial class RescueMissionResolvePanel : VisualElement
             _passengerListContainer.Add(passenger.passengerUi);
         }
 
-        _supplyButton.text = $"Supply {_mission.NumberOfSupplies}";
-        _crewButton.text = $"Crew {_mission.NumberOfCrews}";
-    }
-
-    public void RegenerateDeployedMissionUi()
-    {
-        // deployed mission ui
-        if (_deployedMissionUi is not null) Remove(_deployedMissionUi);
-
-        _deployedMissionUi = new(_mission);
-        _deployedMissionUi.resolveButton.visible = false;
-        Add(_deployedMissionUi);
-        _deployedMissionUi.SendToBack();
+        RefreshButtonText();
     }
 }

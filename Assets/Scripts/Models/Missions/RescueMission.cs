@@ -42,9 +42,33 @@ public class RescueMission : Mission
         base.GenerateDeployedMissionUi();
     }
 
+    public void UseSupply()
+    {
+        Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
+
+        if (NumberOfSupplies < selectedPassengers.Length)
+        {
+            Debug.Log("Not enough supplies.");
+            return;
+        }
+
+        foreach (Passenger passenger in selectedPassengers)
+        {
+            passenger.DecrementStatus();
+            passenger.Selected = false;
+        }
+
+        NumberOfSupplies -= selectedPassengers.Length;
+        _rescueMissionResolvePanel.RefreshButtonText();
+    }
+
     public void Ignore()
     {
         EventPending = false;
+
+        foreach (Passenger passenger in Passengers)
+            passenger.Selected = false;
+
         UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
     }
 
