@@ -5,10 +5,13 @@ using UnityEngine.UIElements;
 public partial class RescueMissionResolvePanel : VisualElement
 {
     private readonly RescueMission _mission;
-    private DeployedMissionUi _deployedMissionUi;
     private readonly VisualElement _passengerListContainer = new();
     private readonly Button _supplyButton = new();
     private readonly Button _crewButton = new();
+    private DeployedMissionUi _deployedMissionUi;
+
+    public readonly Button finishButton = new();
+    public readonly Button ignoreButton = new();
 
     public RescueMissionResolvePanel()
     {
@@ -44,18 +47,12 @@ public partial class RescueMissionResolvePanel : VisualElement
 
         _supplyButton.clicked += () => _mission.UseSupply();
 
-        Button ignoreButton = new() { text = "Ignore" };
+        ignoreButton.text = "Ignore";
         ignoreButton.clicked += () => _mission.Ignore();
 
-        Button finishButton = new() 
-        { 
-            text = "Finish",
-            style =
-            {
-                marginLeft = new StyleLength(StyleKeyword.Auto)
-            },
-        };
-        finishButton.SetEnabled(false);
+        finishButton.text = "Finish";
+        finishButton.style.marginLeft = new StyleLength(StyleKeyword.Auto);
+        finishButton.clicked += () => _mission.Finish();
 
         bottomButtonsContainer.Add(_supplyButton);
         bottomButtonsContainer.Add(_crewButton);

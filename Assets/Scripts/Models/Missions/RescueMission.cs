@@ -11,12 +11,24 @@ public class RescueMission : Mission
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
+    private bool _actionTakenDuringThisEvent = false;
 
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfCrews { get; private set; } = 0;
+    public bool ActionTakenDuringThisEvent
+    {
+        get => _actionTakenDuringThisEvent;
+        set
+        {
+            _actionTakenDuringThisEvent = value;
+
+            // cannot ignore event if already used supply/crew on passenger
+            _rescueMissionResolvePanel.ignoreButton.visible = !value;
+        }
+    }
 
     public RescueMission() : base()
     {
@@ -46,6 +58,12 @@ public class RescueMission : Mission
     {
         Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
 
+        if (selectedPassengers.Length == 0)
+        {
+            Debug.Log("No passengers selected");
+            return;
+        }
+
         if (NumberOfSupplies < selectedPassengers.Length)
         {
             Debug.Log("Not enough supplies.");
@@ -60,16 +78,40 @@ public class RescueMission : Mission
 
         NumberOfSupplies -= selectedPassengers.Length;
         _rescueMissionResolvePanel.RefreshButtonText();
+
+        ActionTakenDuringThisEvent = true;
     }
 
     public void Ignore()
     {
+        // technically should not be possible to reach this condition, but add here just in case if this method is called by something other than the on click on Ignore button
+        if (ActionTakenDuringThisEvent)
+        {
+            Debug.Log("Cannot ignore event after using supply or crew.");
+            return;
+        }
+
         EventPending = false;
 
         foreach (Passenger passenger in Passengers)
             passenger.Selected = false;
 
+        ActionTakenDuringThisEvent = false;
         UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+    }
+
+    public void Finish()
+    {
+        // if didn't use supply or crew, then this event remains unresolved.
+        if (!ActionTakenDuringThisEvent)
+        {
+            Debug.Log("Cannot finish resolve event without first using supply or crew.");
+            return;
+        }
+
+        ActionTakenDuringThisEvent = false;
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        EventPending = false;
     }
 
     public override void OnResolveButtonClicked()
