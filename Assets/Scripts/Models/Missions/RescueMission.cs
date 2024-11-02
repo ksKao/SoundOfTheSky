@@ -45,17 +45,15 @@ public class RescueMission : Mission
     {
         // check if this train has already been deployed
         if (GameManager.Instance.deployedMissions.Any(m => m.Train != null && m.Train.name == Train.name))
+        {
+            Debug.Log("Train has already been deployed");
             return false;
+        }
 
         NumberOfSupplies = _supplyNumberInput.Value;
         NumberOfCrews = _crewNumberInput.Value;
 
         return true;
-    }
-
-    public override void GenerateDeployedMissionUi()
-    {
-        base.GenerateDeployedMissionUi();
     }
 
     public void UseSupply()
@@ -171,6 +169,9 @@ public class RescueMission : Mission
         double rewardMultiplier = 1 + weather.rewardMultiplier;
         _numberOfNewCitizens = (int)Math.Round(Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length * rewardMultiplier);
         _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
+
+        GameManager.Instance.IncrementAssetValue(AssetType.Citizens, _numberOfNewCitizens);
+        GameManager.Instance.IncrementAssetValue(AssetType.Resources, _numberOfNewResources);
 
         base.Complete();
     }

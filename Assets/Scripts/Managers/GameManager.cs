@@ -9,11 +9,14 @@ public class GameManager : Singleton<GameManager>
     public const int NUMBER_OF_PENDING_MISSIONS_PER_TYPE = 5;
 
     private Mission _selectedPendingMission = null;
+    private Dictionary<AssetType, int> _assets = new()
+    {
+        { AssetType.Payments, 0 },
+        { AssetType.Supplies, 0 },
+        { AssetType.Resources, 0 },
+        { AssetType.Citizens, 0 }
+    };
 
-    public int numberOfPayments = 0;
-    public int numberOfSupplies = 0;
-    public int numberOfResources = 0;
-    public int numberOfCrews = 0;
     public readonly List<Mission> deployedMissions = new();
 
     public List<Mission> PendingMissions { get; private set; } = new();
@@ -76,6 +79,18 @@ public class GameManager : Singleton<GameManager>
         {
             PendingMissions.Add(new T());
         }
+    }
+
+    public void IncrementAssetValue(AssetType assetType, int number)
+    {
+        if (!_assets.ContainsKey(assetType))
+        {
+            Debug.LogWarning($"Could not find asset type {assetType} in {nameof(_assets)}");
+            return;
+        }
+
+        _assets[assetType] += number;
+        UiManager.Instance.GameplayScreen.assetBar.UpdateAssetAmount(assetType, _assets[assetType]);
     }
 
     private void DeploySelectedMission()

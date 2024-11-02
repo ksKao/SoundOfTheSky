@@ -1,5 +1,3 @@
-using UnityEngine.UIElements;
-
 public class DocumentationMission : Mission
 {
     private readonly LocationSO _destination = DataManager.Instance.GetRandomDestinationLocation();

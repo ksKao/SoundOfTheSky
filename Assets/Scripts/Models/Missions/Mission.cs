@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public abstract class Mission
 {
-    private const int SECONDS_PER_MILE = 1;
+    private const float SECONDS_PER_MILE = 0.1f;
     private const int MILES_PER_INTERVAL = 5;
     private int _milesRemaining = 0;
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
@@ -172,6 +172,7 @@ public abstract class Mission
         VisualElement routeElement = new();
         routeElement.Add(new Label(Route.start.name));
         routeElement.Add(new Label(Route.end.name));
+        routeElement.Add(new Label(initialMiles.ToString()));
 
         PendingMissionUi.Add(routeElement);
 

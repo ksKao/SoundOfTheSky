@@ -14,3 +14,11 @@ public enum PassengerStatus
     Critical,
     Death
 }
+
+public enum AssetType
+{
+    Payments,
+    Supplies,
+    Resources,
+    Citizens
+};

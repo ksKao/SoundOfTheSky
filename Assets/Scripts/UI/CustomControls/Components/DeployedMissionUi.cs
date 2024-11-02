@@ -43,6 +43,12 @@ public partial class DeployedMissionUi : VisualElement
         _arriveOverlay.visible = false;
 
         Add(new Label(mission.Route.start.name + " " + mission.Route.end.name));
+
+        if (mission.Train != null)
+        { 
+            Add(new Label(mission.Train.name));
+        }
+
         milesRemainingLabel.text = mission.MilesRemaining.ToString();
         Add(milesRemainingLabel);
 
