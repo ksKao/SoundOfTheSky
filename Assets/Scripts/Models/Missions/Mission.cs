@@ -17,7 +17,6 @@ public abstract class Mission
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
     public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
-    public int NumberOfPassengers { get; protected set; } = 0;
     public bool EventPending 
     {
         get => _eventPending;
@@ -37,6 +36,7 @@ public abstract class Mission
     }
     public VisualElement PendingMissionUi { get; } = new();
     public DeployedMissionUi DeployedMissionUi { get; protected set; }
+    public VisualElement MissionCompleteUi { get; } = new();
     public int MilesRemaining 
     {
         get => _milesRemaining;
@@ -91,6 +91,31 @@ public abstract class Mission
         DeployedMissionUi = new(this);
     }
 
+    public virtual void GenerateMissionCompleteUi()
+    {
+        MissionCompleteUi.Add(new Label("Reward"));
+
+        Button completeButton = new()
+        {
+            text = "Complete"
+        };
+        completeButton.clicked += () =>
+        {
+            GameManager.Instance.deployedMissions.Remove(this);
+            UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+        };
+        MissionCompleteUi.Add(completeButton);
+    }
+
+    public virtual void Complete()
+    {
+        if (_isCompleted) return;
+
+        _isCompleted = true;
+        GenerateMissionCompleteUi();
+        DeployedMissionUi.Arrive();
+    }
+
     public void Update()
     {
         if (_isCompleted || EventPending) return;
@@ -121,7 +146,7 @@ public abstract class Mission
     protected virtual void OnMileChange()
     {
         if (MilesRemaining == 0)
-            _isCompleted = true;
+            Complete();
         else if (IsMilestoneReached(MILES_PER_INTERVAL) && Random.ShouldOccur(weather.decisionMakingProbability))
             EventPending = true;
     }

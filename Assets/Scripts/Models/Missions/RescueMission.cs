@@ -2,23 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 using UnityEngine.UIElements;
 
 public class RescueMission : Mission
 {
-    private const int MILES_PER_PASSENGER_INCREASE = 5;
+    private const int MILES_PER_INTERVAL = 5;
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
     private bool _actionTakenDuringThisEvent = false;
+    private int _numberOfNewCitizens = 0;
+    private int _numberOfNewResources = 0;
+    private int _numberOfDeaths = 0;
 
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfCrews { get; private set; } = 0;
+    public int NumberOfResources { get; private set; } = 0;
     public bool ActionTakenDuringThisEvent
     {
         get => _actionTakenDuringThisEvent;
@@ -153,12 +156,36 @@ public class RescueMission : Mission
         UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
     }
 
+    public override void GenerateMissionCompleteUi()
+    {
+        base.GenerateMissionCompleteUi();
+
+        MissionCompleteUi.Add(new Label($"{_numberOfNewCitizens} new citizens!"));
+        MissionCompleteUi.Add(new Label($"{_numberOfNewResources} new resources!"));
+        MissionCompleteUi.Add(new Label($"{_numberOfDeaths} deaths!"));
+    }
+
+    public override void Complete()
+    {
+        // calculate rewards
+        double rewardMultiplier = 1 + weather.rewardMultiplier;
+        _numberOfNewCitizens = (int)Math.Round(Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length * rewardMultiplier);
+        _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
+
+        base.Complete();
+    }
+
     protected override void OnMileChange()
     {
         base.OnMileChange();
 
-        if (IsMilestoneReached(MILES_PER_PASSENGER_INCREASE) && Random.ShouldOccur(_passengerIncreaseProbability))
-            Passengers.Add(new());
+        if (IsMilestoneReached(MILES_PER_INTERVAL) && Random.ShouldOccur(_passengerIncreaseProbability))
+        {
+            NumberOfResources++;
+
+            if (Random.ShouldOccur(_passengerIncreaseProbability))
+                Passengers.Add(new());
+        }
     }
 
     protected override void EventOccur()
@@ -177,7 +204,9 @@ public class RescueMission : Mission
         }
 
         // remove all dead passengers
+        int numberOfPassengers = Passengers.Count;
         Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
+        _numberOfDeaths += numberOfPassengers - Passengers.Count;
 
         // if there are no passengers, can set event pending back to false
         // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur
