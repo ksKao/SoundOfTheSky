@@ -65,11 +65,6 @@ public partial class RescueMissionResolvePanel : VisualElement
         RegisterCallback<AttachToPanelEvent>(OnAttach);
     }
 
-    ~RescueMissionResolvePanel()
-    {
-        UnregisterCallback<AttachToPanelEvent>(OnAttach);
-    }
-
     public void RegenerateDeployedMissionUi()
     {
         // deployed mission ui

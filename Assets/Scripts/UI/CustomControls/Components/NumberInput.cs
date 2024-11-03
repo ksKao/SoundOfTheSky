@@ -55,12 +55,6 @@ public partial class NumberInput : VisualElement
         Add(DecrementButton);
     }
 
-    ~NumberInput()
-    {
-        IncrementButton.clicked -= IncrementValue;
-        DecrementButton.clicked -= DecrementValue;
-    }
-
     private void IncrementValue() => Value++;
     private void DecrementValue() => Value--;
 }

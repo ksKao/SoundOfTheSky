@@ -73,11 +73,6 @@ public abstract class Mission
         PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
     }
 
-    ~Mission()
-    {
-        PendingMissionUi.UnregisterCallback<ClickEvent>(OnSelectMissionPendingUi);
-    }
-
     /// <summary>
     /// Initialize a mission when it is deployed
     /// </summary>

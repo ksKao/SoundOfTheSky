@@ -20,11 +20,6 @@ public class Passenger
         passengerUi.RegisterCallback<ClickEvent>(OnClick);
     }
 
-    ~Passenger()
-    {
-        passengerUi.UnregisterCallback<ClickEvent>(OnClick);
-    }
-
     public PassengerStatus Status 
     {
         get => _status;
