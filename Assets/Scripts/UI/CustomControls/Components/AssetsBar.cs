@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,15 @@ public partial class AssetsBar : VisualElement
         AddAssetLabel(AssetType.Supplies, _suppliesLabel);
         AddAssetLabel(AssetType.Resources, _resourcesLabel);
         AddAssetLabel(AssetType.Citizens, _citizensLabel);
+    }
+
+    public void RefreshAllAssetAmountUi()
+    {
+        AssetType[] allAssetTypes = (AssetType[])Enum.GetValues(typeof(AssetType));
+        foreach (AssetType assetType in allAssetTypes)
+        {
+            UpdateAssetAmount(assetType, GameManager.Instance.GetAssetValue(assetType));
+        }
     }
 
     public void UpdateAssetAmount(AssetType assetType, int amount)

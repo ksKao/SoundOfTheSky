@@ -9,12 +9,12 @@ public class GameManager : Singleton<GameManager>
     public const int NUMBER_OF_PENDING_MISSIONS_PER_TYPE = 5;
 
     private Mission _selectedPendingMission = null;
-    private Dictionary<AssetType, int> _assets = new()
+    private readonly Dictionary<AssetType, int> _assets = new()
     {
-        { AssetType.Payments, 0 },
-        { AssetType.Supplies, 0 },
-        { AssetType.Resources, 0 },
-        { AssetType.Citizens, 0 }
+        { AssetType.Payments, 100 },
+        { AssetType.Supplies, 100 },
+        { AssetType.Resources, 100 },
+        { AssetType.Citizens, 100 }
     };
 
     public readonly List<Mission> deployedMissions = new();
@@ -49,6 +49,7 @@ public class GameManager : Singleton<GameManager>
 
         // need to update UI after generating the data
         UiManager.Instance.OnMissionActiveTabChange(new Tab(), UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab);
+        UiManager.Instance.GameplayScreen.assetBar.RefreshAllAssetAmountUi();
     }
 
     private void Update()
@@ -79,6 +80,17 @@ public class GameManager : Singleton<GameManager>
         {
             PendingMissions.Add(new T());
         }
+    }
+
+    public int GetAssetValue(AssetType assetType)
+    {
+        if (!_assets.ContainsKey(assetType))
+        {
+            Debug.LogWarning($"Could not find asset type {assetType} in {nameof(_assets)}");
+            return 0;
+        }
+
+        return _assets[assetType];
     }
 
     public void IncrementAssetValue(AssetType assetType, int number)
