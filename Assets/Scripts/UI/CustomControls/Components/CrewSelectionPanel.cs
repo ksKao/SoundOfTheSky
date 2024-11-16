@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class CrewSelectionPanel : VisualElement
 {
-    private List<Crew> _crews = new();
-    private Action<List<Crew>> _onSelect;
+    private Crew[] _crews = { };
+    private Action<Crew[]> _onSelect;
 
     public CrewSelectionPanel()
     {
@@ -17,7 +16,7 @@ public partial class CrewSelectionPanel : VisualElement
         _onSelect?.Invoke(_crews);
     }
 
-    public void Show(List<Crew> crews, Action<List<Crew>> onSelect)
+    public void Show(Crew[] crews, Action<Crew[]> onSelect)
     {
         _crews = crews;
         _onSelect = onSelect;

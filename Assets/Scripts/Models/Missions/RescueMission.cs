@@ -95,24 +95,41 @@ public class RescueMission : Mission
     {
         Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
 
-        if (selectedPassengers.Length == 0)
+        // player can only select 1 passenger at a time to use crew on
+        if (selectedPassengers.Length > 1)
+        {
+            Debug.Log("Only one passenger can be treated by the crew at a time.");
+            return;
+        }
+
+        Passenger selectedPassenger = selectedPassengers.FirstOrDefault();
+
+        if (selectedPassenger is null)
         {
             Debug.Log("No passengers selected");
             return;
         }
 
-        foreach (Passenger passenger in selectedPassengers)
+        UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(Crew.GetCrewInMission(this), (crews) =>
         {
+            Crew selectedCrew = crews.FirstOrDefault(c => c.Selected);
+
+            // make it so that only one crew can be selected at a time
+            selectedCrew.Selected = false;
+
             // the chance of passenger's health decreasing is same as the weather event occur probability
             if (Random.ShouldOccur(weather.decisionMakingProbability))
-                passenger.MakeWorse();
+                selectedPassenger.MakeWorse();
             else
-                passenger.MakeBetter();
-            passenger.Selected = false;
-        }
+                selectedPassenger.MakeBetter();
+            selectedPassenger.Selected = false;
 
-        _rescueMissionResolvePanel.RefreshButtonText();
-        ActionTakenDuringThisEvent = true;
+            // after taking action, change the screen back
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
+
+            _rescueMissionResolvePanel.RefreshButtonText();
+            ActionTakenDuringThisEvent = true;
+        });
     }
 
     public void Ignore()
@@ -229,7 +246,7 @@ public class RescueMission : Mission
         Label crewNumberLabel = new("0");
         crewSelectionPanelOpen.RegisterCallback<ClickEvent>((_) =>
         {
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(GameManager.Instance.crews, (crews) =>
+            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(GameManager.Instance.crews.ToArray(), (crews) =>
             {
                 List<Crew> selectedCrews = crews.Where(c => c.Selected).ToList();
                 _preselectedCrews = selectedCrews;
