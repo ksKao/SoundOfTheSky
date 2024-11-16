@@ -79,7 +79,7 @@ public partial class RescueMissionResolvePanel : VisualElement
     public void RefreshButtonText()
     {
         _supplyButton.text = $"Supply {_mission.NumberOfSupplies}";
-        _crewButton.text = $"Crew {_mission.NumberOfCrews}";
+        _crewButton.text = $"Crew {Crew.GetCrewInMission(_mission).Length}";
     }
 
     private void OnAttach(AttachToPanelEvent e)
@@ -89,7 +89,7 @@ public partial class RescueMissionResolvePanel : VisualElement
         _passengerListContainer.Clear();
         foreach(Passenger passenger in _mission.Passengers)
         {
-            _passengerListContainer.Add(passenger.passengerUi);
+            _passengerListContainer.Add(passenger.Ui);
         }
 
         RefreshButtonText();

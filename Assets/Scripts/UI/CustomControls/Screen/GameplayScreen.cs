@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -8,8 +9,11 @@ public partial class GameplayScreen : VisualElement
     public readonly BottomNavigationBar bottomNavigationBar = new();
     public readonly VisualElement pendingMissionList = new();
     public readonly DeployedMissionList deployedMissionList = new();
+    public readonly CrewSelectionPanel crewSelectionPanel = new();
 
     private readonly VisualElement _right = new();
+
+    public VisualElement RightPanel => _right.Children().FirstOrDefault();
 
     public GameplayScreen()
     {
@@ -42,7 +46,10 @@ public partial class GameplayScreen : VisualElement
 
     public void ChangeRightPanel(VisualElement element)
     {
+        if (RightPanel == element) return;
+
         _right.Clear();
-        _right.Add(element);
+
+        if (element is not null) _right.Add(element);
     }
 }

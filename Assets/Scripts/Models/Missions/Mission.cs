@@ -131,6 +131,9 @@ public abstract class Mission
         PendingMissionUi.Query<Button>().ForEach(button => button.visible = false);
 
         UiUtils.ToggleBorder(PendingMissionUi, false);
+
+        if (UiManager.Instance.GameplayScreen.RightPanel == UiManager.Instance.GameplayScreen.crewSelectionPanel)
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
     }
 
     public virtual void OnResolveButtonClicked()

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 public class GameManager : Singleton<GameManager>
 {
     public const int NUMBER_OF_PENDING_MISSIONS_PER_TYPE = 5;
+    private const int INITIAL_NUMBER_OF_CREWS = 5;
 
     private Mission _selectedPendingMission = null;
     private readonly Dictionary<AssetType, int> _assets = new()
@@ -18,6 +19,7 @@ public class GameManager : Singleton<GameManager>
     };
 
     public readonly List<Mission> deployedMissions = new();
+    public readonly List<Crew> crews = new(INITIAL_NUMBER_OF_CREWS);
 
     public List<Mission> PendingMissions { get; private set; } = new();
 
@@ -50,6 +52,9 @@ public class GameManager : Singleton<GameManager>
         // need to update UI after generating the data
         UiManager.Instance.OnMissionActiveTabChange(new Tab(), UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab);
         UiManager.Instance.GameplayScreen.assetBar.RefreshAllAssetAmountUi();
+
+        for (int i = 0; i < INITIAL_NUMBER_OF_CREWS; i++)
+            crews.Add(new Crew());
     }
 
     private void Update()

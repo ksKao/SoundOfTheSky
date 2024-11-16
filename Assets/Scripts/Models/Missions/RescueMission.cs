@@ -8,19 +8,18 @@ public class RescueMission : Mission
 {
     private const int MILES_PER_INTERVAL = 5;
     private readonly NumberInput _supplyNumberInput = new("Supply");
-    private readonly NumberInput _crewNumberInput = new("Crew");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
     private bool _actionTakenDuringThisEvent = false;
     private int _numberOfNewCitizens = 0;
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
+    private List<Crew> _preselectedCrews = new();
 
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public int NumberOfSupplies { get; private set; } = 0;
-    public int NumberOfCrews { get; private set; } = 0;
     public int NumberOfResources { get; private set; } = 0;
     public bool ActionTakenDuringThisEvent
     {
@@ -50,8 +49,16 @@ public class RescueMission : Mission
             return false;
         }
 
+        if (_preselectedCrews.Any(c => c.DeployedMission is not null))
+        {
+            Debug.Log("One or more crew(s) has already been deployed in another mission");
+            return false;
+        }
+
         NumberOfSupplies = _supplyNumberInput.Value;
-        NumberOfCrews = _crewNumberInput.Value;
+
+        foreach (Crew crew in _preselectedCrews)
+            crew.DeployedMission = this;
 
         return true;
     }
@@ -94,12 +101,6 @@ public class RescueMission : Mission
             return;
         }
 
-        if (NumberOfCrews < selectedPassengers.Length)
-        {
-            Debug.Log("Not enough crews.");
-            return;
-        }
-
         foreach (Passenger passenger in selectedPassengers)
         {
             // the chance of passenger's health decreasing is same as the weather event occur probability
@@ -110,7 +111,6 @@ public class RescueMission : Mission
             passenger.Selected = false;
         }
 
-        NumberOfCrews -= selectedPassengers.Length;
         _rescueMissionResolvePanel.RefreshButtonText();
         ActionTakenDuringThisEvent = true;
     }
@@ -224,6 +224,23 @@ public class RescueMission : Mission
         PendingMissionUi.Add(new Label(Train.name));
 
         PendingMissionUi.Add(_supplyNumberInput);
-        PendingMissionUi.Add(_crewNumberInput);
+
+        VisualElement crewSelectionPanelOpen = new();
+        Label crewNumberLabel = new("0");
+        crewSelectionPanelOpen.RegisterCallback<ClickEvent>((_) =>
+        {
+            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(GameManager.Instance.crews, (crews) =>
+            {
+                List<Crew> selectedCrews = crews.Where(c => c.Selected).ToList();
+                _preselectedCrews = selectedCrews;
+                crewNumberLabel.text = selectedCrews.Count.ToString();
+            });
+
+            foreach (Crew crew in _preselectedCrews)
+                crew.Selected = true;
+        });
+        crewSelectionPanelOpen.Add(new Label("Crews"));
+        crewSelectionPanelOpen.Add(crewNumberLabel);
+        PendingMissionUi.Add(crewSelectionPanelOpen);
     }
 }
