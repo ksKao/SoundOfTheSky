@@ -33,7 +33,8 @@ public class RescueMission : Mission
         }
     }
 
-    public RescueMission() : base()
+    public RescueMission()
+        : base()
     {
         int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
@@ -43,7 +44,11 @@ public class RescueMission : Mission
     public override bool Deploy()
     {
         // check if this train has already been deployed
-        if (GameManager.Instance.deployedMissions.Any(m => m.Train != null && m.Train.name == Train.name))
+        if (
+            GameManager.Instance.deployedMissions.Any(m =>
+                m.Train != null && m.Train.name == Train.name
+            )
+        )
         {
             Debug.Log("Train has already been deployed");
             return false;
@@ -110,26 +115,30 @@ public class RescueMission : Mission
             return;
         }
 
-        UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(Crew.GetCrewInMission(this), (crews) =>
-        {
-            Crew selectedCrew = crews.FirstOrDefault(c => c.Selected);
+        UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+            Crew.GetCrewInMission(this),
+            (crews) =>
+            {
+                Crew selectedCrew = crews.FirstOrDefault(c => c.Selected);
 
-            // make it so that only one crew can be selected at a time
-            selectedCrew.Selected = false;
+                // make it so that only one crew can be selected at a time
+                selectedCrew.Selected = false;
 
-            // the chance of passenger's health decreasing is same as the weather event occur probability
-            if (Random.ShouldOccur(weather.decisionMakingProbability))
-                selectedPassenger.MakeWorse();
-            else
-                selectedPassenger.MakeBetter();
-            selectedPassenger.Selected = false;
+                // the chance of passenger's health decreasing is same as the weather event occur probability
+                if (Random.ShouldOccur(weather.decisionMakingProbability))
+                    selectedPassenger.MakeWorse();
+                else
+                    selectedPassenger.MakeBetter();
+                selectedPassenger.Selected = false;
 
-            // after taking action, change the screen back
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
+                // after taking action, change the screen back
+                UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
 
-            _rescueMissionResolvePanel.RefreshButtonText();
-            ActionTakenDuringThisEvent = true;
-        });
+                _rescueMissionResolvePanel.RefreshButtonText();
+                ActionTakenDuringThisEvent = true;
+            },
+            () => UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel)
+        );
     }
 
     public void Ignore()
@@ -147,7 +156,9 @@ public class RescueMission : Mission
             passenger.Selected = false;
 
         ActionTakenDuringThisEvent = false;
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(
+            UiManager.Instance.GameplayScreen.deployedMissionList
+        );
     }
 
     public void Finish()
@@ -160,7 +171,9 @@ public class RescueMission : Mission
         }
 
         ActionTakenDuringThisEvent = false;
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(
+            UiManager.Instance.GameplayScreen.deployedMissionList
+        );
         EventPending = false;
     }
 
@@ -184,7 +197,11 @@ public class RescueMission : Mission
     {
         // calculate rewards
         double rewardMultiplier = 1 + weather.rewardMultiplier;
-        _numberOfNewCitizens = (int)Math.Round(Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length * rewardMultiplier);
+        _numberOfNewCitizens = (int)
+            Math.Round(
+                Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length
+                    * rewardMultiplier
+            );
         _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
 
         GameManager.Instance.IncrementAssetValue(AssetType.Citizens, _numberOfNewCitizens);
@@ -197,7 +214,10 @@ public class RescueMission : Mission
     {
         base.OnMileChange();
 
-        if (IsMilestoneReached(MILES_PER_INTERVAL) && Random.ShouldOccur(_passengerIncreaseProbability))
+        if (
+            IsMilestoneReached(MILES_PER_INTERVAL)
+            && Random.ShouldOccur(_passengerIncreaseProbability)
+        )
         {
             NumberOfResources++;
 
@@ -208,7 +228,8 @@ public class RescueMission : Mission
 
     protected override void EventOccur()
     {
-        foreach (Passenger passenger in Passengers)
+        Passenger[] allPassengers = Passengers.Concat(Crew.GetCrewInMission(this)).ToArray();
+        foreach (Passenger passenger in allPassengers)
         {
             // 50% chance for a passenger health to change
             if (Random.ShouldOccur(0.5))
@@ -221,16 +242,21 @@ public class RescueMission : Mission
             }
         }
 
-        // remove all dead passengers
+        // remove all dead passengers and crews
         int numberOfPassengers = Passengers.Count;
         Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
         _numberOfDeaths += numberOfPassengers - Passengers.Count;
+
+        GameManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
 
         // if there are no passengers, can set event pending back to false
         // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur
         // which can cause confusion as there are no passengers but there is still an event
         // also check for if all passengers have status of comfortable, otherwise there is no reason for an event to happen
-        if (Passengers.Count == 0 || Passengers.All(p => p.Status == PassengerStatus.Comfortable))
+        if (
+            allPassengers.Length == 0
+            || allPassengers.All(p => p.Status == PassengerStatus.Comfortable)
+        )
             EventPending = false;
     }
 
@@ -244,18 +270,29 @@ public class RescueMission : Mission
 
         VisualElement crewSelectionPanelOpen = new();
         Label crewNumberLabel = new("0");
-        crewSelectionPanelOpen.RegisterCallback<ClickEvent>((_) =>
-        {
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(GameManager.Instance.crews.ToArray(), (crews) =>
+        crewSelectionPanelOpen.RegisterCallback<ClickEvent>(
+            (_) =>
             {
-                List<Crew> selectedCrews = crews.Where(c => c.Selected).ToList();
-                _preselectedCrews = selectedCrews;
-                crewNumberLabel.text = selectedCrews.Count.ToString();
-            });
+                UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+                    GameManager.Instance.crews.ToArray(),
+                    (crews) =>
+                    {
+                        List<Crew> selectedCrews = crews.Where(c => c.Selected).ToList();
+                        _preselectedCrews = selectedCrews;
+                        crewNumberLabel.text = selectedCrews.Count.ToString();
+                    },
+                    () =>
+                    {
+                        _preselectedCrews.Clear();
+                        crewNumberLabel.text = "0";
+                        UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
+                    }
+                );
 
-            foreach (Crew crew in _preselectedCrews)
-                crew.Selected = true;
-        });
+                foreach (Crew crew in _preselectedCrews)
+                    crew.Selected = true;
+            }
+        );
         crewSelectionPanelOpen.Add(new Label("Crews"));
         crewSelectionPanelOpen.Add(crewNumberLabel);
         PendingMissionUi.Add(crewSelectionPanelOpen);
