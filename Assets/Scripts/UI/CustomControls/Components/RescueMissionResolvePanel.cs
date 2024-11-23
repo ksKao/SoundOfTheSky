@@ -15,7 +15,9 @@ public partial class RescueMissionResolvePanel : VisualElement
 
     public RescueMissionResolvePanel()
     {
-        Debug.LogWarning($"Detected calling default constructor of {nameof(RescueMissionResolvePanel)}");
+        Debug.LogWarning(
+            $"Detected calling default constructor of {nameof(RescueMissionResolvePanel)}"
+        );
     }
 
     public RescueMissionResolvePanel(RescueMission mission)
@@ -35,17 +37,18 @@ public partial class RescueMissionResolvePanel : VisualElement
         Add(_passengerListContainer);
 
         // bottom buttons
-        VisualElement bottomButtonsContainer = new()
-        {
-            style =
+        VisualElement bottomButtonsContainer =
+            new()
             {
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row,
-                width = UiUtils.GetLengthPercentage(100),
-            }
-        };
+                style =
+                {
+                    display = DisplayStyle.Flex,
+                    flexDirection = FlexDirection.Row,
+                    width = UiUtils.GetLengthPercentage(100),
+                },
+            };
 
-        _supplyButton.clicked += () => _mission.UseSupply();
+        _supplyButton.clicked += () => _mission.UseSupply(_mission.Passengers.ToArray());
 
         _crewButton.clicked += () => _mission.UseCrew();
 
@@ -68,7 +71,8 @@ public partial class RescueMissionResolvePanel : VisualElement
     public void RegenerateDeployedMissionUi()
     {
         // deployed mission ui
-        if (_deployedMissionUi is not null) Remove(_deployedMissionUi);
+        if (_deployedMissionUi is not null)
+            Remove(_deployedMissionUi);
 
         _deployedMissionUi = new(_mission);
         _deployedMissionUi.resolveButton.visible = false;
@@ -87,7 +91,7 @@ public partial class RescueMissionResolvePanel : VisualElement
         RegenerateDeployedMissionUi();
 
         _passengerListContainer.Clear();
-        foreach(Passenger passenger in _mission.Passengers)
+        foreach (Passenger passenger in _mission.Passengers)
         {
             _passengerListContainer.Add(passenger.Ui);
         }
