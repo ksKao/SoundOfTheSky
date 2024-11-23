@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -48,7 +49,8 @@ public partial class RescueMissionResolvePanel : VisualElement
                 },
             };
 
-        _supplyButton.clicked += () => _mission.UseSupply(_mission.Passengers.ToArray());
+        _supplyButton.clicked += () =>
+            _mission.UseSupply(_mission.Passengers.Where(p => p.Selected).ToArray());
 
         _crewButton.clicked += () => _mission.UseCrew();
 

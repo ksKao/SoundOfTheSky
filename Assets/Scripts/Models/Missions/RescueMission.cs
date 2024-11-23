@@ -60,7 +60,14 @@ public class RescueMission : Mission
             return false;
         }
 
+        if (GameManager.Instance.GetAssetValue(AssetType.Supplies) < _supplyNumberInput.Value)
+        {
+            Debug.Log("Not enough supplies to deploy this mission");
+            return false;
+        }
+
         NumberOfSupplies = _supplyNumberInput.Value;
+        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, -NumberOfSupplies);
 
         foreach (Crew crew in _preselectedCrews)
             crew.DeployedMission = this;
@@ -243,6 +250,7 @@ public class RescueMission : Mission
 
         GameManager.Instance.IncrementAssetValue(AssetType.Citizens, _numberOfNewCitizens);
         GameManager.Instance.IncrementAssetValue(AssetType.Resources, _numberOfNewResources);
+        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, NumberOfSupplies);
 
         base.Complete();
     }
