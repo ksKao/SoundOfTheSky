@@ -335,33 +335,6 @@ public class RescueMission : Mission
 
         PendingMissionUi.Add(_supplyNumberInput);
 
-        VisualElement crewSelectionPanelOpen = new();
-        Label crewNumberLabel = new("0");
-        crewSelectionPanelOpen.RegisterCallback<ClickEvent>(
-            (_) =>
-            {
-                UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                    GameManager.Instance.crews.ToArray(),
-                    (crews) =>
-                    {
-                        List<Crew> selectedCrews = crews.Where(c => c.Selected).ToList();
-                        _preselectedCrews = selectedCrews;
-                        crewNumberLabel.text = selectedCrews.Count.ToString();
-                    },
-                    () =>
-                    {
-                        _preselectedCrews.Clear();
-                        crewNumberLabel.text = "0";
-                        UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
-                    }
-                );
-
-                foreach (Crew crew in _preselectedCrews)
-                    crew.Selected = true;
-            }
-        );
-        crewSelectionPanelOpen.Add(new Label("Crews"));
-        crewSelectionPanelOpen.Add(crewNumberLabel);
-        PendingMissionUi.Add(crewSelectionPanelOpen);
+        PendingMissionUi.Add(new CrewSelectionPanelButton(ref _preselectedCrews));
     }
 }
