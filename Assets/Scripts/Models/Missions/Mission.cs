@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,6 +18,8 @@ public abstract class Mission
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
     public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
+    public Crew[] Crews =>
+        GameManager.Instance.crews.Where(c => c.DeployedMission == this).ToArray();
     public bool EventPending
     {
         get => _eventPending;

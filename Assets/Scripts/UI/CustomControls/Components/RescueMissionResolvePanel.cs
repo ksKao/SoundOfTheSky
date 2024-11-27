@@ -9,7 +9,6 @@ public partial class RescueMissionResolvePanel : VisualElement
     private readonly VisualElement _passengerListContainer = new();
     private readonly Button _supplyButton = new();
     private readonly Button _crewButton = new();
-    private DeployedMissionUi _deployedMissionUi;
 
     public readonly Button finishButton = new();
     public readonly Button ignoreButton = new();
@@ -29,9 +28,6 @@ public partial class RescueMissionResolvePanel : VisualElement
         style.flexDirection = FlexDirection.Column;
         style.height = UiUtils.GetLengthPercentage(100);
         style.width = UiUtils.GetLengthPercentage(100);
-
-        _deployedMissionUi = new(mission);
-        Add(_deployedMissionUi);
 
         // passenger list
         _passengerListContainer.style.flexGrow = 1;
@@ -68,29 +64,21 @@ public partial class RescueMissionResolvePanel : VisualElement
         Add(bottomButtonsContainer);
 
         RegisterCallback<AttachToPanelEvent>(OnAttach);
+        RegisterCallback<DetachFromPanelEvent>(OnDetach);
     }
 
-    public void RegenerateDeployedMissionUi()
-    {
-        // deployed mission ui
-        if (_deployedMissionUi is not null)
-            Remove(_deployedMissionUi);
-
-        _deployedMissionUi = new(_mission);
-        _deployedMissionUi.resolveButton.visible = false;
-        Add(_deployedMissionUi);
-        _deployedMissionUi.SendToBack();
-    }
-
-    public void RefreshButtonText()
+    public void RefreshSupplyAndCrewButtonText()
     {
         _supplyButton.text = $"Supply {_mission.NumberOfSupplies}";
-        _crewButton.text = $"Crew {Crew.GetCrewInMission(_mission).Length}";
+        _crewButton.text = $"Crew {_mission.Crews.Length}";
     }
 
     private void OnAttach(AttachToPanelEvent e)
     {
-        RegenerateDeployedMissionUi();
+        UiManager.Instance.GameplayScreen.deployedMissionList.Remove(_mission.DeployedMissionUi);
+        Add(_mission.DeployedMissionUi);
+        _mission.DeployedMissionUi.SendToBack();
+        _mission.DeployedMissionUi.resolveButton.visible = false;
 
         _passengerListContainer.Clear();
         foreach (Passenger passenger in _mission.Passengers)
@@ -98,6 +86,12 @@ public partial class RescueMissionResolvePanel : VisualElement
             _passengerListContainer.Add(passenger.Ui);
         }
 
-        RefreshButtonText();
+        RefreshSupplyAndCrewButtonText();
+    }
+
+    private void OnDetach(DetachFromPanelEvent e)
+    {
+        Remove(_mission.DeployedMissionUi);
+        UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
     }
 }

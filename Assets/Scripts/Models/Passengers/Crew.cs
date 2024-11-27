@@ -1,10 +1,9 @@
-using System.Linq;
 using UnityEngine.UIElements;
 
 public class Crew : Passenger
 {
     private Mission _deployedMission;
-    private Label _deployedLabel = new();
+    private readonly Label _deployedLabel = new();
 
     public Mission DeployedMission
     {
@@ -16,14 +15,10 @@ public class Crew : Passenger
         }
     }
 
-    public Crew() : base()
+    public Crew()
+        : base()
     {
         Ui.Add(_deployedLabel);
-    }
-
-    public static Crew[] GetCrewInMission(Mission mission)
-    {
-        return GameManager.Instance.crews.Where(c => c._deployedMission == mission).ToArray();
     }
 
     protected override void OnClick(ClickEvent _)

@@ -6,10 +6,17 @@ using UnityEngine.UIElements;
 
 public class RescueMission : Mission
 {
+    // consts
     private const int MILES_PER_INTERVAL = 5;
+
+    // UIs
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
+    private readonly Label _deployedMissionCrewLabel = new();
+    private readonly Label _deployedMissionPassengerLabel = new();
+
+    // state
     private bool _actionTakenDuringThisEvent = false;
     private int _numberOfNewCitizens = 0;
     private int _numberOfNewResources = 0;
@@ -72,7 +79,18 @@ public class RescueMission : Mission
         foreach (Crew crew in _preselectedCrews)
             crew.DeployedMission = this;
 
+        _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
+        _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
+
         return true;
+    }
+
+    public override void GenerateDeployedMissionUi()
+    {
+        base.GenerateDeployedMissionUi();
+
+        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionCrewLabel);
+        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionPassengerLabel);
     }
 
     public void UseSupply(Passenger[] selectedPassengers)
@@ -96,7 +114,7 @@ public class RescueMission : Mission
         }
 
         NumberOfSupplies -= selectedPassengers.Length;
-        _rescueMissionResolvePanel.RefreshButtonText();
+        _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
 
         ActionTakenDuringThisEvent = true;
     }
@@ -124,7 +142,7 @@ public class RescueMission : Mission
             }
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                Crew.GetCrewInMission(this),
+                Crews,
                 (crews) =>
                 {
                     Crew selectedCrew = crews.FirstOrDefault(c => c.Selected);
@@ -142,7 +160,7 @@ public class RescueMission : Mission
                     // after taking action, change the screen back
                     UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
 
-                    _rescueMissionResolvePanel.RefreshButtonText();
+                    _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
                     ActionTakenDuringThisEvent = true;
                 },
                 () => UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel)
@@ -155,14 +173,14 @@ public class RescueMission : Mission
 
             useSupplyButton.clicked += () =>
             {
-                UseSupply(Crew.GetCrewInMission(this).Where(c => c.Selected).ToArray());
+                UseSupply(Crews.Where(c => c.Selected).ToArray());
 
                 useSupplyButton.text = "Use supply";
                 useSupplyButton.SetEnabled(false);
             };
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                Crew.GetCrewInMission(this),
+                Crews,
                 (crews) =>
                 {
                     Crew[] selectedCrews = crews.Where(c => c.Selected).ToArray();
@@ -224,7 +242,6 @@ public class RescueMission : Mission
     public override void OnResolveButtonClicked()
     {
         // cannot call base here since need to wait until player make a decision before continuing
-        _rescueMissionResolvePanel.RegenerateDeployedMissionUi();
         UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
     }
 
@@ -268,12 +285,14 @@ public class RescueMission : Mission
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
                 Passengers.Add(new());
+
+            _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
         }
     }
 
     protected override void EventOccur()
     {
-        Passenger[] allPassengers = Passengers.Concat(Crew.GetCrewInMission(this)).ToArray();
+        Passenger[] allPassengers = Passengers.Concat(Crews).ToArray();
         foreach (Passenger passenger in allPassengers)
         {
             // 50% chance for a passenger health to change
@@ -293,6 +312,9 @@ public class RescueMission : Mission
         _numberOfDeaths += numberOfPassengers - Passengers.Count;
 
         GameManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
+
+        _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
+        _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
 
         // if there are no passengers, can set event pending back to false
         // this can happen in the very early stage of the mission, where the 50% chance of getting a new passenger does not occur

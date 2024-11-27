@@ -9,6 +9,7 @@ public partial class DeployedMissionUi : VisualElement
     public readonly Mission mission;
     public readonly Label milesRemainingLabel = new();
     public readonly Button resolveButton = new();
+    public readonly VisualElement assetLabelsContainer = new();
 
     public DeployedMissionUi()
     {
@@ -30,27 +31,27 @@ public partial class DeployedMissionUi : VisualElement
         _arriveOverlay.style.alignItems = Align.Center;
         Add(_arriveOverlay);
 
-        Label arriveLabel = new()
-        {
-            style =
+        Label arriveLabel =
+            new()
             {
-                fontSize = new StyleLength(48),
-                color = Color.white
-            },
-            text = "Arrive!",
-        };
+                style = { fontSize = new StyleLength(48), color = Color.white },
+                text = "Arrive!",
+            };
         _arriveOverlay.Add(arriveLabel);
         _arriveOverlay.visible = false;
 
         Add(new Label(mission.Route.start.name + " " + mission.Route.end.name));
 
         if (mission.Train != null)
-        { 
+        {
             Add(new Label(mission.Train.name));
         }
 
         milesRemainingLabel.text = mission.MilesRemaining.ToString();
         Add(milesRemainingLabel);
+
+        assetLabelsContainer.style.display = DisplayStyle.Flex;
+        Add(assetLabelsContainer);
 
         resolveButton.text = "Resolve";
         resolveButton.visible = mission.EventPending;
@@ -61,10 +62,12 @@ public partial class DeployedMissionUi : VisualElement
     public void Arrive()
     {
         _arriveOverlay.visible = true;
-        _arriveOverlay.RegisterCallback<ClickEvent>((_) =>
-        {
-            Clear();
-            Add(mission.MissionCompleteUi);
-        });
+        _arriveOverlay.RegisterCallback<ClickEvent>(
+            (_) =>
+            {
+                Clear();
+                Add(mission.MissionCompleteUi);
+            }
+        );
     }
 }
