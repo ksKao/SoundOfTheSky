@@ -5,8 +5,11 @@ using UnityEngine.UIElements;
 
 public abstract class Mission
 {
+    // consts
+    protected const int MILES_PER_INTERVAL = 5;
     private const float SECONDS_PER_MILE = 0.1f;
-    private const int MILES_PER_INTERVAL = 5;
+
+    // state
     private int _milesRemaining = 0;
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;

@@ -6,22 +6,19 @@ using UnityEngine.UIElements;
 
 public class RescueMission : Mission
 {
-    // consts
-    private const int MILES_PER_INTERVAL = 5;
-
     // UIs
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly double _passengerIncreaseProbability = 0.5f; // determines the probability that the train will have 1 more passenger (50% base chance)
     private readonly RescueMissionResolvePanel _rescueMissionResolvePanel = null;
     private readonly Label _deployedMissionCrewLabel = new();
     private readonly Label _deployedMissionPassengerLabel = new();
+    private readonly CrewSelectionPanelButton _crewSelectionPanelButton = new();
 
     // state
     private bool _actionTakenDuringThisEvent = false;
     private int _numberOfNewCitizens = 0;
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
-    private List<Crew> _preselectedCrews = new();
 
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
@@ -61,7 +58,7 @@ public class RescueMission : Mission
             return false;
         }
 
-        if (_preselectedCrews.Any(c => c.DeployedMission is not null))
+        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.DeployedMission is not null))
         {
             Debug.Log("One or more crew(s) has already been deployed in another mission");
             return false;
@@ -76,7 +73,7 @@ public class RescueMission : Mission
         NumberOfSupplies = _supplyNumberInput.Value;
         GameManager.Instance.IncrementAssetValue(AssetType.Supplies, -NumberOfSupplies);
 
-        foreach (Crew crew in _preselectedCrews)
+        foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.DeployedMission = this;
 
         _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
@@ -335,6 +332,6 @@ public class RescueMission : Mission
 
         PendingMissionUi.Add(_supplyNumberInput);
 
-        PendingMissionUi.Add(new CrewSelectionPanelButton(ref _preselectedCrews));
+        PendingMissionUi.Add(_crewSelectionPanelButton);
     }
 }

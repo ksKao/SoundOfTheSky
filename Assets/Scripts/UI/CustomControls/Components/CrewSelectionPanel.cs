@@ -28,7 +28,7 @@ public partial class CrewSelectionPanel : VisualElement
     public void Show(
         Crew[] crews,
         Action<Crew[]> onSelect,
-        Action onCancel,
+        Action onCancel = null,
         VisualElement additionalUi = null
     )
     {
@@ -37,6 +37,7 @@ public partial class CrewSelectionPanel : VisualElement
 
         _crewListContainer.Clear();
 
+        // deselect all crew first
         foreach (Crew crew in _crews)
         {
             crew.Selected = false;
@@ -48,7 +49,17 @@ public partial class CrewSelectionPanel : VisualElement
             _cancelButton.clicked -= _onCancel;
 
         _onCancel = onCancel;
-        _cancelButton.clicked += _onCancel;
+
+        // check if new cancel action is not null, if yes, need to hide the button
+        if (_onCancel is not null)
+        {
+            _cancelButton.visible = true;
+            _cancelButton.clicked += _onCancel;
+        }
+        else
+        {
+            _cancelButton.visible = false;
+        }
 
         UiManager.Instance.GameplayScreen.ChangeRightPanel(this);
 
