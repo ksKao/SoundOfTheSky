@@ -12,7 +12,9 @@ public class ResupplyMission : Mission
 
     public override MissionType Type { get; } = MissionType.Resupply;
     public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+    public int NumberOfNewSupplies { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
+    public int NumberOfPayments { get; private set; } = 0;
     public int NumberOfResources { get; private set; } = 0;
 
     public override bool Deploy()
@@ -61,6 +63,13 @@ public class ResupplyMission : Mission
         return true;
     }
 
+    public override void Complete()
+    {
+        double rewardMultiplier = 1 + weather.rewardMultiplier;
+
+        base.Complete();
+    }
+
     public override void GenerateDeployedMissionUi()
     {
         base.GenerateDeployedMissionUi();
@@ -79,7 +88,10 @@ public class ResupplyMission : Mission
         base.OnMileChange();
 
         if (IsMilestoneReached(MILES_PER_INTERVAL))
-            NumberOfSupplies += 2;
+        {
+            NumberOfNewSupplies += 2;
+            NumberOfPayments += 5;
+        }
     }
 
     public override void OnResolveButtonClicked()
@@ -151,20 +163,33 @@ public class ResupplyMission : Mission
 
     protected override void EventOccur()
     {
-        // 50% chance crew member's health will go up and down, crew member's health cannot go below sick in resupply mission
-        foreach (Crew crew in Crews)
+        // 50% chance for an event to occur
+        // when an event occurs, will first check if crew member's health and go down or not
+        // if yes, make the crew's health worse
+        // else consume resources
+        if (Random.ShouldOccur(0.5))
         {
-            if (!Random.ShouldOccur(0.5))
-                continue;
+            // get a random crew that is in one condition above death
+            Crew randomCrew = Random.GetFromArray(
+                Crews.Where(c => c.Status < PassengerStatus.Death - 1).ToArray()
+            );
 
-            // 50% to get better, 50% chance to get worse
-            if (Random.ShouldOccur(0.5))
+            // no crews or all crews is in worst condition
+            if (randomCrew is null)
             {
-                crew.MakeBetter();
+                NumberOfResources -= Mathf.Min(5, NumberOfResources);
+
+                // mission fail when run out of resources and crews
+                if (NumberOfResources == 0)
+                {
+                    Debug.Log("Resupply mission failed");
+                    GameManager.Instance.deployedMissions.Remove(this);
+                    UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+                }
             }
-            else if ((int)crew.Status < (int)PassengerStatus.Sick)
+            else
             {
-                crew.MakeWorse();
+                randomCrew.MakeWorse();
             }
         }
 

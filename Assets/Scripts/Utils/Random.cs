@@ -1,3 +1,5 @@
+using System;
+
 public static class Random
 {
     /// <summary>
@@ -12,6 +14,9 @@ public static class Random
 
     public static T GetFromArray<T>(T[] arr)
     {
+        if (arr is null || arr.Length == 0)
+            return default;
+
         return arr[new System.Random().Next(arr.Length)];
     }
 }

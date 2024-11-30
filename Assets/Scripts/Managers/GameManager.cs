@@ -10,13 +10,14 @@ public class GameManager : Singleton<GameManager>
     private const int INITIAL_NUMBER_OF_CREWS = 5;
 
     private Mission _selectedPendingMission = null;
-    private readonly Dictionary<AssetType, int> _assets = new()
-    {
-        { AssetType.Payments, 100 },
-        { AssetType.Supplies, 100 },
-        { AssetType.Resources, 100 },
-        { AssetType.Citizens, 100 }
-    };
+    private readonly Dictionary<AssetType, int> _assets =
+        new()
+        {
+            { AssetType.Payments, 100 },
+            { AssetType.Supplies, 100 },
+            { AssetType.Resources, 100 },
+            { AssetType.Citizens, 100 },
+        };
 
     public readonly List<Mission> deployedMissions = new();
     public readonly List<Crew> crews = new(INITIAL_NUMBER_OF_CREWS);
@@ -28,10 +29,12 @@ public class GameManager : Singleton<GameManager>
         get => _selectedPendingMission;
         set
         {
-            UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.visible = value is not null;
+            UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.visible =
+                value is not null;
 
             // no need to do anything if selected the same one
-            if (_selectedPendingMission == value) return;
+            if (_selectedPendingMission == value)
+                return;
 
             _selectedPendingMission?.OnDeselectMissionPendingUi();
             _selectedPendingMission = value;
@@ -40,7 +43,8 @@ public class GameManager : Singleton<GameManager>
 
     private void OnEnable()
     {
-        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked += DeploySelectedMission;
+        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked +=
+            DeploySelectedMission;
     }
 
     private void Start()
@@ -50,7 +54,10 @@ public class GameManager : Singleton<GameManager>
         RefreshMission<DocumentationMission>();
 
         // need to update UI after generating the data
-        UiManager.Instance.OnMissionActiveTabChange(new Tab(), UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab);
+        UiManager.Instance.OnMissionActiveTabChange(
+            new Tab(),
+            UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab
+        );
         UiManager.Instance.GameplayScreen.assetBar.RefreshAllAssetAmountUi();
 
         for (int i = 0; i < INITIAL_NUMBER_OF_CREWS; i++)
@@ -59,22 +66,26 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        foreach (Mission mission in deployedMissions)
-            mission.Update();
+        for (int i = 0; i < deployedMissions.Count; i++)
+            deployedMissions[i].Update();
     }
 
     private void OnDisable()
     {
-        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked -= DeploySelectedMission;
+        UiManager.Instance.GameplayScreen.bottomNavigationBar.deployButton.clicked -=
+            DeploySelectedMission;
     }
 
-    public void RefreshMission<T>() where T : Mission, new()
+    public void RefreshMission<T>()
+        where T : Mission, new()
     {
         // do not allow passing in the Mission base class
         Type t = typeof(T);
         if (t == typeof(Mission))
         {
-            Debug.LogWarning($"Detected calling {nameof(RefreshMission)} while passing in {nameof(Mission)}. This behavior is not allowed. Please pass in child classes instead.");
+            Debug.LogWarning(
+                $"Detected calling {nameof(RefreshMission)} while passing in {nameof(Mission)}. This behavior is not allowed. Please pass in child classes instead."
+            );
             return;
         }
 
@@ -114,19 +125,21 @@ public class GameManager : Singleton<GameManager>
     {
         if (_selectedPendingMission is null)
         {
-            Debug.LogWarning($"Could not deploy {nameof(_selectedPendingMission)}, variable is null");
+            Debug.LogWarning(
+                $"Could not deploy {nameof(_selectedPendingMission)}, variable is null"
+            );
             return;
         }
 
-        if (!_selectedPendingMission.Deploy()) return;
+        if (!_selectedPendingMission.Deploy())
+            return;
 
         // move selected mission from pending to deployed
         PendingMissions.Remove(_selectedPendingMission);
         deployedMissions.Add(_selectedPendingMission);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
 
-
-        PendingMissions.Add((Mission) Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
+        PendingMissions.Add((Mission)Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
         UiManager.Instance.RefreshMissionList(_selectedPendingMission.Type);
         _selectedPendingMission = null;
     }
