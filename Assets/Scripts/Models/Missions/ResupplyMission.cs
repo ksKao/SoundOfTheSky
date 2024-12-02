@@ -78,6 +78,9 @@ public class ResupplyMission : Mission
         );
         GameManager.Instance.IncrementAssetValue(AssetType.Payments, NumberOfPayments);
 
+        foreach (Crew crew in Crews)
+            crew.DeployedMission = null;
+
         base.Complete();
     }
 
