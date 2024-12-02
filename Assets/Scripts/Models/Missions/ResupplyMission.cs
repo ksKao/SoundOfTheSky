@@ -51,8 +51,11 @@ public class ResupplyMission : Mission
             return false;
         }
 
+        NumberOfSupplies = _supplyNumberInput.Value;
+        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, -NumberOfSupplies);
+
         NumberOfResources = _resourceNumberInput.Value;
-        GameManager.Instance.IncrementAssetValue(AssetType.Resources, NumberOfResources);
+        GameManager.Instance.IncrementAssetValue(AssetType.Resources, -NumberOfResources);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.DeployedMission = this;
