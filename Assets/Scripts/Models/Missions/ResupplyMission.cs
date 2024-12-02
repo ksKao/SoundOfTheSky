@@ -69,6 +69,14 @@ public class ResupplyMission : Mission
     public override void Complete()
     {
         double rewardMultiplier = 1 + weather.rewardMultiplier;
+        NumberOfNewSupplies = (int)Mathf.Round((float)rewardMultiplier * NumberOfNewSupplies);
+        NumberOfPayments = (int)Mathf.Round((float)rewardMultiplier * NumberOfPayments);
+
+        GameManager.Instance.IncrementAssetValue(
+            AssetType.Supplies,
+            NumberOfNewSupplies + NumberOfSupplies
+        );
+        GameManager.Instance.IncrementAssetValue(AssetType.Payments, NumberOfPayments);
 
         base.Complete();
     }
@@ -84,6 +92,9 @@ public class ResupplyMission : Mission
     public override void GenerateMissionCompleteUi()
     {
         base.GenerateMissionCompleteUi();
+
+        MissionCompleteUi.Add(new Label($"{NumberOfNewSupplies} new supplies!"));
+        MissionCompleteUi.Add(new Label($"{NumberOfPayments} new payments!"));
     }
 
     protected override void OnMileChange()

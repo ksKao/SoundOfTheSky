@@ -266,6 +266,9 @@ public class RescueMission : Mission
         GameManager.Instance.IncrementAssetValue(AssetType.Resources, _numberOfNewResources);
         GameManager.Instance.IncrementAssetValue(AssetType.Supplies, NumberOfSupplies);
 
+        foreach (Crew crew in Crews)
+            crew.DeployedMission = null;
+
         base.Complete();
     }
 
