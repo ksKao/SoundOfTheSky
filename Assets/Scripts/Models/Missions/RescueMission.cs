@@ -64,14 +64,14 @@ public class RescueMission : Mission
             return false;
         }
 
-        if (GameManager.Instance.GetAssetValue(AssetType.Supplies) < _supplyNumberInput.Value)
+        if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
         {
             Debug.Log("Not enough supplies to deploy this mission");
             return false;
         }
 
         NumberOfSupplies = _supplyNumberInput.Value;
-        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, -NumberOfSupplies);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.DeployedMission = this;
@@ -86,8 +86,8 @@ public class RescueMission : Mission
     {
         base.GenerateDeployedMissionUi();
 
-        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionCrewLabel);
-        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionPassengerLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_deployedMissionCrewLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_deployedMissionPassengerLabel);
     }
 
     public void UseSupply(Passenger[] selectedPassengers)
@@ -262,9 +262,9 @@ public class RescueMission : Mission
             );
         _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
 
-        GameManager.Instance.IncrementAssetValue(AssetType.Citizens, _numberOfNewCitizens);
-        GameManager.Instance.IncrementAssetValue(AssetType.Resources, _numberOfNewResources);
-        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, NumberOfSupplies);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Citizens, _numberOfNewCitizens);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, _numberOfNewResources);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
 
         foreach (Crew crew in Crews)
             crew.DeployedMission = null;

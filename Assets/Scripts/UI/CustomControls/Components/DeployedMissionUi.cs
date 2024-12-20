@@ -9,7 +9,7 @@ public partial class DeployedMissionUi : VisualElement
     public readonly Mission mission;
     public readonly Label milesRemainingLabel = new();
     public readonly Button resolveButton = new();
-    public readonly VisualElement assetLabelsContainer = new();
+    public readonly VisualElement materialLabelsContainer = new();
 
     public DeployedMissionUi()
     {
@@ -50,8 +50,8 @@ public partial class DeployedMissionUi : VisualElement
         milesRemainingLabel.text = mission.MilesRemaining.ToString();
         Add(milesRemainingLabel);
 
-        assetLabelsContainer.style.display = DisplayStyle.Flex;
-        Add(assetLabelsContainer);
+        materialLabelsContainer.style.display = DisplayStyle.Flex;
+        Add(materialLabelsContainer);
 
         resolveButton.text = "Resolve";
         resolveButton.visible = mission.EventPending;

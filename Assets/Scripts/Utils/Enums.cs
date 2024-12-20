@@ -2,7 +2,7 @@ public enum MissionType
 {
     Rescue,
     Resupply,
-    Documentation
+    Documentation,
 }
 
 public enum PassengerStatus
@@ -12,13 +12,13 @@ public enum PassengerStatus
     Sick,
     Terminal,
     Critical,
-    Death
+    Death,
 }
 
-public enum AssetType
+public enum MaterialType
 {
     Payments,
     Supplies,
     Resources,
-    Citizens
+    Citizens,
 };

@@ -10,13 +10,13 @@ public class GameManager : Singleton<GameManager>
     private const int INITIAL_NUMBER_OF_CREWS = 5;
 
     private Mission _selectedPendingMission = null;
-    private readonly Dictionary<AssetType, int> _assets =
+    private readonly Dictionary<MaterialType, int> _materials =
         new()
         {
-            { AssetType.Payments, 100 },
-            { AssetType.Supplies, 100 },
-            { AssetType.Resources, 100 },
-            { AssetType.Citizens, 100 },
+            { MaterialType.Payments, 100 },
+            { MaterialType.Supplies, 100 },
+            { MaterialType.Resources, 100 },
+            { MaterialType.Citizens, 100 },
         };
 
     public readonly List<Mission> deployedMissions = new();
@@ -58,7 +58,7 @@ public class GameManager : Singleton<GameManager>
             new Tab(),
             UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab
         );
-        UiManager.Instance.GameplayScreen.assetBar.RefreshAllAssetAmountUi();
+        UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
 
         for (int i = 0; i < INITIAL_NUMBER_OF_CREWS; i++)
             crews.Add(new Crew());
@@ -98,27 +98,34 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public int GetAssetValue(AssetType assetType)
+    public int GetMaterialValue(MaterialType materialType)
     {
-        if (!_assets.ContainsKey(assetType))
+        if (!_materials.ContainsKey(materialType))
         {
-            Debug.LogWarning($"Could not find asset type {assetType} in {nameof(_assets)}");
+            Debug.LogWarning(
+                $"Could not find material type {materialType} in {nameof(_materials)}"
+            );
             return 0;
         }
 
-        return _assets[assetType];
+        return _materials[materialType];
     }
 
-    public void IncrementAssetValue(AssetType assetType, int number)
+    public void IncrementMaterialValue(MaterialType materialType, int number)
     {
-        if (!_assets.ContainsKey(assetType))
+        if (!_materials.ContainsKey(materialType))
         {
-            Debug.LogWarning($"Could not find asset type {assetType} in {nameof(_assets)}");
+            Debug.LogWarning(
+                $"Could not find material type {materialType} in {nameof(_materials)}"
+            );
             return;
         }
 
-        _assets[assetType] += number;
-        UiManager.Instance.GameplayScreen.assetBar.UpdateAssetAmount(assetType, _assets[assetType]);
+        _materials[materialType] += number;
+        UiManager.Instance.GameplayScreen.materialBar.UpdateMaterialAmount(
+            materialType,
+            _materials[materialType]
+        );
     }
 
     private void DeploySelectedMission()

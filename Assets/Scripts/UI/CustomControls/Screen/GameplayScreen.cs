@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class GameplayScreen : VisualElement
 {
-    public readonly AssetsBar assetBar = new();
+    public readonly MaterialsBar materialBar = new();
     public readonly MissionTypeTab missionTypeTab = new();
     public readonly BottomNavigationBar bottomNavigationBar = new();
     public readonly VisualElement pendingMissionList = new();
@@ -21,19 +21,20 @@ public partial class GameplayScreen : VisualElement
         style.flexDirection = FlexDirection.Row;
         style.minHeight = UiUtils.GetLengthPercentage(100);
 
-        VisualElement left = new()
-        {
-            style =
+        VisualElement left =
+            new()
             {
-                width = UiUtils.GetLengthPercentage(50),
-                height = UiUtils.GetLengthPercentage(100),
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Column
-            }
-        };
+                style =
+                {
+                    width = UiUtils.GetLengthPercentage(50),
+                    height = UiUtils.GetLengthPercentage(100),
+                    display = DisplayStyle.Flex,
+                    flexDirection = FlexDirection.Column,
+                },
+            };
         pendingMissionList.style.height = UiUtils.GetLengthPercentage(100);
 
-        left.Add(assetBar);
+        left.Add(materialBar);
         left.Add(missionTypeTab);
         left.Add(pendingMissionList);
         left.Add(bottomNavigationBar);
@@ -46,10 +47,12 @@ public partial class GameplayScreen : VisualElement
 
     public void ChangeRightPanel(VisualElement element)
     {
-        if (RightPanel == element) return;
+        if (RightPanel == element)
+            return;
 
         _right.Clear();
 
-        if (element is not null) _right.Add(element);
+        if (element is not null)
+            _right.Add(element);
     }
 }

@@ -38,24 +38,27 @@ public class ResupplyMission : Mission
         }
 
         // check if player has enough supply
-        if (GameManager.Instance.GetAssetValue(AssetType.Supplies) < _supplyNumberInput.Value)
+        if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
         {
             Debug.Log("Not enough supplies to deploy this mission");
             return false;
         }
 
         // check if player has enough resources
-        if (GameManager.Instance.GetAssetValue(AssetType.Resources) < _resourceNumberInput.Value)
+        if (
+            GameManager.Instance.GetMaterialValue(MaterialType.Resources)
+            < _resourceNumberInput.Value
+        )
         {
             Debug.Log("Not enough resources to deploy this mission");
             return false;
         }
 
         NumberOfSupplies = _supplyNumberInput.Value;
-        GameManager.Instance.IncrementAssetValue(AssetType.Supplies, -NumberOfSupplies);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
 
         NumberOfResources = _resourceNumberInput.Value;
-        GameManager.Instance.IncrementAssetValue(AssetType.Resources, -NumberOfResources);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.DeployedMission = this;
@@ -72,11 +75,11 @@ public class ResupplyMission : Mission
         NumberOfNewSupplies = (int)Mathf.Round((float)rewardMultiplier * NumberOfNewSupplies);
         NumberOfPayments = (int)Mathf.Round((float)rewardMultiplier * NumberOfPayments);
 
-        GameManager.Instance.IncrementAssetValue(
-            AssetType.Supplies,
+        GameManager.Instance.IncrementMaterialValue(
+            MaterialType.Supplies,
             NumberOfNewSupplies + NumberOfSupplies
         );
-        GameManager.Instance.IncrementAssetValue(AssetType.Payments, NumberOfPayments);
+        GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, NumberOfPayments);
 
         foreach (Crew crew in Crews)
             crew.DeployedMission = null;
@@ -88,8 +91,8 @@ public class ResupplyMission : Mission
     {
         base.GenerateDeployedMissionUi();
 
-        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionCrewLabel);
-        DeployedMissionUi.assetLabelsContainer.Add(_deployedMissionResourcesLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_deployedMissionCrewLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_deployedMissionResourcesLabel);
     }
 
     public override void GenerateMissionCompleteUi()
