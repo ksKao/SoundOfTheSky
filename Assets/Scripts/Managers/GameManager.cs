@@ -6,7 +6,6 @@ using UnityEngine.UIElements;
 
 public class GameManager : Singleton<GameManager>
 {
-    public const int NUMBER_OF_PENDING_MISSIONS_PER_TYPE = 5;
     private const int INITIAL_NUMBER_OF_CREWS = 5;
 
     private Mission _selectedPendingMission = null;
@@ -49,9 +48,9 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        RefreshMission<RescueMission>();
-        RefreshMission<ResupplyMission>();
-        RefreshMission<DocumentationMission>();
+        RefreshMission<RescueMission>(5);
+        RefreshMission<ResupplyMission>(5);
+        RefreshMission<DocumentationMission>(1);
 
         // need to update UI after generating the data
         UiManager.Instance.OnMissionActiveTabChange(
@@ -76,7 +75,7 @@ public class GameManager : Singleton<GameManager>
             DeploySelectedMission;
     }
 
-    public void RefreshMission<T>()
+    public void RefreshMission<T>(int numberOfMissionsToRefresh)
         where T : Mission, new()
     {
         // do not allow passing in the Mission base class
@@ -92,7 +91,7 @@ public class GameManager : Singleton<GameManager>
         PendingMissions = PendingMissions.Where(m => m is not T).ToList();
 
         // can have 5 pending missions per mission type
-        for (int i = 0; i < NUMBER_OF_PENDING_MISSIONS_PER_TYPE; i++)
+        for (int i = 0; i < numberOfMissionsToRefresh; i++)
         {
             PendingMissions.Add(new T());
         }

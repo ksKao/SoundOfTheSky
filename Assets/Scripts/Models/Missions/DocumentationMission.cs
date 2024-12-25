@@ -1,3 +1,5 @@
+using UnityEngine.UIElements;
+
 public class DocumentationMission : Mission
 {
     private readonly LocationSO _destination = DataManager.Instance.GetRandomDestinationLocation();
@@ -36,16 +38,22 @@ public class DocumentationMission : Mission
         base.OnMileChange();
     }
 
-    protected override void EventOccur()
-    {
-    }
+    protected override void EventOccur() { }
 
     protected override void GeneratePendingMissionUi()
     {
         base.GeneratePendingMissionUi();
 
+        PendingMissionUi.style.position = Position.Relative;
+
+        VisualElement weatherLabelContainer = new();
+        weatherLabelContainer.Add(new Label("Weather"));
+
+        PendingMissionUi.Add(weatherLabelContainer);
         PendingMissionUi.Add(_resourceNumberInput);
         PendingMissionUi.Add(_supplyNumberInput);
         PendingMissionUi.Add(_paymentNumberInput);
+
+        PendingMissionUi.Add(new DocumentationMissionPendingWeatherTree(weatherLabelContainer));
     }
 }

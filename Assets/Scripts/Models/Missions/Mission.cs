@@ -176,9 +176,8 @@ public abstract class Mission
 
     protected virtual void GeneratePendingMissionUi()
     {
-        PendingMissionUi.style.height = UiUtils.GetLengthPercentage(
-            100 / GameManager.NUMBER_OF_PENDING_MISSIONS_PER_TYPE
-        );
+        // Each pending mission UI is 20% height because need to fit 5 of them into the list
+        PendingMissionUi.style.height = UiUtils.GetLengthPercentage(20);
         PendingMissionUi.style.display = DisplayStyle.Flex;
         PendingMissionUi.style.flexDirection = FlexDirection.Row;
 
