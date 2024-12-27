@@ -19,4 +19,23 @@ public static class Random
 
         return arr[new System.Random().Next(arr.Length)];
     }
+
+    public static int[] DistributeNumbers(int total, int numElements)
+    {
+        int[] result = new int[numElements];
+        System.Random rand = new();
+        int sum = 0;
+
+        // Generate random values for the first numElements - 1 elements
+        for (int i = 0; i < numElements - 1; i++)
+        {
+            result[i] = rand.Next(0, total + 1 - sum); // Ensure the remaining total can be used for the last element
+            sum += result[i];
+        }
+
+        // The last element should ensure the sum is exactly equal to total
+        result[numElements - 1] = total - sum;
+
+        return result;
+    }
 }

@@ -14,7 +14,7 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
         );
     }
 
-    public DocumentationMissionPendingWeatherTree(VisualElement weatherLabelContainer)
+    public DocumentationMissionPendingWeatherTree(DocumentationMission mission)
     {
         style.position = Position.Absolute;
         style.top = UiUtils.GetLengthPercentage(150);
@@ -23,25 +23,15 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
 
-        foreach (WeatherSO weather in DataManager.Instance.AllWeathers)
+        foreach (KeyValuePair<WeatherSO, int> weatherProbability in mission.WeatherProbabilities)
         {
             VisualElement container = new();
-            //container.style.backgroundColor = Random.GetFromArray(
-            //    new Color[]
-            //    {
-            //        Color.red,
-            //        Color.green,
-            //        Color.blue,
-            //        Color.gray,
-            //        Color.magenta,
-            //        Color.yellow,
-            //    }
-            //);
             container.style.width = UiUtils.GetLengthPercentage(
                 100 / DataManager.Instance.AllWeathers.Length
             );
             container.style.height = UiUtils.GetLengthPercentage(100);
-            container.Add(new Label(weather.name));
+            container.Add(new Label(weatherProbability.Key.name));
+            container.Add(new Label(weatherProbability.Value * 10 + "%"));
             Add(container);
             _weatherContainers.Add(container);
         }
@@ -73,12 +63,12 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
                     lastPosition = lineEnd;
             }
 
-            Rect rect = weatherLabelContainer.ChangeCoordinatesTo(this, contentRect);
+            Rect rect = mission.WeatherLabelContainer.ChangeCoordinatesTo(this, contentRect);
             Vector2 weatherLabelContainer6OClock =
                 rect.position
                 + new Vector2(
-                    weatherLabelContainer.resolvedStyle.width / 2,
-                    weatherLabelContainer.resolvedStyle.height
+                    mission.WeatherLabelContainer.resolvedStyle.width / 2,
+                    mission.WeatherLabelContainer.resolvedStyle.height
                 );
             painter.BeginPath();
             painter.MoveTo(weatherLabelContainer6OClock);
