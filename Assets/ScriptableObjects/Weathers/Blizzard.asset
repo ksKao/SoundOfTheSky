@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Blizzard
   decisionMakingProbability: 0.4
+  documentationMissionMaterialComsumptionMultiplier: 2
   rewardMultiplier: 1.25

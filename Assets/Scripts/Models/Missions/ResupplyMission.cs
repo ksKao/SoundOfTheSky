@@ -107,7 +107,7 @@ public class ResupplyMission : Mission
     {
         base.OnMileChange();
 
-        if (IsMilestoneReached(MILES_PER_INTERVAL))
+        if (IsMilestoneReached(MilesPerInterval))
         {
             NumberOfNewSupplies += 2;
             NumberOfPayments += 5;

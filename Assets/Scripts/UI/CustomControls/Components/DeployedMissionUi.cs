@@ -10,6 +10,7 @@ public partial class DeployedMissionUi : VisualElement
     public readonly Label milesRemainingLabel = new();
     public readonly Button resolveButton = new();
     public readonly VisualElement materialLabelsContainer = new();
+    public readonly Label routeLabel = new();
 
     public DeployedMissionUi()
     {
@@ -40,7 +41,9 @@ public partial class DeployedMissionUi : VisualElement
         _arriveOverlay.Add(arriveLabel);
         _arriveOverlay.visible = false;
 
-        Add(new Label(mission.Route.start.name + " " + mission.Route.end.name));
+        routeLabel.text =
+            mission.Route.start.locationSO.name + " - " + mission.Route.end.locationSO.name;
+        Add(routeLabel);
 
         if (mission.Train != null)
         {
@@ -65,6 +68,7 @@ public partial class DeployedMissionUi : VisualElement
         _arriveOverlay.RegisterCallback<ClickEvent>(
             (_) =>
             {
+                Debug.Log("clicked");
                 Clear();
                 Add(mission.MissionCompleteUi);
             }

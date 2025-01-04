@@ -6,21 +6,22 @@ using UnityEngine.UIElements;
 public abstract class Mission
 {
     // consts
-    protected const int MILES_PER_INTERVAL = 5;
     private const float SECONDS_PER_MILE = 0.1f;
 
     // state
-    private int _milesRemaining = 0;
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;
     private bool _eventPending = false;
 
-    protected readonly WeatherSO weather;
+    protected WeatherSO weather;
+    protected VisualElement weatherUiInPendingMission = new();
     protected readonly int initialMiles = 0;
+    protected int milesRemaining = 0;
 
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
     public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
+    public virtual int MilesPerInterval => 5;
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.DeployedMission == this).ToArray();
     public bool EventPending
@@ -45,20 +46,16 @@ public abstract class Mission
     public VisualElement MissionCompleteUi { get; } = new();
     public int MilesRemaining
     {
-        get => _milesRemaining;
+        get => milesRemaining;
         protected set
         {
-            _milesRemaining = value;
+            milesRemaining = value;
 
             OnMileChange();
-
-            if (DeployedMissionUi is null)
-                return;
-            DeployedMissionUi.milesRemainingLabel.text = _milesRemaining.ToString();
         }
     }
 
-    protected Mission()
+    public Mission()
     {
         weather = DataManager.Instance.GetRandomWeather();
 
@@ -152,10 +149,13 @@ public abstract class Mission
 
     protected virtual void OnMileChange()
     {
+        if (DeployedMissionUi is not null)
+            DeployedMissionUi.milesRemainingLabel.text = milesRemaining.ToString();
+
         if (MilesRemaining == 0)
             Complete();
         else if (
-            IsMilestoneReached(MILES_PER_INTERVAL)
+            IsMilestoneReached(MilesPerInterval)
             && Random.ShouldOccur(weather.decisionMakingProbability)
         )
             EventPending = true;
@@ -182,17 +182,16 @@ public abstract class Mission
         PendingMissionUi.style.flexDirection = FlexDirection.Row;
 
         VisualElement routeElement = new();
-        routeElement.Add(new Label(Route.start.name));
-        routeElement.Add(new Label(Route.end.name));
+        routeElement.Add(new Label(Route.start.locationSO.name));
+        routeElement.Add(new Label(Route.end.locationSO.name));
         routeElement.Add(new Label(initialMiles.ToString()));
 
         PendingMissionUi.Add(routeElement);
 
-        VisualElement weatherElement = new();
-        weatherElement.Add(new Label(weather.name));
-        weatherElement.Add(new Label(weather.decisionMakingProbability * 100 + "%"));
+        weatherUiInPendingMission.Add(new Label(weather.name));
+        weatherUiInPendingMission.Add(new Label(weather.decisionMakingProbability * 100 + "%"));
 
-        PendingMissionUi.Add(weatherElement);
+        PendingMissionUi.Add(weatherUiInPendingMission);
 
         PendingMissionUi.Add(new Label(Type.ToString()));
     }
@@ -200,9 +199,9 @@ public abstract class Mission
     private int CalculateInitialMiles()
     {
         int initialMiles = 0;
-        int startIndex = Array.IndexOf(DataManager.Instance.AllLocations, Route.start);
+        int startIndex = GameManager.Instance.Locations.IndexOf(Route.start);
 
-        for (int i = startIndex; DataManager.Instance.AllLocations[i] != Route.end; i++)
+        for (int i = startIndex; GameManager.Instance.Locations[i] != Route.end; i++)
             initialMiles += DataManager.Instance.AllLocations[i].milesToNextStop;
 
         return initialMiles;

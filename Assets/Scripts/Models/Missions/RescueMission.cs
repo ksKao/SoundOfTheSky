@@ -265,6 +265,7 @@ public class RescueMission : Mission
         GameManager.Instance.IncrementMaterialValue(MaterialType.Citizens, _numberOfNewCitizens);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, _numberOfNewResources);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
+        Route.end.undocumentedCitizens += _numberOfNewCitizens;
 
         foreach (Crew crew in Crews)
             crew.DeployedMission = null;
@@ -277,7 +278,7 @@ public class RescueMission : Mission
         base.OnMileChange();
 
         if (
-            IsMilestoneReached(MILES_PER_INTERVAL)
+            IsMilestoneReached(MilesPerInterval)
             && Random.ShouldOccur(_passengerIncreaseProbability)
         )
         {

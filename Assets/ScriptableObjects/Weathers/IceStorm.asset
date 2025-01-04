@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Ice Storm
   decisionMakingProbability: 0.6
+  documentationMissionMaterialComsumptionMultiplier: 2.5
   rewardMultiplier: 1.5

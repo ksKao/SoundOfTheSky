@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Cold Snap
   decisionMakingProbability: 0.8
+  documentationMissionMaterialComsumptionMultiplier: 3
   rewardMultiplier: 1.75
