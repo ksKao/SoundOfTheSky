@@ -47,7 +47,7 @@ public partial class DeployedMissionUi : VisualElement
 
         if (mission.Train != null)
         {
-            Add(new Label(mission.Train.name));
+            Add(new Label(mission.Train.trainSO.name));
         }
 
         milesRemainingLabel.text = mission.MilesRemaining.ToString();
@@ -65,10 +65,10 @@ public partial class DeployedMissionUi : VisualElement
     public void Arrive()
     {
         _arriveOverlay.visible = true;
+        _arriveOverlay.BringToFront();
         _arriveOverlay.RegisterCallback<ClickEvent>(
             (_) =>
             {
-                Debug.Log("clicked");
                 Clear();
                 Add(mission.MissionCompleteUi);
             }

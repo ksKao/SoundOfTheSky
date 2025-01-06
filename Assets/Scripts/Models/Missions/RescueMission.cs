@@ -20,7 +20,8 @@ public class RescueMission : Mission
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
 
-    public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+    public override Route Route =>
+        new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public int NumberOfSupplies { get; private set; } = 0;
@@ -47,10 +48,17 @@ public class RescueMission : Mission
 
     public override bool Deploy()
     {
+        // check if this train has been unlocked
+        if (!Train.unlocked)
+        {
+            Debug.Log("You must unlock this train first before deploying");
+            return false;
+        }
+
         // check if this train has already been deployed
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.Train != null && m.Train.name == Train.name
+                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
         {
@@ -332,7 +340,7 @@ public class RescueMission : Mission
     {
         base.GeneratePendingMissionUi();
 
-        PendingMissionUi.Add(new Label(Train.name));
+        PendingMissionUi.Add(new Label(Train.trainSO.name));
 
         PendingMissionUi.Add(_supplyNumberInput);
 

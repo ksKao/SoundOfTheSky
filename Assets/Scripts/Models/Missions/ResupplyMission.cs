@@ -11,7 +11,8 @@ public class ResupplyMission : Mission
     private readonly Label _deployedMissionResourcesLabel = new();
 
     public override MissionType Type { get; } = MissionType.Resupply;
-    public override Route Route => new(Train.routeStartLocation, Train.routeEndLocation);
+    public override Route Route =>
+        new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
     public int NumberOfNewSupplies { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfPayments { get; private set; } = 0;
@@ -22,7 +23,7 @@ public class ResupplyMission : Mission
         // check if this train has already been deployed
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.Train != null && m.Train.name == Train.name
+                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
         {
@@ -222,7 +223,7 @@ public class ResupplyMission : Mission
     {
         base.GeneratePendingMissionUi();
 
-        PendingMissionUi.Add(new Label(Train.name));
+        PendingMissionUi.Add(new Label(Train.trainSO.name));
 
         PendingMissionUi.Add(_supplyNumberInput);
         PendingMissionUi.Add(_crewSelectionPanelButton);

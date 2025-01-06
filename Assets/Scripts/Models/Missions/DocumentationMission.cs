@@ -22,7 +22,7 @@ public class DocumentationMission : Mission
 
     public override int MilesPerInterval => 10;
     public override MissionType Type { get; } = MissionType.Documentation;
-    public override TrainSO Train { get; } = null;
+    public override Train Train { get; } = null;
     public override Route Route => new(DataManager.Instance.AllLocations[0], _destination);
     public int NumberOfResources { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
@@ -39,6 +39,12 @@ public class DocumentationMission : Mission
         if (Route.end.undocumentedCitizens <= 0)
         {
             Debug.Log("Could not deploy documentation mission with no undocumented citizens.");
+            return false;
+        }
+
+        if (!Train.unlocked)
+        {
+            Debug.Log("You must unlock this train first before deploying.");
             return false;
         }
 
@@ -173,7 +179,7 @@ public class DocumentationMission : Mission
         Location location = null;
 
         // prevent infinite loop below
-        if (GameManager.Instance.Locations.Count == 1)
+        if (GameManager.Instance.Locations.Length == 1)
         {
             Debug.LogWarning(
                 $"{nameof(GameManager.Instance.Locations)}.Length is 1. Could not call {nameof(GetDestination)} with only 1 element."

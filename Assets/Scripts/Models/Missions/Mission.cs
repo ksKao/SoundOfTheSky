@@ -20,7 +20,8 @@ public abstract class Mission
 
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
-    public virtual TrainSO Train { get; } = DataManager.Instance.GetRandomTrain();
+    public virtual Train Train { get; } =
+        Random.GetFromArray(GameManager.Instance.Trains.ToArray());
     public virtual int MilesPerInterval => 5;
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.DeployedMission == this).ToArray();
@@ -199,7 +200,7 @@ public abstract class Mission
     private int CalculateInitialMiles()
     {
         int initialMiles = 0;
-        int startIndex = GameManager.Instance.Locations.IndexOf(Route.start);
+        int startIndex = Array.IndexOf(GameManager.Instance.Locations, Route.start);
 
         for (int i = startIndex; GameManager.Instance.Locations[i] != Route.end; i++)
             initialMiles += DataManager.Instance.AllLocations[i].milesToNextStop;

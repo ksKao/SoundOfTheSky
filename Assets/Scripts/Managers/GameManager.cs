@@ -21,7 +21,8 @@ public class GameManager : Singleton<GameManager>
     public readonly List<Mission> deployedMissions = new();
     public readonly List<Crew> crews = new(INITIAL_NUMBER_OF_CREWS);
 
-    public List<Location> Locations { get; private set; } = new();
+    public Location[] Locations { get; private set; } = { };
+    public Train[] Trains { get; private set; } = { };
     public List<Mission> PendingMissions { get; private set; } = new();
 
     public Mission SelectedPendingMission
@@ -44,7 +45,8 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        Locations = DataManager.Instance.AllLocations.Select(l => new Location(l)).ToList();
+        Locations = DataManager.Instance.AllLocations.Select(l => new Location(l)).ToArray();
+        Trains = DataManager.Instance.AllTrains.Select(t => new Train(t)).ToArray();
     }
 
     private void OnEnable()

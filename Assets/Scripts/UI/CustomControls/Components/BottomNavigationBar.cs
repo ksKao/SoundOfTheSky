@@ -14,13 +14,14 @@ public partial class BottomNavigationBar : VisualElement
         style.flexDirection = FlexDirection.Row;
         style.justifyContent = Justify.SpaceBetween;
 
-        VisualElement buttonGroup = new()
+        VisualElement buttonGroup =
+            new() { style = { display = DisplayStyle.Flex, flexDirection = FlexDirection.Row } };
+
+        trainButton.clicked += () =>
         {
-            style =
-            {
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row,
-            }
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.trainList
+            );
         };
 
         deployButton.visible = false;
@@ -31,11 +32,11 @@ public partial class BottomNavigationBar : VisualElement
         buttonGroup.Add(deployButton);
         Add(buttonGroup);
 
-        Button deployedMissionListButton = new()
-        {
-            text = "Train Button",
-        };
-        deployedMissionListButton.clicked += () => UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        Button deployedMissionListButton = new() { text = "Train Button" };
+        deployedMissionListButton.clicked += () =>
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.deployedMissionList
+            );
         Add(deployedMissionListButton);
     }
 }

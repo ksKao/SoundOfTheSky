@@ -13,11 +13,7 @@ public class DataManager : Singleton<DataManager>
 
     public LocationSO[] AllLocations => _allLocations;
     public WeatherSO[] AllWeathers => _allWeathers;
-
-    public TrainSO GetRandomTrain()
-    {
-        return Random.GetFromArray(_allTrains);
-    }
+    public TrainSO[] AllTrains => _allTrains;
 
     public WeatherSO GetRandomWeather()
     {
