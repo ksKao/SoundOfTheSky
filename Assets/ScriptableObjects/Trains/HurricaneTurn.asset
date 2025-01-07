@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: HurricaneTurn
   m_EditorClassIdentifier: 
   name: Hurricane Turn
+  price: 10000
   routeStartLocation: {fileID: 11400000, guid: 9236511f36755ef44aaca6535eb1b68b, type: 2}
   routeEndLocation: {fileID: 11400000, guid: 60533f31d25e2ff4e8b4ebafc905fbaf, type: 2}

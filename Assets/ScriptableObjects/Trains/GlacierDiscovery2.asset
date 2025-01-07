@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: GlacierDiscovery2
   m_EditorClassIdentifier: 
   name: Glacier Discovery 2
+  price: 100
   routeStartLocation: {fileID: 11400000, guid: 60533f31d25e2ff4e8b4ebafc905fbaf, type: 2}
   routeEndLocation: {fileID: 11400000, guid: be591cb49699e4e41b5f36969427d02f, type: 2}
