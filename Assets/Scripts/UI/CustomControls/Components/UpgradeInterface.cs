@@ -58,8 +58,6 @@ public partial class UpgradeInterface : VisualElement
                 _progressBarSegments[i].style.backgroundColor =
                     i < newLevel ? Color.yellow : new Color();
             }
-
-            Add(new Label(description));
         };
 
         VisualElement labelContainer = new();
@@ -94,6 +92,7 @@ public partial class UpgradeInterface : VisualElement
                     flexGrow = 1,
                     height = UiUtils.GetLengthPercentage(100),
                     marginRight = 4,
+                    backgroundColor = i < currentLevel ? Color.yellow : new Color(),
                 },
             };
             UiUtils.SetBorderWidth(segments[i], 1);
@@ -103,6 +102,8 @@ public partial class UpgradeInterface : VisualElement
 
         _progressBarSegments.AddRange(segments);
         Add(segmentContainer);
+
+        Add(new Label(description) { style = { whiteSpace = WhiteSpace.Normal } });
     }
 
     private void FormatLabel(int currentLevel)
