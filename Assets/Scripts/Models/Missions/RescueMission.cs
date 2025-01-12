@@ -293,7 +293,7 @@ public class RescueMission : Mission
             && Random.ShouldOccur(_passengerIncreaseProbability)
         )
         {
-            NumberOfResources++;
+            NumberOfResources += Train.CartLevel;
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
                 Passengers.Add(new());

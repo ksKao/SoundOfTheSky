@@ -12,6 +12,7 @@ public abstract class Mission
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;
     private bool _eventPending = false;
+    private bool _skippedLastInterval = false;
 
     protected WeatherSO weather;
     protected VisualElement weatherUiInPendingMission = new();
@@ -155,11 +156,30 @@ public abstract class Mission
 
         if (MilesRemaining == 0)
             Complete();
-        else if (
-            IsMilestoneReached(MilesPerInterval)
-            && Random.ShouldOccur(weather.decisionMakingProbability)
-        )
-            EventPending = true;
+        else if (IsMilestoneReached(MilesPerInterval))
+        {
+            if (
+                Train is not null
+                && Random.ShouldOccur(weather.decisionMakingProbability - Train.WarmthLevel)
+            )
+            {
+                _skippedLastInterval = false;
+                EventPending = true;
+            }
+            else if (
+                Train is not null
+                && Random.ShouldOccur(Train.SpeedLevel)
+                && !_skippedLastInterval
+            ) // when interval is skipped, there is a chance to skip second interval
+            {
+                _skippedLastInterval = true;
+                MilesRemaining = Math.Max(MilesRemaining - MilesPerInterval, 0);
+            }
+            else if (_skippedLastInterval)
+            {
+                _skippedLastInterval = false;
+            }
+        }
     }
 
     /// <summary>

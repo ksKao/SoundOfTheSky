@@ -113,8 +113,8 @@ public class ResupplyMission : Mission
 
         if (IsMilestoneReached(MilesPerInterval))
         {
-            NumberOfNewSupplies += 2;
-            NumberOfPayments += 5;
+            NumberOfNewSupplies += 2 * Train.CartLevel;
+            NumberOfPayments += 5 * Train.CartLevel;
         }
     }
 
