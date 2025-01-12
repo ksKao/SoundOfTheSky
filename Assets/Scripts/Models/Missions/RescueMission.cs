@@ -270,6 +270,9 @@ public class RescueMission : Mission
             );
         _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
 
+        // include city documented citizens bonus
+        _numberOfNewResources += Route.end.documentedCitizens * 5;
+
         GameManager.Instance.IncrementMaterialValue(MaterialType.Citizens, _numberOfNewCitizens);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, _numberOfNewResources);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
