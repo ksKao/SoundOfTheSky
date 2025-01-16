@@ -17,6 +17,13 @@ public partial class BottomNavigationBar : VisualElement
         VisualElement buttonGroup =
             new() { style = { display = DisplayStyle.Flex, flexDirection = FlexDirection.Row } };
 
+        crewButton.clicked += () =>
+        {
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.crewList
+            );
+        };
+
         trainButton.clicked += () =>
         {
             UiManager.Instance.GameplayScreen.ChangeRightPanel(

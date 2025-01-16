@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 public partial class TrainCard : VisualElement
 {
     private readonly Train _train;
-    private VisualElement _buttonSlot = new();
+    private readonly VisualElement _buttonSlot = new();
     private Button _button = new();
 
     public TrainCard()
