@@ -5,6 +5,8 @@ public class Crew : Passenger
     private Mission _deployedMission;
     private readonly Label _deployedLabel = new();
 
+    public bool isResting = false;
+
     public Mission DeployedMission
     {
         get => _deployedMission;

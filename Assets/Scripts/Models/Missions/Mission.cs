@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -113,6 +114,17 @@ public abstract class Mission
         _isCompleted = true;
         GenerateMissionCompleteUi();
         DeployedMissionUi.Arrive();
+
+        // when a mission has been completed, there is a 25% chance for resting crews' status to go up by 1
+        IEnumerable<Crew> restingCrews = GameManager.Instance.crews.Where(c => c.isResting);
+
+        foreach (Crew restingCrew in restingCrews)
+        {
+            if (Random.ShouldOccur(0.25))
+                restingCrew.MakeBetter();
+        }
+
+        UiManager.Instance.GameplayScreen.crewList.RefreshCrewList();
     }
 
     public void Update()

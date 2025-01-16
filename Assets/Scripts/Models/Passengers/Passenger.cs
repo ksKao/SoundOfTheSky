@@ -7,13 +7,13 @@ public class Passenger
 {
     private readonly Label _statusLabel = new();
     private bool _selected = false;
-    private PassengerStatus _status = PassengerStatus.Comfortable;
-    
+    private PassengerStatus _status = PassengerStatus.Cold;
+
     protected Label StatusLabel => _statusLabel;
 
     public readonly VisualElement Ui = new();
 
-    public PassengerStatus Status 
+    public PassengerStatus Status
     {
         get => _status;
         private set
@@ -22,7 +22,7 @@ public class Passenger
             _statusLabel.text = _status.ToString();
         }
     }
-    public bool Selected 
+    public bool Selected
     {
         get => _selected;
         set
@@ -54,7 +54,8 @@ public class Passenger
     protected virtual void OnClick(ClickEvent _)
     {
         // do not select this if passenger is comfortable as there is no reason for player to use supply/crew on them anyways
-        if (Status == PassengerStatus.Comfortable) return;
+        if (Status == PassengerStatus.Comfortable)
+            return;
 
         Selected = !Selected;
     }
