@@ -52,6 +52,44 @@ public partial class CrewList : VisualElement
         };
 
         Button cureButton = new() { text = "Cure" };
+        cureButton.clicked += () =>
+        {
+            if (_selectionMode == SelectionMode.Cure)
+            {
+                IEnumerable<Crew> selectedCrews = GameManager.Instance.crews.Where(c => c.Selected);
+
+                if (
+                    selectedCrews.Count()
+                    > GameManager.Instance.GetMaterialValue(MaterialType.Supplies)
+                )
+                {
+                    Debug.Log("Not enough supplies");
+                    return;
+                }
+
+                GameManager.Instance.IncrementMaterialValue(
+                    MaterialType.Supplies,
+                    -selectedCrews.Count()
+                );
+
+                _selectionMode = SelectionMode.None;
+
+                foreach (Crew crew in selectedCrews)
+                    crew.MakeBetter();
+
+                RefreshCrewList();
+                EnableAllButtons();
+            }
+            else
+            {
+                _selectionMode = SelectionMode.Cure;
+                RefreshCrewList();
+                DisableAllButtonsOtherThan(cureButton);
+            }
+
+            foreach (Crew crew in GameManager.Instance.crews)
+                crew.Selected = false;
+        };
 
         Button newCrewButton =
             new() { text = "Crew ($300)", style = { marginLeft = StyleKeyword.Auto } };

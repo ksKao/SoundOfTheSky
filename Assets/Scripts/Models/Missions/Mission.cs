@@ -122,6 +122,9 @@ public abstract class Mission
         {
             if (Random.ShouldOccur(0.25))
                 restingCrew.MakeBetter();
+
+            if (restingCrew.Status == PassengerStatus.Comfortable)
+                restingCrew.isResting = false;
         }
 
         UiManager.Instance.GameplayScreen.crewList.RefreshCrewList();

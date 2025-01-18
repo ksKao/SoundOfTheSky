@@ -7,7 +7,7 @@ public class Passenger
 {
     private readonly Label _statusLabel = new();
     private bool _selected = false;
-    private PassengerStatus _status = PassengerStatus.Cold;
+    private PassengerStatus _status = PassengerStatus.Comfortable;
 
     protected Label StatusLabel => _statusLabel;
 
