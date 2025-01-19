@@ -94,6 +94,20 @@ public partial class CrewList : VisualElement
         Button newCrewButton =
             new() { text = "Crew ($300)", style = { marginLeft = StyleKeyword.Auto } };
 
+        newCrewButton.clicked += () =>
+        {
+            if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 300)
+            {
+                Debug.Log("Not enough payments.");
+                return;
+            }
+
+            GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -300);
+            GameManager.Instance.crews.Add(new());
+
+            RefreshCrewList();
+        };
+
         _buttonsContainer.Add(restButton);
         _buttonsContainer.Add(cureButton);
         _buttonsContainer.Add(newCrewButton);
