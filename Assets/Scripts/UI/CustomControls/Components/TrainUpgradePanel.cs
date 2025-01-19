@@ -18,7 +18,7 @@ public partial class TrainUpgradePanel : VisualElement
                 100,
                 train.CartLevel,
                 "Adds a cart to your train, carry more citizens, resources, supplies, and crew members",
-                () =>
+                (_) =>
                 {
                     train.CartLevel++;
                     return train.CartLevel;
@@ -31,7 +31,7 @@ public partial class TrainUpgradePanel : VisualElement
                 100,
                 train.SpeedLevel,
                 "Each time you skip an interval, there is a chance of you skipping a second interval immediately",
-                () =>
+                (_) =>
                 {
                     train.SpeedLevel++;
                     return train.SpeedLevel;
@@ -44,7 +44,7 @@ public partial class TrainUpgradePanel : VisualElement
                 100,
                 train.WarmthLevel,
                 "Decreases all weather effects",
-                () =>
+                (_) =>
                 {
                     train.WarmthLevel++;
                     return train.WarmthLevel;

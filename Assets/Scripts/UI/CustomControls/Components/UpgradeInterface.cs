@@ -9,6 +9,7 @@ public partial class UpgradeInterface : VisualElement
 {
     private readonly Button _upgradeButton = new();
     private readonly Label _label = new();
+    private readonly Label _descriptionLabel = new();
     private readonly List<VisualElement> _progressBarSegments = new();
     private readonly string _labelString = "";
     private readonly int _maxLevel = 0;
@@ -24,7 +25,7 @@ public partial class UpgradeInterface : VisualElement
         int initialCost,
         int currentLevel,
         string description,
-        Func<int> onUpgrade,
+        Func<UpgradeInterface, int> onUpgrade,
         int maxLevel = 10
     )
     {
@@ -44,7 +45,7 @@ public partial class UpgradeInterface : VisualElement
 
             GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -_upgradeCost);
 
-            int newLevel = onUpgrade();
+            int newLevel = onUpgrade(this);
             _upgradeCost = (int)Math.Round(_upgradeCost * 1.1);
 
             FormatLabel(newLevel);
@@ -58,6 +59,9 @@ public partial class UpgradeInterface : VisualElement
                 _progressBarSegments[i].style.backgroundColor =
                     i < newLevel ? Color.yellow : new Color();
             }
+
+            // refresh description text, because some upgrades will have difference description depending on which level it is.
+            // must be called after onUpgrade, because that is the function that might update the description
         };
 
         VisualElement labelContainer = new();
@@ -103,7 +107,9 @@ public partial class UpgradeInterface : VisualElement
         _progressBarSegments.AddRange(segments);
         Add(segmentContainer);
 
-        Add(new Label(description) { style = { whiteSpace = WhiteSpace.Normal } });
+        _descriptionLabel.text = description;
+        _descriptionLabel.style.whiteSpace = WhiteSpace.Normal;
+        Add(_descriptionLabel);
     }
 
     private void FormatLabel(int currentLevel)

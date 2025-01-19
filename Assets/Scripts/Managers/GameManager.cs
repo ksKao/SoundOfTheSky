@@ -13,7 +13,7 @@ public class GameManager : Singleton<GameManager>
     private readonly Dictionary<MaterialType, int> _materials =
         new()
         {
-            { MaterialType.Payments, 1200 },
+            { MaterialType.Payments, 100 },
             { MaterialType.Supplies, 100 },
             { MaterialType.Resources, 100 },
             { MaterialType.Citizens, 100 },
