@@ -3,7 +3,6 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class BottomNavigationBar : VisualElement
 {
-    public readonly Button missionButton = new() { text = "Mission" };
     public readonly Button crewButton = new() { text = "Crew" };
     public readonly Button trainButton = new() { text = "Train" };
     public readonly Button deployButton = new() { text = "Deploy" };
@@ -33,7 +32,6 @@ public partial class BottomNavigationBar : VisualElement
 
         deployButton.visible = false;
 
-        buttonGroup.Add(missionButton);
         buttonGroup.Add(crewButton);
         buttonGroup.Add(trainButton);
         buttonGroup.Add(deployButton);

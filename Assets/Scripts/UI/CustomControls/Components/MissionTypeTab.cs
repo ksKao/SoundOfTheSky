@@ -36,13 +36,25 @@ public partial class MissionTypeTab : VisualElement
 
     private void GenerateRefreshButton()
     {
-        refreshButton.text = "Refresh";
+        refreshButton.text = "Refresh (1200 payments)";
         refreshButton.style.flexGrow = 1;
         refreshButton.style.unityTextAlign = TextAnchor.MiddleLeft;
         refreshButton.style.marginLeft = 0;
         refreshButton.style.marginRight = 0;
         refreshButton.style.marginTop = 0;
         refreshButton.style.marginBottom = 0;
+
+        refreshButton.clicked += () =>
+        {
+            if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 1200)
+            {
+                Debug.Log("Not enough payments");
+                return;
+            }
+
+            GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -1200);
+            GameManager.Instance.RefreshAllMissions();
+        };
 
         Add(refreshButton);
     }

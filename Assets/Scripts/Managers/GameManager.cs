@@ -13,7 +13,7 @@ public class GameManager : Singleton<GameManager>
     private readonly Dictionary<MaterialType, int> _materials =
         new()
         {
-            { MaterialType.Payments, 100 },
+            { MaterialType.Payments, 1200 },
             { MaterialType.Supplies, 100 },
             { MaterialType.Resources, 100 },
             { MaterialType.Citizens, 100 },
@@ -58,15 +58,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        RefreshMission<RescueMission>(5);
-        RefreshMission<ResupplyMission>(5);
-        RefreshMission<DocumentationMission>(1);
-
-        // need to update UI after generating the data
-        UiManager.Instance.OnMissionActiveTabChange(
-            new Tab(),
-            UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab
-        );
+        RefreshAllMissions();
         UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
 
         for (int i = 0; i < INITIAL_NUMBER_OF_CREWS; i++)
@@ -85,7 +77,7 @@ public class GameManager : Singleton<GameManager>
             DeploySelectedMission;
     }
 
-    public void RefreshMission<T>(int numberOfMissionsToRefresh)
+    private void RefreshMission<T>(int numberOfMissionsToRefresh)
         where T : Mission, new()
     {
         // do not allow passing in the Mission base class
@@ -105,6 +97,19 @@ public class GameManager : Singleton<GameManager>
         {
             PendingMissions.Add(new T());
         }
+    }
+
+    public void RefreshAllMissions()
+    {
+        RefreshMission<RescueMission>(5);
+        RefreshMission<ResupplyMission>(5);
+        RefreshMission<DocumentationMission>(1);
+
+        // need to update UI after generating the data
+        UiManager.Instance.OnMissionActiveTabChange(
+            new Tab(),
+            UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab
+        );
     }
 
     public int GetMaterialValue(MaterialType materialType)
