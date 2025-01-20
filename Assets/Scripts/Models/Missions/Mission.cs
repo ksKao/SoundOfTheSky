@@ -175,7 +175,9 @@ public abstract class Mission
         {
             if (
                 Train is not null
-                && Random.ShouldOccur(weather.decisionMakingProbability - Train.WarmthLevel * 0.01)
+                && Random.ShouldOccur(
+                    weather.decisionMakingProbability - ((Train.WarmthLevel - 1) * 0.01)
+                )
             )
             {
                 _skippedLastInterval = false;
@@ -183,7 +185,7 @@ public abstract class Mission
             }
             else if (
                 Train is not null
-                && Random.ShouldOccur(Train.SpeedLevel * 0.01)
+                && Random.ShouldOccur((Train.SpeedLevel - 1) * 0.01)
                 && !_skippedLastInterval
             ) // when interval is skipped, there is a chance to skip second interval
             {

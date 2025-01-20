@@ -7,11 +7,14 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class UpgradeInterface : VisualElement
 {
+    public const string PLACEHOLDER = "[placeholder]";
+
     private readonly Button _upgradeButton = new();
     private readonly Label _label = new();
     private readonly Label _descriptionLabel = new();
     private readonly List<VisualElement> _progressBarSegments = new();
     private readonly string _labelString = "";
+    private readonly string _descriptionString = "";
     private readonly int _maxLevel = 0;
     private int _upgradeCost = 0;
 
@@ -25,12 +28,14 @@ public partial class UpgradeInterface : VisualElement
         int initialCost,
         int currentLevel,
         string description,
-        Func<UpgradeInterface, int> onUpgrade,
+        string placeholderValue,
+        Func<(int, string)> onUpgrade,
         int maxLevel = 10
     )
     {
         _maxLevel = maxLevel;
         _labelString = labelString;
+        _descriptionString = description;
         _upgradeCost = (int)Math.Round(initialCost * Math.Pow(1.1, currentLevel - 1));
 
         _upgradeButton.text = "+";
@@ -45,7 +50,7 @@ public partial class UpgradeInterface : VisualElement
 
             GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -_upgradeCost);
 
-            int newLevel = onUpgrade(this);
+            (int newLevel, string newPlaceholderValue) = onUpgrade();
             _upgradeCost = (int)Math.Round(_upgradeCost * 1.1);
 
             FormatLabel(newLevel);
@@ -60,8 +65,7 @@ public partial class UpgradeInterface : VisualElement
                     i < newLevel ? Color.yellow : new Color();
             }
 
-            // refresh description text, because some upgrades will have difference description depending on which level it is.
-            // must be called after onUpgrade, because that is the function that might update the description
+            RefreshDescriptionText(newPlaceholderValue);
         };
 
         VisualElement labelContainer = new();
@@ -107,7 +111,7 @@ public partial class UpgradeInterface : VisualElement
         _progressBarSegments.AddRange(segments);
         Add(segmentContainer);
 
-        _descriptionLabel.text = description;
+        RefreshDescriptionText(placeholderValue);
         _descriptionLabel.style.whiteSpace = WhiteSpace.Normal;
         Add(_descriptionLabel);
     }
@@ -123,5 +127,10 @@ public partial class UpgradeInterface : VisualElement
             sb.Append(_upgradeCost);
 
         _label.text = sb.ToString();
+    }
+
+    private void RefreshDescriptionText(string placeholderValue)
+    {
+        _descriptionLabel.text = _descriptionString.Replace(PLACEHOLDER, placeholderValue);
     }
 }

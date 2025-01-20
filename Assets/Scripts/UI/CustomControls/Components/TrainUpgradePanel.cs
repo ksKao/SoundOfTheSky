@@ -17,11 +17,12 @@ public partial class TrainUpgradePanel : VisualElement
                 "Cart",
                 100,
                 train.CartLevel,
-                "Adds a cart to your train, carry more citizens, resources, supplies, and crew members",
-                (_) =>
+                $"Adds a cart to your train, will earn {UpgradeInterface.PLACEHOLDER}x more citizens, resources, supplies, and crew members",
+                train.CartLevel.ToString(),
+                () =>
                 {
                     train.CartLevel++;
-                    return train.CartLevel;
+                    return (train.CartLevel, train.CartLevel.ToString());
                 }
             )
         );
@@ -30,11 +31,12 @@ public partial class TrainUpgradePanel : VisualElement
                 "Speed",
                 100,
                 train.SpeedLevel,
-                "Each time you skip an interval, there is a chance of you skipping a second interval immediately",
-                (_) =>
+                $"Each time you skip an interval, there is a {UpgradeInterface.PLACEHOLDER}% chance of you skipping a second interval immediately",
+                (train.SpeedLevel - 1).ToString(),
+                () =>
                 {
                     train.SpeedLevel++;
-                    return train.SpeedLevel;
+                    return (train.SpeedLevel, (train.SpeedLevel - 1).ToString());
                 }
             )
         );
@@ -43,13 +45,22 @@ public partial class TrainUpgradePanel : VisualElement
                 "Warmth",
                 100,
                 train.WarmthLevel,
-                "Decreases all weather effects",
-                (_) =>
+                $"Decreases all weather effect by {UpgradeInterface.PLACEHOLDER}%",
+                (train.WarmthLevel - 1).ToString(),
+                () =>
                 {
                     train.WarmthLevel++;
-                    return train.WarmthLevel;
+                    return (train.WarmthLevel, (train.WarmthLevel - 1).ToString());
                 }
             )
         );
+
+        Button backButton = new() { text = "Back" };
+        backButton.clicked += () =>
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.trainList
+            );
+
+        Add(backButton);
     }
 }
