@@ -187,17 +187,17 @@ public class ResupplyMission : Mission
 
     protected override void EventOccur()
     {
-        // 50% chance for an event to occur
+        // get a random crew that is in one condition above death
+        Crew randomCrew = Random.GetFromArray(
+            Crews.Where(c => c.Status < PassengerStatus.Death - 1).ToArray()
+        );
+
+        // (50 - (crew endurance level - 1) * 5)% chance for an event to occur
         // when an event occurs, will first check if crew member's health and go down or not
         // if yes, make the crew's health worse
         // else consume resources
-        if (Random.ShouldOccur(0.5))
+        if (Random.ShouldOccur(0.5 - randomCrew.EnduranceLevelPercentage))
         {
-            // get a random crew that is in one condition above death
-            Crew randomCrew = Random.GetFromArray(
-                Crews.Where(c => c.Status < PassengerStatus.Death - 1).ToArray()
-            );
-
             // no crews or all crews is in worst condition
             if (randomCrew is null)
             {

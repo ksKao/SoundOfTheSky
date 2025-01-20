@@ -59,7 +59,7 @@ public partial class CrewUpgradePanel : VisualElement
                 "Legal Expert",
                 100,
                 crew.LegalExpertLevel,
-                $"Decrest documentation cost multiplier by {UpgradeInterface.PLACEHOLDER}.",
+                $"Decrest documentation material consumption multiplier by {UpgradeInterface.PLACEHOLDER}.",
                 crew.LegalExpertLevelMultiplierDecrease.ToString(),
                 () =>
                 {

@@ -159,7 +159,13 @@ public class RescueMission : Mission
                     if (Random.ShouldOccur(weather.decisionMakingProbability))
                         selectedPassenger.MakeWorse();
                     else
+                    {
                         selectedPassenger.MakeBetter();
+
+                        // chance for passenger status to go up by 2
+                        if (Random.ShouldOccur(selectedCrew.MedicLevelPercentage * 0.01))
+                            selectedPassenger.MakeBetter();
+                    }
                     selectedPassenger.Selected = false;
 
                     // after taking action, change the screen back
