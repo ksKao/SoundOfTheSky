@@ -143,9 +143,10 @@ public partial class CrewList : VisualElement
             _crewListContainer.Add(crewLabel);
 
             if (_selectionMode == SelectionMode.None)
-                continue;
-
-            if (
+            {
+                UiManager.Instance.GameplayScreen.ChangeRightPanel(new CrewUpgradePanel(crew));
+            }
+            else if (
                 crew.Status == PassengerStatus.Comfortable
                 || crew.isResting
                 || crew.DeployedMission != null

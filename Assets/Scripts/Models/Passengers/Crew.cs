@@ -1,11 +1,37 @@
+using System;
 using UnityEngine.UIElements;
 
 public class Crew : Passenger
 {
+    public const int MAX_ENDURANCE_LEVEL = 8;
+
+    public bool isResting = false;
+
     private Mission _deployedMission;
     private readonly Label _deployedLabel = new();
 
-    public bool isResting = false;
+    private int _medicLevel = 1;
+    private int _enduranceLevel = 1;
+    private int _legalExpertLevel = 1;
+
+    public int MedicLevel
+    {
+        get => _medicLevel;
+        set => _medicLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+    }
+    public int EnduranceLevel
+    {
+        get => _enduranceLevel;
+        set => _enduranceLevel = Math.Min(value, MAX_ENDURANCE_LEVEL);
+    }
+    public int LegalExpertLevel
+    {
+        get => _legalExpertLevel;
+        set => _legalExpertLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+    }
+    public int MedicLevelPercentage => (_medicLevel - 1) * 2;
+    public int EnduranceLevelPercentage => (_enduranceLevel - 1) * 5;
+    public double LegalExpertLevelMultiplierDecrease => (_legalExpertLevel - 1) * 0.1;
 
     public Mission DeployedMission
     {

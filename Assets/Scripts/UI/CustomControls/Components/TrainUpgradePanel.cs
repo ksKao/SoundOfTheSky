@@ -32,11 +32,11 @@ public partial class TrainUpgradePanel : VisualElement
                 100,
                 train.SpeedLevel,
                 $"Each time you skip an interval, there is a {UpgradeInterface.PLACEHOLDER}% chance of you skipping a second interval immediately",
-                (train.SpeedLevel - 1).ToString(),
+                train.SpeedLevelPercentage.ToString(),
                 () =>
                 {
                     train.SpeedLevel++;
-                    return (train.SpeedLevel, (train.SpeedLevel - 1).ToString());
+                    return (train.SpeedLevel, train.SpeedLevelPercentage.ToString());
                 }
             )
         );
@@ -46,11 +46,11 @@ public partial class TrainUpgradePanel : VisualElement
                 100,
                 train.WarmthLevel,
                 $"Decreases all weather effect by {UpgradeInterface.PLACEHOLDER}%",
-                (train.WarmthLevel - 1).ToString(),
+                train.WarmthLevelPercentage.ToString(),
                 () =>
                 {
                     train.WarmthLevel++;
-                    return (train.WarmthLevel, (train.WarmthLevel - 1).ToString());
+                    return (train.WarmthLevel, train.WarmthLevelPercentage.ToString());
                 }
             )
         );

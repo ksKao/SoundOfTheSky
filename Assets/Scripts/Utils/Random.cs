@@ -7,7 +7,7 @@ public static class Random
     /// <returns>True if the random event occurs; otherwise, false.</returns>
     public static bool ShouldOccur(double probabilityPercentage)
     {
-        return new System.Random().NextDouble() <= probabilityPercentage;
+        return new System.Random().NextDouble() < probabilityPercentage;
     }
 
     public static T GetFromArray<T>(T[] arr)

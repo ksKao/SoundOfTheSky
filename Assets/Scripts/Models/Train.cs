@@ -25,6 +25,9 @@ public class Train
         set => _warmthLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
     }
 
+    public int SpeedLevelPercentage => _speedLevel - 1;
+    public int WarmthLevelPercentage => _warmthLevel - 1;
+
     public Train(TrainSO trainSO)
     {
         this.trainSO = trainSO;
