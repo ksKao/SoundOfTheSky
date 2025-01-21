@@ -121,10 +121,12 @@ public partial class UpgradeInterface : VisualElement
         StringBuilder sb = new();
 
         sb.Append(_labelString);
-        sb.Append(": ");
 
         if (currentLevel < _maxLevel)
+        {
+            sb.Append(": ");
             sb.Append(_upgradeCost);
+        }
 
         _label.text = sb.ToString();
     }

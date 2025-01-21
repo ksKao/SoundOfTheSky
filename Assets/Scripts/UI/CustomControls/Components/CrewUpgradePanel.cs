@@ -54,29 +54,6 @@ public partial class CrewUpgradePanel : VisualElement
             )
         );
 
-        Add(
-            new UpgradeInterface(
-                "Legal Expert",
-                100,
-                crew.LegalExpertLevel,
-                $"Decrest documentation material consumption multiplier by {UpgradeInterface.PLACEHOLDER}.",
-                crew.LegalExpertLevelMultiplierDecrease.ToString(),
-                () =>
-                {
-                    if (crew.isResting)
-                        Debug.Log("Crew is currently resting.");
-                    else if (crew.DeployedMission is not null)
-                        Debug.Log("Crew is currently on a mission");
-                    else
-                        crew.LegalExpertLevel++;
-                    return (
-                        crew.LegalExpertLevel,
-                        crew.LegalExpertLevelMultiplierDecrease.ToString()
-                    );
-                }
-            )
-        );
-
         Button backButton = new() { text = "Back" };
         backButton.clicked += () =>
             UiManager.Instance.GameplayScreen.ChangeRightPanel(
