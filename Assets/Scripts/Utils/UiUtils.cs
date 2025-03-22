@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -36,5 +37,15 @@ public static class UiUtils
             element.style.borderLeftColor = Color.clear;
             element.style.borderRightColor = Color.clear;
         }
+    }
+
+    public static Texture2D LoadTexture(string fileName, string extension = "png")
+    {
+        return AssetDatabase.LoadAssetAtPath<Texture2D>($"Assets/Images/{fileName}.{extension}");
+    }
+
+    public static Sprite LoadSprite(string fileName, string extension = "png")
+    {
+        return AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Images/{fileName}.{extension}");
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -14,6 +16,7 @@ public partial class MaterialsBar : VisualElement
     {
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
+        style.alignItems = Align.Center;
 
         AddMaterialLabel(MaterialType.Payments, _paymentsLabel);
         AddMaterialLabel(MaterialType.Supplies, _suppliesLabel);
@@ -49,15 +52,30 @@ public partial class MaterialsBar : VisualElement
         container.style.display = DisplayStyle.Flex;
         container.style.flexDirection = FlexDirection.Row;
 
-        VisualElement icon = new();
-        icon.style.marginRight = 10;
+        Image icon = new()
+        {
+            style =
+            {
+                height = 24
+            },
+            sprite = UiUtils.LoadSprite(materialType.ToString().ToLower())
+        };
+
+        Label materialTypeLabel = new()
+        {
+            text = materialType.ToString(),
+            style =
+            {
+                color = Color.white
+            }
+        };
 
         amountLabel.text = "0x";
         amountLabel.name = materialType.ToString();
-        amountLabel.style.marginLeft = 10;
+        amountLabel.style.color = Color.white;
 
         container.Add(icon);
-        container.Add(new Label(materialType.ToString()));
+        container.Add(materialTypeLabel);
         container.Add(amountLabel);
 
         Add(container);

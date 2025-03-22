@@ -1,4 +1,7 @@
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -22,6 +25,26 @@ public partial class GameplayScreen : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
         style.minHeight = UiUtils.GetLengthPercentage(100);
+        style.backgroundImage = UiUtils.LoadTexture("wallpaper");
+        style.display = DisplayStyle.Flex;
+        style.alignItems = Align.Center;
+        style.justifyContent = Justify.Center;
+        style.unityFont = AssetDatabase.LoadAssetAtPath<Font>("Assets/Fonts/myriad_pro.otf");
+        style.unityFontDefinition = new StyleFontDefinition(AssetDatabase.LoadAssetAtPath<FontAsset>("Assets/Fonts/myriad_pro.asset"));
+
+        VisualElement container = new()
+        {
+            style =
+            {
+                backgroundImage = UiUtils.LoadTexture("wallpaper_border"),
+                width = UiUtils.GetLengthPercentage(95),
+                height = UiUtils.GetLengthPercentage(95),
+                paddingTop = 30,
+                paddingBottom = 30,
+                paddingLeft = 35,
+                paddingRight = 35
+            }
+        };
 
         VisualElement left =
             new()
@@ -43,8 +66,10 @@ public partial class GameplayScreen : VisualElement
 
         _right.style.width = UiUtils.GetLengthPercentage(50);
 
-        Add(left);
-        Add(_right);
+        Add(container);
+
+        container.Add(left);
+        container.Add(_right);
     }
 
     public void ChangeRightPanel(VisualElement element)
