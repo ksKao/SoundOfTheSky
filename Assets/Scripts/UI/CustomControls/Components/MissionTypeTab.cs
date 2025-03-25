@@ -10,6 +10,8 @@ public partial class MissionTypeTab : VisualElement
     public static Action<Tab, Tab> OnMissionTabChanged;
 
     public readonly Button refreshButton = new();
+
+    private readonly Color _nonActiveButtonTextColor = UiUtils.HexToRgb("#74def4");
     private readonly List<(VisualElement backdrop, Button tabButton)> _tabElements = new();
 
     private MissionType _activeTab = MissionType.Rescue;
@@ -81,14 +83,13 @@ public partial class MissionTypeTab : VisualElement
         {
             if (i == (int)ActiveTab)
             {
-                Color color = new(24, 51, 97);
                 _tabElements[i].backdrop.style.backgroundColor = UiUtils.HexToRgb("#183361");
                 _tabElements[i].tabButton.style.color = Color.white;
             }
             else
             {
                 _tabElements[i].backdrop.style.backgroundColor = Color.clear;
-                _tabElements[i].tabButton.style.color = Color.black;
+                _tabElements[i].tabButton.style.color = _nonActiveButtonTextColor;
             }
         }
     }
@@ -122,6 +123,7 @@ public partial class MissionTypeTab : VisualElement
         refreshButton.style.marginTop = 0;
         refreshButton.style.marginBottom = 0;
         refreshButton.style.backgroundColor = Color.clear;
+        refreshButton.style.color = _nonActiveButtonTextColor;
         UiUtils.ToggleBorder(refreshButton, false);
 
         refreshButton.clicked += () =>
