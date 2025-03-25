@@ -23,22 +23,6 @@ public class UiManager : Singleton<UiManager>
         }
     }
 
-    private void OnEnable()
-    {
-        GameplayScreen.missionTypeTab.tabView.activeTabChanged += OnMissionActiveTabChange;
-    }
-
-    private void OnDisable()
-    {
-        GameplayScreen.missionTypeTab.tabView.activeTabChanged -= OnMissionActiveTabChange;
-    }
-
-    public void OnMissionActiveTabChange(Tab _, Tab selected)
-    {
-        if (Enum.TryParse(selected.label, out MissionType selectedType))
-            RefreshMissionList(selectedType);
-    }
-
     public void RefreshMissionList(MissionType selectedType)
     {
         GameplayScreen.pendingMissionList.Clear();

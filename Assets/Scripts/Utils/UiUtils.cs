@@ -48,4 +48,16 @@ public static class UiUtils
     {
         return AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Images/{fileName}.{extension}");
     }
+
+    public static Color HexToRgb(string hex)
+    {
+        if (hex.StartsWith("#"))
+            hex = hex[1..];
+
+        float r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        float g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        float b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+
+        return new(r, g, b);
+    }
 }

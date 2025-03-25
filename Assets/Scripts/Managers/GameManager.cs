@@ -106,10 +106,8 @@ public class GameManager : Singleton<GameManager>
         RefreshMission<DocumentationMission>(1);
 
         // need to update UI after generating the data
-        UiManager.Instance.OnMissionActiveTabChange(
-            new Tab(),
-            UiManager.Instance.GameplayScreen.missionTypeTab.tabView.activeTab
-        );
+        UiManager.Instance.GameplayScreen.missionTypeTab.RefreshTabHighlight();
+        UiManager.Instance.RefreshMissionList(UiManager.Instance.GameplayScreen.missionTypeTab.ActiveTab);
     }
 
     public int GetMaterialValue(MaterialType materialType)
