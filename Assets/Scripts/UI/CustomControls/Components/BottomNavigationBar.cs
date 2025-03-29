@@ -1,11 +1,40 @@
+using UnityEditor.Search;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class BottomNavigationBar : VisualElement
 {
-    public readonly Button crewButton = new() { text = "Crew" };
-    public readonly Button trainButton = new() { text = "Train" };
-    public readonly Button deployButton = new() { text = "Deploy" };
+    public readonly Button crewButton = new()
+    {
+        text = "Crew",
+        style =
+        {
+            color = UiUtils.HexToRgb("#74def4"),
+            backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
+            width = 60
+        }
+    };
+    public readonly Button trainButton = new()
+    {
+        text = "Train",
+        style =
+        {
+            color = UiUtils.HexToRgb("#74def4"),
+            backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
+            width = 60
+        }
+    };
+    public readonly Button deployButton = new()
+    {
+        text = "Deploy",
+        style =
+        {
+            color = UiUtils.HexToRgb("#74def4"),
+            backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
+            width = 60
+        }
+    };
 
     public BottomNavigationBar()
     {
@@ -37,11 +66,25 @@ public partial class BottomNavigationBar : VisualElement
         buttonGroup.Add(deployButton);
         Add(buttonGroup);
 
-        Button deployedMissionListButton = new() { text = "Deployed Missions" };
+        Button deployedMissionListButton = new()
+        {
+            style =
+            {
+                backgroundImage = UiUtils.LoadTexture("bottom_bar_deployed_mission_button"),
+                width = 400
+            }
+        };
         deployedMissionListButton.clicked += () =>
             UiManager.Instance.GameplayScreen.ChangeRightPanel(
                 UiManager.Instance.GameplayScreen.deployedMissionList
             );
         Add(deployedMissionListButton);
+
+        this.Query<Button>().ForEach(button =>
+            {
+                UiUtils.ToggleBorder(button, false);
+                button.style.backgroundColor = Color.clear;
+            }
+        );
     }
 }

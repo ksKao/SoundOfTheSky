@@ -79,27 +79,7 @@ public abstract class Mission
 
         GeneratePendingMissionUi();
 
-        for (int i = 0; i < PendingMissionUi.childCount; i++)
-        {
-            VisualElement child = PendingMissionUi.Children().ElementAt(i);
-
-            child.style.display = DisplayStyle.Flex;
-            child.style.flexDirection = FlexDirection.Column;
-            child.style.justifyContent = child.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
-            child.style.alignItems = Align.Center;
-            child.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
-            child.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{i % 5 + 1}");
-            child.style.maxWidth = UiUtils.GetLengthPercentage(13);
-            child.style.height = UiUtils.GetLengthPercentage(100);
-
-            if (child.childCount >= 2)
-            {
-                child.Children().ElementAt(1).style.fontSize = 20;
-            }
-        }
+        ApplyCommonPendingMissionUiStyle();
 
         GenerateDeployedMissionUi();
 
@@ -267,6 +247,31 @@ public abstract class Mission
         weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.decisionMakingProbability * 100 + "%")));
 
         PendingMissionUi.Add(weatherUiInPendingMission);
+    }
+
+    protected virtual void ApplyCommonPendingMissionUiStyle()
+    {
+        for (int i = 0; i < PendingMissionUi.childCount; i++)
+        {
+            VisualElement child = PendingMissionUi.Children().ElementAt(i);
+
+            child.style.display = DisplayStyle.Flex;
+            child.style.flexDirection = FlexDirection.Column;
+            child.style.justifyContent = child.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
+            child.style.alignItems = Align.Center;
+            child.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
+            child.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{i % 5 + 1}");
+            child.style.maxWidth = UiUtils.GetLengthPercentage(13);
+            child.style.height = UiUtils.GetLengthPercentage(100);
+
+            if (child.childCount >= 2)
+            {
+                child.Children().ElementAt(1).style.fontSize = 20;
+            }
+        }
     }
 
     private int CalculateInitialMiles()
