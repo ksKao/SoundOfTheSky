@@ -70,7 +70,6 @@ public static class UiUtils
         wrapper.style.flexDirection = FlexDirection.ColumnReverse;
         wrapper.style.justifyContent = Justify.Center;
         wrapper.Add(label);
-        wrapper.style.backgroundColor = Color.red;
 
         if (applyAdditionalStyle)
         {
@@ -78,7 +77,6 @@ public static class UiUtils
             label.style.marginRight = 0;
             label.style.whiteSpace = WhiteSpace.Normal;
             label.style.unityTextAlign = TextAnchor.UpperCenter;
-            label.style.backgroundColor = Color.blue;
         }
 
         return wrapper;

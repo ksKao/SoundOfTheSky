@@ -226,7 +226,7 @@ public class ResupplyMission : Mission
     {
         base.GeneratePendingMissionUi();
 
-        PendingMissionUi.Add(new Label(Train.trainSO.name));
+        PendingMissionUi.Add(UiUtils.WrapLabel(new Label(Train.trainSO.name)));
 
         PendingMissionUi.Add(_supplyNumberInput);
         PendingMissionUi.Add(_crewSelectionPanelButton);

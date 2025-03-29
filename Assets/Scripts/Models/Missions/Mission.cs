@@ -284,9 +284,6 @@ public abstract class Mission
     {
         PendingMissionUi.Query<Button>().ForEach(button => button.visible = true);
 
-        UiUtils.ToggleBorder(PendingMissionUi, true);
-        UiUtils.SetBorderWidth(PendingMissionUi, 2);
-
         GameManager.Instance.SelectedPendingMission = this;
     }
 }
