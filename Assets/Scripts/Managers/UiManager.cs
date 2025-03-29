@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -27,11 +26,15 @@ public class UiManager : Singleton<UiManager>
     {
         GameplayScreen.pendingMissionList.Clear();
 
+        int i = 0;
         foreach (Mission mission in GameManager.Instance.PendingMissions)
         {
             if (mission.Type != selectedType) continue;
 
             GameplayScreen.pendingMissionList.Add(mission.PendingMissionUi);
+            mission.PendingMissionUi.style.backgroundImage = Mission.pendingMissionBarBackground[i % Mission.pendingMissionBarBackground.Length];
+
+            i++;
         }
 
         GameManager.Instance.SelectedPendingMission = null;

@@ -38,8 +38,7 @@ public class RescueMission : Mission
         }
     }
 
-    public RescueMission()
-        : base()
+    public RescueMission() : base()
     {
         int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
@@ -349,7 +348,10 @@ public class RescueMission : Mission
     {
         base.GeneratePendingMissionUi();
 
-        PendingMissionUi.Add(new Label(Train.trainSO.name));
+        VisualElement labelWrapper = new();
+
+        labelWrapper.Add(UiUtils.WrapLabel(new(Train.trainSO.name)));
+        PendingMissionUi.Add(labelWrapper);
 
         PendingMissionUi.Add(_supplyNumberInput);
 

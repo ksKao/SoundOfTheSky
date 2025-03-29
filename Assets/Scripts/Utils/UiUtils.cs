@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public static class UiUtils
 {
-    public static Length GetLengthPercentage(int percentage)
+    public static Length GetLengthPercentage(float percentage)
     {
         return new Length()
         {
@@ -59,5 +59,28 @@ public static class UiUtils
         float b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
 
         return new(r, g, b);
+    }
+
+    public static VisualElement WrapLabel(Label label, bool applyAdditionalStyle = true)
+    {
+        VisualElement wrapper = new();
+        wrapper.style.width = GetLengthPercentage(100);
+        wrapper.style.display = DisplayStyle.Flex;
+        wrapper.style.alignItems = Align.Center;
+        wrapper.style.flexDirection = FlexDirection.ColumnReverse;
+        wrapper.style.justifyContent = Justify.Center;
+        wrapper.Add(label);
+        wrapper.style.backgroundColor = Color.red;
+
+        if (applyAdditionalStyle)
+        {
+            label.style.marginLeft = 0;
+            label.style.marginRight = 0;
+            label.style.whiteSpace = WhiteSpace.Normal;
+            label.style.unityTextAlign = TextAnchor.UpperCenter;
+            label.style.backgroundColor = Color.blue;
+        }
+
+        return wrapper;
     }
 }

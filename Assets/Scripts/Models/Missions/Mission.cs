@@ -9,6 +9,15 @@ public abstract class Mission
     // consts
     private const float SECONDS_PER_MILE = 0.1f;
 
+    public static readonly Texture2D[] pendingMissionBarBackground = {
+        UiUtils.LoadTexture("pending_mission_bar_1"),
+        UiUtils.LoadTexture("pending_mission_bar_2"),
+        UiUtils.LoadTexture("pending_mission_bar_3"),
+        UiUtils.LoadTexture("pending_mission_bar_4"),
+        UiUtils.LoadTexture("pending_mission_bar_5"),
+        UiUtils.LoadTexture("pending_mission_bar_6"),
+    };
+
     // state
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;
@@ -69,6 +78,29 @@ public abstract class Mission
         MilesRemaining = initialMiles;
 
         GeneratePendingMissionUi();
+
+        for (int i = 0; i < PendingMissionUi.childCount; i++)
+        {
+            VisualElement child = PendingMissionUi.Children().ElementAt(i);
+
+            child.style.display = DisplayStyle.Flex;
+            child.style.flexDirection = FlexDirection.Column;
+            child.style.justifyContent = child.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
+            child.style.alignItems = Align.Center;
+            child.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
+            child.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
+            child.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{i % 5 + 1}");
+            child.style.maxWidth = UiUtils.GetLengthPercentage(13);
+            child.style.height = UiUtils.GetLengthPercentage(100);
+
+            if (child.childCount >= 2)
+            {
+                child.Children().ElementAt(1).style.fontSize = 20;
+            }
+        }
+
         GenerateDeployedMissionUi();
 
         // after finish generating UI, make sure the elements are evenly spaced
@@ -218,20 +250,23 @@ public abstract class Mission
         PendingMissionUi.style.height = UiUtils.GetLengthPercentage(20);
         PendingMissionUi.style.display = DisplayStyle.Flex;
         PendingMissionUi.style.flexDirection = FlexDirection.Row;
+        PendingMissionUi.style.justifyContent = Justify.SpaceEvenly;
+        PendingMissionUi.style.alignItems = Align.Center;
+        PendingMissionUi.style.paddingTop = UiUtils.GetLengthPercentage(4);
+        PendingMissionUi.style.paddingBottom = UiUtils.GetLengthPercentage(4.5f);
+        PendingMissionUi.style.paddingLeft = UiUtils.GetLengthPercentage(3);
+        PendingMissionUi.style.paddingRight = UiUtils.GetLengthPercentage(3);
 
         VisualElement routeElement = new();
-        routeElement.Add(new Label(Route.start.locationSO.name));
-        routeElement.Add(new Label(Route.end.locationSO.name));
-        routeElement.Add(new Label(initialMiles.ToString()));
+        routeElement.Add(UiUtils.WrapLabel(new Label(Route.start.locationSO.name + "\n" + Route.end.locationSO.name)));
+        routeElement.Add(UiUtils.WrapLabel(new Label(initialMiles.ToString())));
 
         PendingMissionUi.Add(routeElement);
 
-        weatherUiInPendingMission.Add(new Label(weather.name));
-        weatherUiInPendingMission.Add(new Label(weather.decisionMakingProbability * 100 + "%"));
+        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.name)));
+        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.decisionMakingProbability * 100 + "%")));
 
         PendingMissionUi.Add(weatherUiInPendingMission);
-
-        PendingMissionUi.Add(new Label(Type.ToString()));
     }
 
     private int CalculateInitialMiles()

@@ -42,7 +42,9 @@ public partial class GameplayScreen : VisualElement
                 paddingTop = 30,
                 paddingBottom = 30,
                 paddingLeft = 35,
-                paddingRight = 35
+                paddingRight = 35,
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row
             }
         };
 
