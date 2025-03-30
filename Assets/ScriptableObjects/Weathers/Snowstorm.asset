@@ -16,3 +16,4 @@ MonoBehaviour:
   decisionMakingProbability: 0.2
   documentationMissionMaterialComsumptionMultiplier: 1.5
   rewardMultiplier: 1
+  sprite: {fileID: 21300000, guid: 293f71b017ecafaa3a5213a9ca160378, type: 3}

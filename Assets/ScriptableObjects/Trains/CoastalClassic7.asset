@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: CoastalClassic7
   m_EditorClassIdentifier: 
   name: Coastal Classic 7
+  price: 0
+  sprite: {fileID: 21300000, guid: a781cba0ac4888136b306b305efc8059, type: 3}
   routeStartLocation: {fileID: 11400000, guid: 60533f31d25e2ff4e8b4ebafc905fbaf, type: 2}
   routeEndLocation: {fileID: 11400000, guid: 258279432fa01e24bb07c44bfdb70bee, type: 2}

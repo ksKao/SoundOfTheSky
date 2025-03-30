@@ -176,6 +176,26 @@ public abstract class Mission
         EventPending = false;
     }
 
+    public void ApplyCommonPendingMissionUiStyleSingle(VisualElement element, int index)
+    {
+        element.style.display = DisplayStyle.Flex;
+        element.style.flexDirection = FlexDirection.Column;
+        element.style.justifyContent = element.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
+        element.style.alignItems = Align.Center;
+        element.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
+        element.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
+        element.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
+        element.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
+        element.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{index % 5 + 1}");
+        element.style.maxWidth = UiUtils.GetLengthPercentage(13);
+        element.style.height = UiUtils.GetLengthPercentage(100);
+
+        if (element.childCount >= 2)
+        {
+            element.Children().ElementAt(element.childCount - 1).style.fontSize = 20;
+        }
+    }
+
     protected virtual void OnMileChange()
     {
         if (DeployedMissionUi is not null)
@@ -252,26 +272,7 @@ public abstract class Mission
     protected virtual void ApplyCommonPendingMissionUiStyle()
     {
         for (int i = 0; i < PendingMissionUi.childCount; i++)
-        {
-            VisualElement child = PendingMissionUi.Children().ElementAt(i);
-
-            child.style.display = DisplayStyle.Flex;
-            child.style.flexDirection = FlexDirection.Column;
-            child.style.justifyContent = child.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
-            child.style.alignItems = Align.Center;
-            child.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
-            child.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
-            child.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{i % 5 + 1}");
-            child.style.maxWidth = UiUtils.GetLengthPercentage(13);
-            child.style.height = UiUtils.GetLengthPercentage(100);
-
-            if (child.childCount >= 2)
-            {
-                child.Children().ElementAt(1).style.fontSize = 20;
-            }
-        }
+            ApplyCommonPendingMissionUiStyleSingle(PendingMissionUi.Children().ElementAt(i), i);
     }
 
     private int CalculateInitialMiles()

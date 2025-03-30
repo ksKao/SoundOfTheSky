@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: AuroraWinter7
   m_EditorClassIdentifier: 
   name: Aurora Winter 7
+  price: 0
+  sprite: {fileID: 21300000, guid: 3c9c375557a3cdad08d8666014cea41c, type: 3}
   routeStartLocation: {fileID: 11400000, guid: 657f5b326e8a94c4e82f24acfe5abb26, type: 2}
   routeEndLocation: {fileID: 11400000, guid: 60533f31d25e2ff4e8b4ebafc905fbaf, type: 2}

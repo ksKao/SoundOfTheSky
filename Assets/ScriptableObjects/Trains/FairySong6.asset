@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: FairySong6
   m_EditorClassIdentifier: 
   name: Fairy Song 6
+  price: 0
+  sprite: {fileID: 21300000, guid: c8890aef48ef424c4a8110da641ae433, type: 3}
   routeStartLocation: {fileID: 11400000, guid: 657f5b326e8a94c4e82f24acfe5abb26, type: 2}
   routeEndLocation: {fileID: 11400000, guid: 258279432fa01e24bb07c44bfdb70bee, type: 2}

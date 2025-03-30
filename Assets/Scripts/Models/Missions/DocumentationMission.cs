@@ -163,6 +163,7 @@ public class DocumentationMission : Mission
         weatherUiInPendingMission.style.display = DisplayStyle.None;
 
         PendingMissionUi.style.position = Position.Relative;
+        PendingMissionUi.RemoveAt(PendingMissionUi.childCount - 1);
 
         WeatherLabelContainer.Add(new Label("Weather"));
 
@@ -172,6 +173,14 @@ public class DocumentationMission : Mission
         PendingMissionUi.Add(_paymentNumberInput);
 
         PendingMissionUi.Add(new DocumentationMissionPendingWeatherTree(this));
+    }
+
+    protected override void ApplyCommonPendingMissionUiStyle()
+    {
+        for (int i = 0; i < PendingMissionUi.childCount - 1; i++)
+        {
+            ApplyCommonPendingMissionUiStyleSingle(PendingMissionUi.Children().ElementAt(i), i);
+        }
     }
 
     private static LocationSO GetDestination()
