@@ -36,6 +36,7 @@ public abstract class Mission
     public virtual int MilesPerInterval => 5;
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.DeployedMission == this).ToArray();
+    public WeatherSO WeatherSO => weather;
     public bool EventPending
     {
         get => _eventPending;
@@ -199,7 +200,7 @@ public abstract class Mission
     protected virtual void OnMileChange()
     {
         if (DeployedMissionUi is not null)
-            DeployedMissionUi.milesRemainingLabel.text = milesRemaining.ToString();
+            DeployedMissionUi.milesRemainingLabel.text = milesRemaining + " miles";
 
         if (MilesRemaining == 0)
             Complete();

@@ -82,6 +82,9 @@ public partial class GameplayScreen : VisualElement
         _right.Clear();
 
         if (element is not null)
+        {
             _right.Add(element);
+            element.style.height = UiUtils.GetLengthPercentage(100);
+        }
     }
 }

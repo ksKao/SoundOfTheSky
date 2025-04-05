@@ -12,7 +12,6 @@ public class DocumentationMission : Mission
     private readonly NumberInput _resourceNumberInput = new("Resource");
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _paymentNumberInput = new("Payment");
-    private readonly Label _weatherLabel = new();
     private readonly Label _undocumentedCitizenNumberLabel = new();
     private readonly Label _documentedCitizenNumberLabel = new();
     private readonly Label _resourceAmountLabel = new();
@@ -80,7 +79,6 @@ public class DocumentationMission : Mission
     {
         base.GenerateDeployedMissionUi();
         DeployedMissionUi.routeLabel.text = Route.end.locationSO.name;
-        DeployedMissionUi.Add(_weatherLabel);
 
         DeployedMissionUi.Add(_undocumentedCitizenNumberLabel);
         DeployedMissionUi.Add(_documentedCitizenNumberLabel);
@@ -228,7 +226,7 @@ public class DocumentationMission : Mission
             randomNo -= weatherProbability.Value;
         }
 
-        _weatherLabel.text = weather.name;
+        DeployedMissionUi.weatherLabel.text = weather.name;
     }
 
     private bool CheckMaterials(

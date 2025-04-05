@@ -36,4 +36,9 @@ public static class Random
 
         return result;
     }
+
+    public static int GetRandomIntInRange(int lower, int upper)
+    {
+        return new System.Random().Next(lower, upper + 1);
+    }
 }
