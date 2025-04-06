@@ -122,7 +122,7 @@ public partial class RescueMissionResolvePanel : VisualElement
 
     private void OnDetach(DetachFromPanelEvent e)
     {
-        _mission.DeployedMissionUi.resolveButton.visible = true;
+        _mission.DeployedMissionUi.resolveButton.visible = _mission.EventPending;
         Remove(_mission.DeployedMissionUi);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
     }

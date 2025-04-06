@@ -65,7 +65,7 @@ public class RescueMission : Mission
             return false;
         }
 
-        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.DeployedMission is not null))
+        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.deployedMission is not null))
         {
             Debug.Log("One or more crew(s) has already been deployed in another mission");
             return false;
@@ -81,7 +81,7 @@ public class RescueMission : Mission
         GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
-            crew.DeployedMission = this;
+            crew.deployedMission = this;
 
         _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
@@ -173,13 +173,16 @@ public class RescueMission : Mission
                     _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
                     ActionTakenDuringThisEvent = true;
                 },
-                false,
+                null,
                 () => UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel)
             );
         }
         else if (selectedPassengers.Length == 0) // heal crew
         {
-            Button useSupplyButton = new() { text = "USE\nSUPPLY" };
+            Button useSupplyButton = new()
+            {
+                text = "USE\nSUPPLY",
+            };
             useSupplyButton.SetEnabled(false);
 
             useSupplyButton.clicked += () =>
@@ -207,7 +210,7 @@ public class RescueMission : Mission
                         useSupplyButton.SetEnabled(false);
                     }
                 },
-                false,
+                null,
                 () =>
                     UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel),
                 useSupplyButton
@@ -286,7 +289,7 @@ public class RescueMission : Mission
         Route.end.undocumentedCitizens += _numberOfNewCitizens;
 
         foreach (Crew crew in Crews)
-            crew.DeployedMission = null;
+            crew.deployedMission = null;
 
         base.Complete();
     }

@@ -32,7 +32,7 @@ public class ResupplyMission : Mission
         }
 
         // check if crew has been deployed
-        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.DeployedMission is not null))
+        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.deployedMission is not null))
         {
             Debug.Log("One or more crew(s) has been deployed in another mission");
             return false;
@@ -62,7 +62,7 @@ public class ResupplyMission : Mission
         GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
-            crew.DeployedMission = this;
+            crew.deployedMission = this;
 
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
         _deployedMissionResourcesLabel.text = $"{NumberOfResources} resource(s)";
@@ -86,7 +86,7 @@ public class ResupplyMission : Mission
         GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, NumberOfPayments);
 
         foreach (Crew crew in Crews)
-            crew.DeployedMission = null;
+            crew.deployedMission = null;
 
         base.Complete();
     }
@@ -181,7 +181,7 @@ public class ResupplyMission : Mission
 
                 selectedCrews = crews.Where(c => c.Selected).ToArray();
             },
-            false,
+            null,
             null,
             buttonContainer
         );

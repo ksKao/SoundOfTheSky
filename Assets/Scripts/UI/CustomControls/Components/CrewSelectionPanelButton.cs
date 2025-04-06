@@ -23,7 +23,7 @@ public partial class CrewSelectionPanelButton : VisualElement
 
                         crewNumberLabel.text = _selectedCrews.Count.ToString();
                     },
-                    true,
+                    (crew) => crew.deployedMission is null ? "" : "Deployed",
                     () =>
                     {
                         _selectedCrews.Clear();

@@ -14,7 +14,6 @@ public partial class GameplayScreen : VisualElement
     public readonly DeployedMissionList deployedMissionList = new();
     public readonly CrewSelectionPanel crewSelectionPanel = new();
     public readonly TrainList trainList = new();
-    public readonly CrewList crewList = new();
 
     private readonly VisualElement _right = new();
 

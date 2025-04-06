@@ -24,7 +24,7 @@ public partial class CrewUpgradePanel : VisualElement
                 {
                     if (crew.isResting)
                         Debug.Log("Crew is currently resting.");
-                    else if (crew.DeployedMission is not null)
+                    else if (crew.deployedMission is not null)
                         Debug.Log("Crew is currently on a mission");
                     else
                         crew.MedicLevel++;
@@ -44,7 +44,7 @@ public partial class CrewUpgradePanel : VisualElement
                 {
                     if (crew.isResting)
                         Debug.Log("Crew is currently resting.");
-                    else if (crew.DeployedMission is not null)
+                    else if (crew.deployedMission is not null)
                         Debug.Log("Crew is currently on a mission");
                     else
                         crew.EnduranceLevel++;
@@ -55,11 +55,7 @@ public partial class CrewUpgradePanel : VisualElement
         );
 
         Button backButton = new() { text = "Back" };
-        backButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.crewList
-            );
-        ;
+        backButton.clicked += UiManager.Instance.GameplayScreen.bottomNavigationBar.ShowCrewList;
 
         Add(backButton);
     }

@@ -26,7 +26,13 @@ public partial class CrewSelectionPanel : VisualElement
             flexWrap = Wrap.Wrap
         }
     };
-    private readonly VisualElement _additionalUi = new();
+    private readonly VisualElement _additionalUi = new()
+    {
+        style =
+        {
+            flexGrow = 1
+        }
+    };
     private readonly VisualElement _buttonContainer = new()
     {
         style =
@@ -64,7 +70,7 @@ public partial class CrewSelectionPanel : VisualElement
     public void Show(
         Crew[] crews,
         Action<Crew[]> onSelect,
-        bool showDeployedText,
+        Func<Crew, string> getBracketText = null,
         Action onCancel = null,
         VisualElement additionalUi = null
     )
@@ -81,7 +87,20 @@ public partial class CrewSelectionPanel : VisualElement
             crew.BackgroundStyle = PassengerBackgroundStyle.Blue;
             _crewListContainer.Add(crew.ui);
 
-            crew.deployedLabel.style.display = showDeployedText ? DisplayStyle.Flex : DisplayStyle.None;
+            string bracketText = "";
+
+            if (getBracketText is not null)
+                bracketText = getBracketText(crew);
+
+            if (bracketText.Length <= 0)
+            {
+                crew.bracketLabel.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                crew.bracketLabel.style.display = DisplayStyle.Flex;
+                crew.bracketLabel.text = $"({bracketText})";
+            }
         }
 
         // unsubscribe old event and subscribe to the new event passed in

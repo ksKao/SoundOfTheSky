@@ -35,7 +35,7 @@ public abstract class Mission
         Random.GetFromArray(GameManager.Instance.Trains.ToArray());
     public virtual int MilesPerInterval => 5;
     public Crew[] Crews =>
-        GameManager.Instance.crews.Where(c => c.DeployedMission == this).ToArray();
+        GameManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public WeatherSO WeatherSO => weather;
     public bool EventPending
     {
@@ -136,8 +136,6 @@ public abstract class Mission
             if (restingCrew.Status == PassengerStatus.Comfortable)
                 restingCrew.isResting = false;
         }
-
-        UiManager.Instance.GameplayScreen.crewList.RefreshCrewList();
     }
 
     public void Update()
