@@ -173,19 +173,20 @@ public class RescueMission : Mission
                     _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
                     ActionTakenDuringThisEvent = true;
                 },
+                false,
                 () => UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel)
             );
         }
         else if (selectedPassengers.Length == 0) // heal crew
         {
-            Button useSupplyButton = new() { text = "Use supply" };
+            Button useSupplyButton = new() { text = "USE\nSUPPLY" };
             useSupplyButton.SetEnabled(false);
 
             useSupplyButton.clicked += () =>
             {
                 UseSupply(Crews.Where(c => c.Selected).ToArray());
 
-                useSupplyButton.text = "Use supply";
+                useSupplyButton.text = "USE\nSUPPLY";
                 useSupplyButton.SetEnabled(false);
             };
 
@@ -197,15 +198,16 @@ public class RescueMission : Mission
                     if (selectedCrews.Length > 0)
                     {
                         useSupplyButton.text =
-                            $"Use supply on {selectedCrews.Length} crew{(selectedCrews.Length > 1 ? "s" : "")}";
+                            $"SUPPLY\n{selectedCrews.Length}";
                         useSupplyButton.SetEnabled(true);
                     }
                     else
                     {
-                        useSupplyButton.text = "Use supply";
+                        useSupplyButton.text = "USE\nSUPPLY";
                         useSupplyButton.SetEnabled(false);
                     }
                 },
+                false,
                 () =>
                     UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel),
                 useSupplyButton

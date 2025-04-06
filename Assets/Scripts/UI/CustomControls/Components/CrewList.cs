@@ -144,7 +144,7 @@ public partial class CrewList : VisualElement
 
             if (_selectionMode == SelectionMode.None)
             {
-                UiManager.Instance.GameplayScreen.ChangeRightPanel(new CrewUpgradePanel(crew));
+                // UiManager.Instance.GameplayScreen.ChangeRightPanel(new CrewUpgradePanel(crew));
             }
             else if (
                 crew.Status == PassengerStatus.Comfortable

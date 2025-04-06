@@ -23,6 +23,7 @@ public partial class CrewSelectionPanelButton : VisualElement
 
                         crewNumberLabel.text = _selectedCrews.Count.ToString();
                     },
+                    true,
                     () =>
                     {
                         _selectedCrews.Clear();

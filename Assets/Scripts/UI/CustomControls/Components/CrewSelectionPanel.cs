@@ -1,23 +1,59 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class CrewSelectionPanel : VisualElement
 {
+    private readonly static Texture2D _crewSelectionPanelBackground = UiUtils.LoadTexture("crew_selection_panel_background");
+    private readonly static Texture2D _buttonBackground = UiUtils.LoadTexture("crew_selection_button");
+
     private Crew[] _crews = { };
     private readonly Button _cancelButton = new();
-    private readonly VisualElement _crewListContainer = new();
+    private readonly VisualElement _crewListContainer = new()
+    {
+        style =
+        {
+            backgroundImage = _crewSelectionPanelBackground,
+            flexGrow = 1,
+            paddingTop = UiUtils.GetLengthPercentage(3f),
+            paddingBottom = UiUtils.GetLengthPercentage(3f),
+            paddingLeft = UiUtils.GetLengthPercentage(3f),
+            paddingRight = UiUtils.GetLengthPercentage(3f),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            flexWrap = Wrap.Wrap
+        }
+    };
     private readonly VisualElement _additionalUi = new();
+    private readonly VisualElement _buttonContainer = new()
+    {
+        style =
+        {
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            alignItems = Align.Center,
+            width = UiUtils.GetLengthPercentage(100),
+        }
+    };
+
     private Action<Crew[]> _onSelect;
     private Action _onCancel;
 
     public CrewSelectionPanel()
     {
-        _cancelButton.text = "Cancel";
+        _cancelButton.text = "CANCEL";
+
+        style.display = DisplayStyle.Flex;
+        style.flexDirection = FlexDirection.Column;
 
         Add(_crewListContainer);
-        Add(_cancelButton);
-        Add(_additionalUi);
+
+        _buttonContainer.Add(_cancelButton);
+        _buttonContainer.Add(_additionalUi);
+
+        Add(_buttonContainer);
     }
 
     public void OnCrewSelectChange()
@@ -28,6 +64,7 @@ public partial class CrewSelectionPanel : VisualElement
     public void Show(
         Crew[] crews,
         Action<Crew[]> onSelect,
+        bool showDeployedText,
         Action onCancel = null,
         VisualElement additionalUi = null
     )
@@ -41,7 +78,10 @@ public partial class CrewSelectionPanel : VisualElement
         foreach (Crew crew in _crews)
         {
             crew.Selected = false;
-            _crewListContainer.Add(crew.Ui);
+            crew.BackgroundStyle = PassengerBackgroundStyle.Blue;
+            _crewListContainer.Add(crew.ui);
+
+            crew.deployedLabel.style.display = showDeployedText ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         // unsubscribe old event and subscribe to the new event passed in
@@ -53,12 +93,12 @@ public partial class CrewSelectionPanel : VisualElement
         // check if new cancel action is not null, if yes, need to hide the button
         if (_onCancel is not null)
         {
-            _cancelButton.visible = true;
+            _cancelButton.style.display = DisplayStyle.Flex;
             _cancelButton.clicked += _onCancel;
         }
         else
         {
-            _cancelButton.visible = false;
+            _cancelButton.style.display = DisplayStyle.None;
         }
 
         UiManager.Instance.GameplayScreen.ChangeRightPanel(this);
@@ -66,5 +106,17 @@ public partial class CrewSelectionPanel : VisualElement
         _additionalUi.Clear();
         if (additionalUi is not null)
             _additionalUi.Add(additionalUi);
+
+        List<Button> buttons = _buttonContainer.Query<Button>().ToList();
+        foreach (Button button in buttons)
+        {
+            button.style.backgroundImage = _buttonBackground;
+            button.style.color = Color.white;
+            button.style.width = 100;
+            button.style.height = 90;
+            button.style.fontSize = 24;
+            button.style.backgroundColor = Color.clear;
+            UiUtils.ToggleBorder(button, false);
+        }
     }
 }

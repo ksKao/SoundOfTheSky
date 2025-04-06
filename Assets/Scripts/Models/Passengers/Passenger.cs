@@ -1,17 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class Passenger
 {
+    private static readonly Texture2D _backgroundGray = UiUtils.LoadTexture("passenger_selection_background");
+    private static readonly Texture2D _backgroundGraySelected = UiUtils.LoadTexture("passenger_selection_background_glow");
+    private static readonly Texture2D _backgroundBlue = UiUtils.LoadTexture("crew_selection_background");
+    private static readonly Texture2D _backgroundBlueSelected = UiUtils.LoadTexture("crew_selection_background_glow");
+
+    public readonly VisualElement ui = new()
+    {
+        style =
+        {
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Column,
+            alignItems = Align.Center,
+        }
+    };
+
     private readonly Label _statusLabel = new();
+    private readonly VisualElement _imageContainer = new()
+    {
+        style =
+        {
+            width = 100,
+            height = 90
+        }
+    };
+
     private bool _selected = false;
     private PassengerStatus _status = PassengerStatus.Comfortable;
+    private PassengerBackgroundStyle _backgroundStyle = PassengerBackgroundStyle.Blue;
 
     protected Label StatusLabel => _statusLabel;
-
-    public readonly VisualElement Ui = new();
 
     public PassengerStatus Status
     {
@@ -27,18 +51,32 @@ public class Passenger
         get => _selected;
         set
         {
-            UiUtils.ToggleBorder(Ui, value);
+            if (_backgroundStyle == PassengerBackgroundStyle.Blue)
+                _imageContainer.style.backgroundImage = value ? _backgroundBlueSelected : _backgroundBlue;
+            else
+                _imageContainer.style.backgroundImage = value ? _backgroundGraySelected : _backgroundGray;
             _selected = value;
+        }
+    }
+    public PassengerBackgroundStyle BackgroundStyle
+    {
+        get => _backgroundStyle;
+        set
+        {
+            _imageContainer.style.backgroundImage = value == PassengerBackgroundStyle.Blue ? _backgroundBlue : _backgroundGray;
+            _backgroundStyle = value;
         }
     }
 
     public Passenger()
     {
-        Ui.Add(_statusLabel);
-        UiUtils.SetBorderWidth(Ui, 1);
+        _imageContainer.style.backgroundImage = _backgroundStyle == PassengerBackgroundStyle.Blue ? _backgroundBlue : _backgroundGray;
+        ui.Add(_imageContainer);
+        ui.Add(_statusLabel);
+
         _statusLabel.text = _status.ToString();
 
-        Ui.RegisterCallback<ClickEvent>(OnClick);
+        ui.RegisterCallback<ClickEvent>(OnClick);
     }
 
     public void MakeWorse()

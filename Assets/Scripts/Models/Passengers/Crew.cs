@@ -6,9 +6,9 @@ public class Crew : Passenger
     public const int MAX_ENDURANCE_LEVEL = 8;
 
     public bool isResting = false;
+    public readonly Label deployedLabel = new();
 
     private Mission _deployedMission;
-    private readonly Label _deployedLabel = new();
 
     private int _medicLevel = 1;
     private int _enduranceLevel = 1;
@@ -25,21 +25,20 @@ public class Crew : Passenger
     }
     public int MedicLevelPercentage => (_medicLevel - 1) * 2;
     public int EnduranceLevelPercentage => (_enduranceLevel - 1) * 5;
-
     public Mission DeployedMission
     {
         get => _deployedMission;
         set
         {
             _deployedMission = value;
-            _deployedLabel.text = value is null ? "" : "(Deployed)";
+            deployedLabel.text = value is null ? "" : "(Deployed)";
         }
     }
 
     public Crew()
         : base()
     {
-        Ui.Add(_deployedLabel);
+        ui.Add(deployedLabel);
     }
 
     protected override void OnClick(ClickEvent _)

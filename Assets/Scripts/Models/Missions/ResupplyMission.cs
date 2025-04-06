@@ -32,7 +32,7 @@ public class ResupplyMission : Mission
         }
 
         // check if crew has been deployed
-        if (Crews.Any(c => c.DeployedMission is not null))
+        if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.DeployedMission is not null))
         {
             Debug.Log("One or more crew(s) has been deployed in another mission");
             return false;
@@ -122,7 +122,7 @@ public class ResupplyMission : Mission
     {
         Crew[] selectedCrews = { };
 
-        Button ignoreOrFinishButton = new() { text = "Ignore" };
+        Button ignoreOrFinishButton = new() { text = "IGNORE" };
         ignoreOrFinishButton.clicked += () =>
         {
             EventPending = false;
@@ -131,7 +131,7 @@ public class ResupplyMission : Mission
             );
         };
 
-        Button useSupplyButton = new() { text = "Use Supply" };
+        Button useSupplyButton = new() { text = "USE\nSUPPLY" };
         useSupplyButton.clicked += () =>
         {
             // check if player has selected crew(s)
@@ -162,6 +162,7 @@ public class ResupplyMission : Mission
 
         VisualElement buttonContainer = new();
         buttonContainer.style.display = DisplayStyle.Flex;
+        buttonContainer.style.flexDirection = FlexDirection.Row;
         buttonContainer.Add(useSupplyButton);
         buttonContainer.Add(ignoreOrFinishButton);
 
@@ -180,6 +181,7 @@ public class ResupplyMission : Mission
 
                 selectedCrews = crews.Where(c => c.Selected).ToArray();
             },
+            false,
             null,
             buttonContainer
         );

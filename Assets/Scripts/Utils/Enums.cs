@@ -22,3 +22,9 @@ public enum MaterialType
     Resources,
     Citizens,
 };
+
+public enum PassengerBackgroundStyle
+{
+    Gray,
+    Blue,
+}

@@ -121,9 +121,6 @@ public abstract class Mission
 
     public virtual void Complete()
     {
-        if (_isCompleted)
-            return;
-
         _isCompleted = true;
         GenerateMissionCompleteUi();
         DeployedMissionUi.Arrive();
