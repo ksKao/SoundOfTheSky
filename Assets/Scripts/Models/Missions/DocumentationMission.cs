@@ -41,12 +41,6 @@ public class DocumentationMission : Mission
             return false;
         }
 
-        if (!Train.unlocked)
-        {
-            Debug.Log("You must unlock this train first before deploying.");
-            return false;
-        }
-
         if (GameManager.Instance.deployedMissions.Any(m => m.Type == Type))
         {
             Debug.Log("Another documentation mission has already been deployed.");
@@ -80,11 +74,11 @@ public class DocumentationMission : Mission
         base.GenerateDeployedMissionUi();
         DeployedMissionUi.routeLabel.text = Route.end.locationSO.name;
 
-        DeployedMissionUi.Add(_undocumentedCitizenNumberLabel);
-        DeployedMissionUi.Add(_documentedCitizenNumberLabel);
-        DeployedMissionUi.Add(_resourceAmountLabel);
-        DeployedMissionUi.Add(_supplyAmountLabel);
-        DeployedMissionUi.Add(_paymentAmountLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_undocumentedCitizenNumberLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_documentedCitizenNumberLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_resourceAmountLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_supplyAmountLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_paymentAmountLabel);
 
         UpdateLabels();
     }
@@ -103,11 +97,7 @@ public class DocumentationMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        MissionCompleteUi.Add(
-            new Label(
-                $"{Route.end.documentedCitizens - _initialDocumentedCitizens} new citizen(s)."
-            )
-        );
+        AddRewardLabel($"{Route.end.documentedCitizens - _initialDocumentedCitizens} New Citizen(s).", "reward_citizens");
     }
 
     protected override void OnMileChange()

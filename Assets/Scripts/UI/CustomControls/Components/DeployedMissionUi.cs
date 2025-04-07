@@ -10,7 +10,32 @@ public partial class DeployedMissionUi : VisualElement
     private const string DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX = "resolve_button_";
     private const int NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS = 5;
 
+    private static readonly Sprite _arrivalsBadgeImage = UiUtils.LoadSprite("arrivals_badge");
+
     private readonly VisualElement _arriveOverlay = new();
+    private readonly VisualElement _container = new()
+    {
+        style =
+        {
+            width = UiUtils.GetLengthPercentage(100),
+            height = UiUtils.GetLengthPercentage(100),
+            position = Position.Relative,
+            display = DisplayStyle.Flex,
+        }
+    };
+    private readonly VisualElement _contentContainer = new()
+    {
+        style =
+        {
+            width = UiUtils.GetLengthPercentage(100),
+            height = UiUtils.GetLengthPercentage(100),
+            paddingTop = UiUtils.GetLengthPercentage(3f),
+            paddingBottom = UiUtils.GetLengthPercentage(3f),
+            paddingLeft = UiUtils.GetLengthPercentage(3f),
+            paddingRight = UiUtils.GetLengthPercentage(3f),
+            flexDirection = FlexDirection.Row,
+        }
+    };
 
     public readonly Mission mission;
     public readonly Label milesRemainingLabel = new();
@@ -29,15 +54,11 @@ public partial class DeployedMissionUi : VisualElement
         this.mission = mission;
         int backgroundNumber = Random.GetRandomIntInRange(1, NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS);
 
-        style.position = Position.Relative;
-        style.paddingTop = UiUtils.GetLengthPercentage(2);
-        style.paddingBottom = UiUtils.GetLengthPercentage(2);
-        style.paddingLeft = UiUtils.GetLengthPercentage(2);
-        style.paddingRight = UiUtils.GetLengthPercentage(2);
-        style.display = DisplayStyle.Flex;
-        style.flexDirection = FlexDirection.Row;
+        style.height = UiUtils.GetLengthPercentage(100 / 6f);
         style.maxHeight = UiUtils.GetLengthPercentage(100 / 6f);
         style.color = UiUtils.HexToRgb("#2c3064");
+
+        Add(_container);
 
         VisualElement backgroundImage = new()
         {
@@ -46,13 +67,13 @@ public partial class DeployedMissionUi : VisualElement
                 backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + backgroundNumber),
                 position = Position.Absolute,
                 width = UiUtils.GetLengthPercentage(95),
-                height = UiUtils.GetLengthPercentage(95),
+                height = UiUtils.GetLengthPercentage(65),
                 top = UiUtils.GetLengthPercentage(50),
                 left = UiUtils.GetLengthPercentage(50),
-                translate = new Translate(UiUtils.GetLengthPercentage(-50), UiUtils.GetLengthPercentage(-50))
+                translate = new Translate(UiUtils.GetLengthPercentage(-50), UiUtils.GetLengthPercentage(-52))
             }
         };
-        Add(backgroundImage);
+        _container.Add(backgroundImage);
 
         VisualElement borderImage = new()
         {
@@ -63,28 +84,34 @@ public partial class DeployedMissionUi : VisualElement
                 width = UiUtils.GetLengthPercentage(100),
                 height = UiUtils.GetLengthPercentage(100),
                 top = 0,
-                left = 0
+                left = 0,
             }
         };
-        Add(borderImage);
+        _container.Add(borderImage);
+
+        _container.Add(_contentContainer);
 
         _arriveOverlay.style.position = Position.Absolute;
-        _arriveOverlay.style.backgroundColor = new Color(0, 0, 0, 0.5f);
+        _arriveOverlay.style.top = UiUtils.GetLengthPercentage(-2);
+        _arriveOverlay.style.left = UiUtils.GetLengthPercentage(-0.5f);
         _arriveOverlay.style.width = UiUtils.GetLengthPercentage(100);
         _arriveOverlay.style.height = UiUtils.GetLengthPercentage(100);
-        _arriveOverlay.style.display = DisplayStyle.Flex;
+        _arriveOverlay.style.display = DisplayStyle.None;
         _arriveOverlay.style.justifyContent = Justify.Center;
         _arriveOverlay.style.alignItems = Align.Center;
         Add(_arriveOverlay);
 
-        Label arriveLabel =
+        Image arriveLabel =
             new()
             {
-                style = { fontSize = new StyleLength(48), color = Color.white },
-                text = "Arrive!",
+                sprite = _arrivalsBadgeImage,
+                style =
+                {
+                    width = 250,
+                    height = 50
+                }
             };
         _arriveOverlay.Add(arriveLabel);
-        _arriveOverlay.visible = false;
 
         VisualElement leftContainer = new()
         {
@@ -124,9 +151,9 @@ public partial class DeployedMissionUi : VisualElement
             }
         };
 
-        Add(leftContainer);
-        Add(centerContainer);
-        Add(rightContainer);
+        _contentContainer.Add(leftContainer);
+        _contentContainer.Add(centerContainer);
+        _contentContainer.Add(rightContainer);
 
         milesRemainingLabel.text = mission.MilesRemaining + " miles";
         leftContainer.Add(milesRemainingLabel);
@@ -138,6 +165,7 @@ public partial class DeployedMissionUi : VisualElement
             {
                 backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber),
                 unityTextAlign = TextAnchor.MiddleCenter,
+                fontSize = 12,
                 color = Color.white,
                 backgroundColor = Color.clear
             }
@@ -162,7 +190,8 @@ public partial class DeployedMissionUi : VisualElement
                 sprite = mission.Train.trainSO.sprite,
                 style =
                 {
-                    width = UiUtils.GetLengthPercentage(100)
+                    width = UiUtils.GetLengthPercentage(100),
+                    height = 50,
                 }
             });
         }
@@ -184,13 +213,16 @@ public partial class DeployedMissionUi : VisualElement
 
     public void Arrive()
     {
-        _arriveOverlay.visible = true;
+        _container.style.opacity = 0.7f;
+        _arriveOverlay.style.display = DisplayStyle.Flex;
         _arriveOverlay.BringToFront();
         _arriveOverlay.RegisterCallback<ClickEvent>(
             (_) =>
             {
-                Clear();
-                Add(mission.MissionCompleteUi);
+                _contentContainer.Clear();
+                _container.style.opacity = 1;
+                _arriveOverlay.style.display = DisplayStyle.None;
+                _contentContainer.Add(mission.MissionCompleteUi);
             }
         );
     }

@@ -28,6 +28,17 @@ public abstract class Mission
     protected VisualElement weatherUiInPendingMission = new();
     protected readonly int initialMiles = 0;
     protected int milesRemaining = 0;
+    protected VisualElement rewardsContainer = new()
+    {
+        style =
+        {
+            width = UiUtils.GetLengthPercentage(100),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            flexGrow = 1,
+            alignItems = Align.FlexStart
+        }
+    };
 
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
@@ -56,7 +67,17 @@ public abstract class Mission
     }
     public VisualElement PendingMissionUi { get; } = new();
     public DeployedMissionUi DeployedMissionUi { get; protected set; }
-    public VisualElement MissionCompleteUi { get; } = new();
+    public VisualElement MissionCompleteUi { get; } = new()
+    {
+        style =
+        {
+            width = UiUtils.GetLengthPercentage(100),
+            height = UiUtils.GetLengthPercentage(100),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Column,
+            position = Position.Relative
+        }
+    };
     public int MilesRemaining
     {
         get => milesRemaining;
@@ -108,14 +129,48 @@ public abstract class Mission
 
     public virtual void GenerateMissionCompleteUi()
     {
-        MissionCompleteUi.Add(new Label("Reward"));
+        VisualElement baseContainer = new()
+        {
+            style =
+            {
+                display = DisplayStyle.Flex,
+                width = UiUtils.GetLengthPercentage(100),
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.SpaceBetween,
+            }
+        };
 
-        Button completeButton = new() { text = "Complete" };
+        baseContainer.Add(new Label("REWARD")
+        {
+            style =
+            {
+                fontSize = 20
+            }
+        });
+
+        Button completeButton = new()
+        {
+            text = "COMPLETE",
+            style =
+            {
+                position = Position.Absolute,
+                backgroundImage = _completeButtonBackground,
+                backgroundColor = Color.clear,
+                fontSize = 20,
+                color = Color.white,
+                top = 0,
+                right = 0
+            }
+        };
+        UiUtils.ToggleBorder(completeButton, false);
         completeButton.clicked += () =>
         {
             GameManager.Instance.deployedMissions.Remove(this);
             UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
         };
+        MissionCompleteUi.Add(baseContainer);
+
+        MissionCompleteUi.Add(rewardsContainer);
         MissionCompleteUi.Add(completeButton);
     }
 
@@ -269,6 +324,33 @@ public abstract class Mission
     {
         for (int i = 0; i < PendingMissionUi.childCount; i++)
             ApplyCommonPendingMissionUiStyleSingle(PendingMissionUi.Children().ElementAt(i), i);
+    }
+
+    protected void AddRewardLabel(string labelText, string rewardIconFileName)
+    {
+        VisualElement container = new()
+        {
+            style =
+            {
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                alignItems = Align.Center,
+                marginRight = 16
+            }
+        };
+
+        container.Add(new Label(labelText));
+        container.Add(new Image()
+        {
+            sprite = UiUtils.LoadSprite(rewardIconFileName),
+            style =
+            {
+                width = 40,
+                height = 40
+            }
+        });
+
+        rewardsContainer.Add(container);
     }
 
     private int CalculateInitialMiles()

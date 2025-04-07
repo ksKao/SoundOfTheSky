@@ -103,8 +103,8 @@ public class ResupplyMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        MissionCompleteUi.Add(new Label($"{NumberOfNewSupplies} new supplies!"));
-        MissionCompleteUi.Add(new Label($"{NumberOfPayments} new payments!"));
+        AddRewardLabel($"{NumberOfNewSupplies} Supplies!", "reward_supplies");
+        AddRewardLabel($"{NumberOfPayments} Payments!", "reward_payments");
     }
 
     protected override void OnMileChange()

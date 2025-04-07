@@ -264,9 +264,9 @@ public class RescueMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        MissionCompleteUi.Add(new Label($"{_numberOfNewCitizens} new citizens!"));
-        MissionCompleteUi.Add(new Label($"{_numberOfNewResources} new resources!"));
-        MissionCompleteUi.Add(new Label($"{_numberOfDeaths} deaths!"));
+        AddRewardLabel($"{_numberOfNewCitizens} New Citizens!", "reward_citizens");
+        AddRewardLabel($"{_numberOfNewResources} Resources!", "reward_resources");
+        AddRewardLabel($"{_numberOfDeaths} Deaths!", "reward_deaths");
     }
 
     public override void Complete()
