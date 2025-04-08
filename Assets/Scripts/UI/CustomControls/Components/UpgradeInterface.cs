@@ -9,7 +9,21 @@ public partial class UpgradeInterface : VisualElement
 {
     public const string PLACEHOLDER = "[placeholder]";
 
-    private readonly Button _upgradeButton = new();
+    private static readonly Texture2D _plusButtonBackground = UiUtils.LoadTexture("upgrade_plus_button");
+    private static readonly Texture2D _upgradeSegmentEmpty = UiUtils.LoadTexture("upgrade_segment_empty");
+    private static readonly Texture2D _upgradeSegmentFilled = UiUtils.LoadTexture("upgrade_segment_filled");
+
+    private readonly Button _upgradeButton = new()
+    {
+        style =
+        {
+            backgroundImage = _plusButtonBackground,
+            width = 40,
+            height = 40,
+            color = Color.white,
+            backgroundColor = Color.clear
+        }
+    };
     private readonly Label _label = new();
     private readonly Label _descriptionLabel = new();
     private readonly List<VisualElement> _progressBarSegments = new();
@@ -33,13 +47,17 @@ public partial class UpgradeInterface : VisualElement
         int maxLevel = 10
     )
     {
+        style.display = DisplayStyle.Flex;
+        style.flexDirection = FlexDirection.Column;
+        style.color = UiUtils.darkBlueTextColor;
+        style.width = UiUtils.GetLengthPercentage(100);
+
         _maxLevel = maxLevel;
-        _labelString = labelString;
+        _labelString = labelString.ToUpper();
         _descriptionString = description;
         _upgradeCost = (int)Math.Round(initialCost * Math.Pow(1.1, currentLevel - 1));
 
-        _upgradeButton.text = "+";
-        _upgradeButton.style.width = StyleKeyword.Auto;
+        UiUtils.ToggleBorder(_upgradeButton, false);
         _upgradeButton.clicked += () =>
         {
             if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < _upgradeCost)
@@ -61,8 +79,8 @@ public partial class UpgradeInterface : VisualElement
 
             for (int i = 0; i < _progressBarSegments.Count; i++)
             {
-                _progressBarSegments[i].style.backgroundColor =
-                    i < newLevel ? Color.yellow : new Color();
+                _progressBarSegments[i].style.backgroundImage =
+                    i < newLevel ? _upgradeSegmentFilled : _upgradeSegmentEmpty;
             }
 
             RefreshDescriptionText(newPlaceholderValue);
@@ -71,6 +89,8 @@ public partial class UpgradeInterface : VisualElement
         VisualElement labelContainer = new();
         labelContainer.style.display = DisplayStyle.Flex;
         labelContainer.style.flexDirection = FlexDirection.Row;
+        labelContainer.style.alignItems = Align.Center;
+        labelContainer.style.marginBottom = 10;
 
         FormatLabel(currentLevel);
         labelContainer.Add(_label);
@@ -85,8 +105,6 @@ public partial class UpgradeInterface : VisualElement
                 {
                     display = DisplayStyle.Flex,
                     flexDirection = FlexDirection.Row,
-                    width = UiUtils.GetLengthPercentage(80),
-                    height = 20,
                 },
             };
         VisualElement[] segments = new VisualElement[maxLevel];
@@ -97,14 +115,12 @@ public partial class UpgradeInterface : VisualElement
             {
                 style =
                 {
-                    flexGrow = 1,
-                    height = UiUtils.GetLengthPercentage(100),
+                    height = 30,
+                    width = 45,
                     marginRight = 4,
-                    backgroundColor = i < currentLevel ? Color.yellow : new Color(),
+                    backgroundImage = i < currentLevel ? _upgradeSegmentFilled : _upgradeSegmentEmpty,
                 },
             };
-            UiUtils.SetBorderWidth(segments[i], 1);
-            UiUtils.ToggleBorder(segments[i], true);
             segmentContainer.Add(segments[i]);
         }
 
@@ -124,7 +140,7 @@ public partial class UpgradeInterface : VisualElement
 
         if (currentLevel < _maxLevel)
         {
-            sb.Append(": ");
+            sb.Append(": $");
             sb.Append(_upgradeCost);
         }
 

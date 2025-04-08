@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 public static class UiUtils
 {
+    public static readonly Color darkBlueTextColor = HexToRgb("#2c3064");
+
     public static Length GetLengthPercentage(float percentage)
     {
         return new Length()

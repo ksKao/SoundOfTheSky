@@ -56,7 +56,7 @@ public partial class DeployedMissionUi : VisualElement
 
         style.height = UiUtils.GetLengthPercentage(100 / 6f);
         style.maxHeight = UiUtils.GetLengthPercentage(100 / 6f);
-        style.color = UiUtils.HexToRgb("#2c3064");
+        style.color = UiUtils.darkBlueTextColor;
 
         Add(_container);
 

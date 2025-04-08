@@ -18,6 +18,8 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
 
+    private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture("complete_button");
+
     // state
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
     private bool _isCompleted = false;

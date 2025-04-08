@@ -4,9 +4,38 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class TrainCard : VisualElement
 {
+    private static readonly Texture2D _trainCardBackground = UiUtils.LoadTexture("train_upgrade_overview_background");
+    private static readonly Texture2D _buyButtonBackground = UiUtils.LoadTexture("train_buy_button");
+
     private readonly Train _train;
-    private readonly VisualElement _buttonSlot = new();
+    private readonly VisualElement _topContainer = new()
+    {
+        style =
+        {
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            justifyContent = Justify.SpaceBetween,
+            width = UiUtils.GetLengthPercentage(100)
+        }
+    };
+    private readonly Label _priceLabel = new();
     private Button _button = new();
+    private readonly VisualElement _overlay = new()
+    {
+        style =
+        {
+            position = Position.Absolute,
+            left = 0,
+            top = 0,
+            backgroundColor = new Color(0, 0, 0, 0.5f),
+            width = UiUtils.GetLengthPercentage(100),
+            height = UiUtils.GetLengthPercentage(100),
+            borderTopLeftRadius = 22,
+            borderTopRightRadius = 22,
+            borderBottomLeftRadius = 22,
+            borderBottomRightRadius = 22
+        }
+    };
 
     public TrainCard()
     {
@@ -18,22 +47,61 @@ public partial class TrainCard : VisualElement
         _train = train;
 
         style.height = height;
-        Add(new Label(train.trainSO.name));
+        style.backgroundImage = _trainCardBackground;
+        style.color = UiUtils.darkBlueTextColor;
+        style.marginBottom = 20;
+        style.paddingTop = UiUtils.GetLengthPercentage(3);
+        style.paddingBottom = UiUtils.GetLengthPercentage(3);
+        style.paddingLeft = UiUtils.GetLengthPercentage(3);
+        style.paddingRight = UiUtils.GetLengthPercentage(3);
+        style.display = DisplayStyle.Flex;
+        style.flexDirection = FlexDirection.Column;
+        style.alignItems = Align.Center;
+        style.position = Position.Relative;
+
+        _topContainer.Add(new Label(train.trainSO.name.ToUpper()));
+        _topContainer.Add(_priceLabel);
+        _topContainer.Add(new() { style = { width = 100 } }); // add an empty element to align items properly because the button is absolutely positioned
+
+        Add(_topContainer);
+        Add(new Image()
+        {
+            sprite = train.trainSO.sprite,
+            style =
+            {
+                width = 600,
+                height = 100
+            }
+        });
+        Add(_overlay);
+        Add(_button);
 
         Refresh();
-
-        Add(_buttonSlot);
-        _buttonSlot.Add(_button);
     }
 
     private void Refresh()
     {
+        Remove(_button);
+        _button = new()
+        {
+            style =
+            {
+                backgroundImage = _buyButtonBackground,
+                backgroundColor = Color.clear,
+                color = Color.white,
+                width = 100,
+                position = Position.Absolute,
+                right = UiUtils.GetLengthPercentage(2.5f),
+                top = 25
+            }
+        };
+        UiUtils.ToggleBorder(_button, false);
+
         if (_train.unlocked)
         {
-            style.backgroundColor = new StyleColor() { keyword = StyleKeyword.None };
-            style.color = Color.black;
-
-            _button = new() { text = "Upgrade" };
+            _overlay.visible = false;
+            _priceLabel.text = "";
+            _button.text = "UPGRADE";
             _button.clicked += () =>
             {
                 UiManager.Instance.GameplayScreen.ChangeRightPanel(new TrainUpgradePanel(_train));
@@ -41,11 +109,9 @@ public partial class TrainCard : VisualElement
         }
         else
         {
-            Add(new Label($"${_train.trainSO.price}"));
-            style.backgroundColor = new Color(0, 0, 0, 0.5f);
-            style.color = Color.white;
-
-            _button = new() { text = "Buy" };
+            _overlay.visible = true;
+            _priceLabel.text = $"${_train.trainSO.price}";
+            _button.text = "BUY";
             _button.clicked += () =>
             {
                 if (
@@ -67,7 +133,6 @@ public partial class TrainCard : VisualElement
             };
         }
 
-        _buttonSlot.Clear();
-        _buttonSlot.Add(_button);
+        Add(_button);
     }
 }

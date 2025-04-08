@@ -1,5 +1,3 @@
-using System;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -25,7 +23,7 @@ public partial class TrainList : VisualElement
                 {
                     VisualElement trainCard = new();
                     scrollView.Add(
-                        new TrainCard(train, e.destinationPanel.visualTree.layout.height / 5)
+                        new TrainCard(train, e.destinationPanel.visualTree.layout.height / 6)
                     );
                 }
             }
