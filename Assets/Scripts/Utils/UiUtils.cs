@@ -83,4 +83,11 @@ public static class UiUtils
 
         return wrapper;
     }
+
+    public static void ShowError(string message)
+    {
+        if (UiManager.Instance == null || UiManager.Instance.GameplayScreen == null) return;
+
+        UiManager.Instance.GameplayScreen.AddError(message);
+    }
 }

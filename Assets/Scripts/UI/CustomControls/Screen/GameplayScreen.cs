@@ -1,4 +1,5 @@
 using System.Linq;
+using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -30,6 +31,7 @@ public partial class GameplayScreen : VisualElement
         style.justifyContent = Justify.Center;
         style.unityFont = AssetDatabase.LoadAssetAtPath<Font>("Assets/Fonts/myriad_pro.otf");
         style.unityFontDefinition = new StyleFontDefinition(AssetDatabase.LoadAssetAtPath<FontAsset>("Assets/Fonts/myriad_pro.asset"));
+        style.position = Position.Relative;
 
         VisualElement container = new()
         {
@@ -72,7 +74,6 @@ public partial class GameplayScreen : VisualElement
         container.Add(left);
         container.Add(_right);
     }
-
     public void ChangeRightPanel(VisualElement element)
     {
         if (RightPanel == element)
@@ -85,5 +86,29 @@ public partial class GameplayScreen : VisualElement
             _right.Add(element);
             element.style.height = UiUtils.GetLengthPercentage(100);
         }
+    }
+
+    public void AddError(string message)
+    {
+        float transitionDuration = 1f;
+
+        Label error = new()
+        {
+            text = message,
+            style =
+                {
+                    color = Color.white,
+                    position = Position.Absolute,
+                    left = UiUtils.GetLengthPercentage(50),
+                    fontSize = 24,
+                    unityTextOutlineWidth = 2,
+                    unityTextOutlineColor = Color.black,
+                    translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
+                }
+        };
+        Add(error);
+
+        Tweener opacityTween = DOTween.To(() => 1f, x => error.style.opacity = x, 0f, transitionDuration).SetEase(Ease.Linear).OnComplete(() => Remove(error));
+        Tweener translateTween = DOTween.To(() => 15f, x => error.style.top = UiUtils.GetLengthPercentage(x), 14f, transitionDuration).SetEase(Ease.Linear);
     }
 }
