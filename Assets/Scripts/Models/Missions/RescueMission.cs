@@ -50,7 +50,7 @@ public class RescueMission : Mission
         // check if this train has been unlocked
         if (!Train.unlocked)
         {
-            Debug.Log("You must unlock this train first before deploying");
+            UiUtils.ShowError("You must unlock this train first before deploying");
             return false;
         }
 
@@ -61,19 +61,19 @@ public class RescueMission : Mission
             )
         )
         {
-            Debug.Log("Train has already been deployed");
+            UiUtils.ShowError("Train has already been deployed");
             return false;
         }
 
         if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.deployedMission is not null))
         {
-            Debug.Log("One or more crew(s) has already been deployed in another mission");
+            UiUtils.ShowError("One or more crew(s) has already been deployed in another mission");
             return false;
         }
 
         if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
         {
-            Debug.Log("Not enough supplies to deploy this mission");
+            UiUtils.ShowError("Not enough supplies to deploy this mission");
             return false;
         }
 
@@ -101,13 +101,13 @@ public class RescueMission : Mission
     {
         if (selectedPassengers.Length == 0)
         {
-            Debug.Log("No passengers selected");
+            UiUtils.ShowError("No passengers selected");
             return;
         }
 
         if (NumberOfSupplies < selectedPassengers.Length)
         {
-            Debug.Log("Not enough supplies.");
+            UiUtils.ShowError("Not enough supplies.");
             return;
         }
 
@@ -130,7 +130,7 @@ public class RescueMission : Mission
         // player can only select 1 passenger at a time to use crew on
         if (selectedPassengers.Length > 1)
         {
-            Debug.Log("Only one passenger can be treated by the crew at a time.");
+            UiUtils.ShowError("Only one passenger can be treated by the crew at a time.");
             return;
         }
 
@@ -141,7 +141,7 @@ public class RescueMission : Mission
 
             if (selectedPassenger is null)
             {
-                Debug.Log("No passengers selected");
+                UiUtils.ShowError("No passengers selected");
                 return;
             }
 
@@ -223,7 +223,7 @@ public class RescueMission : Mission
         // technically should not be possible to reach this condition, but add here just in case if this method is called by something other than the on click on Ignore button
         if (ActionTakenDuringThisEvent)
         {
-            Debug.Log("Cannot ignore event after using supply or crew.");
+            UiUtils.ShowError("Cannot ignore event after using supply or crew.");
             return;
         }
 
@@ -243,7 +243,7 @@ public class RescueMission : Mission
         // if didn't use supply or crew, then this event remains unresolved.
         if (!ActionTakenDuringThisEvent)
         {
-            Debug.Log("Cannot finish resolve event without first using supply or crew.");
+            UiUtils.ShowError("Cannot finish resolve event without first using supply or crew.");
             return;
         }
 

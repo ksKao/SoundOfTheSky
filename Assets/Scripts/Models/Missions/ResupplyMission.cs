@@ -27,21 +27,21 @@ public class ResupplyMission : Mission
             )
         )
         {
-            Debug.Log("Train has already been deployed.");
+            UiUtils.ShowError("Train has already been deployed.");
             return false;
         }
 
         // check if crew has been deployed
         if (_crewSelectionPanelButton.SelectedCrews.Any(c => c.deployedMission is not null))
         {
-            Debug.Log("One or more crew(s) has been deployed in another mission");
+            UiUtils.ShowError("One or more crew(s) has been deployed in another mission");
             return false;
         }
 
         // check if player has enough supply
         if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
         {
-            Debug.Log("Not enough supplies to deploy this mission");
+            UiUtils.ShowError("Not enough supplies to deploy this mission");
             return false;
         }
 
@@ -51,7 +51,7 @@ public class ResupplyMission : Mission
             < _resourceNumberInput.Value
         )
         {
-            Debug.Log("Not enough resources to deploy this mission");
+            UiUtils.ShowError("Not enough resources to deploy this mission");
             return false;
         }
 
@@ -137,14 +137,14 @@ public class ResupplyMission : Mission
             // check if player has selected crew(s)
             if (selectedCrews.Length == 0)
             {
-                Debug.Log("Please select at least 1 crew to use supply on.");
+                UiUtils.ShowError("Please select at least 1 crew to use supply on.");
                 return;
             }
 
             // check if player has enough supply
             if (selectedCrews.Length > NumberOfSupplies)
             {
-                Debug.Log("Not enough supplies");
+                UiUtils.ShowError("Not enough supplies");
                 return;
             }
 
@@ -208,7 +208,7 @@ public class ResupplyMission : Mission
                 // mission fail when run out of resources and crews
                 if (NumberOfResources == 0)
                 {
-                    Debug.Log("Resupply mission failed");
+                    UiUtils.ShowError("Resupply mission failed");
                     GameManager.Instance.deployedMissions.Remove(this);
                     UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
                 }

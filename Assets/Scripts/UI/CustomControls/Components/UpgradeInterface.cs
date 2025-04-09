@@ -62,7 +62,7 @@ public partial class UpgradeInterface : VisualElement
         {
             if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < _upgradeCost)
             {
-                Debug.Log("Not enough payments to upgrade");
+                UiUtils.ShowError("Not enough payments to upgrade");
                 return;
             }
 

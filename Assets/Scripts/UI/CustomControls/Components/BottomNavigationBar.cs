@@ -180,7 +180,7 @@ public partial class BottomNavigationBar : VisualElement
 
                 if (selectedCrews.Length > GameManager.Instance.GetMaterialValue(MaterialType.Supplies))
                 {
-                    Debug.Log("Not enough supplies");
+                    UiUtils.ShowError("Not enough supplies");
                     return;
                 }
 
@@ -231,7 +231,7 @@ public partial class BottomNavigationBar : VisualElement
         {
             if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 300)
             {
-                Debug.Log("Not enough payments");
+                UiUtils.ShowError("Not enough payments");
                 return;
             }
 

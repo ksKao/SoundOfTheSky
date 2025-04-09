@@ -37,13 +37,13 @@ public class DocumentationMission : Mission
     {
         if (Route.end.undocumentedCitizens <= 0)
         {
-            Debug.Log("Could not deploy documentation mission with no undocumented citizens.");
+            UiUtils.ShowError("Could not deploy documentation mission with no undocumented citizens.");
             return false;
         }
 
         if (GameManager.Instance.deployedMissions.Any(m => m.Type == Type))
         {
-            Debug.Log("Another documentation mission has already been deployed.");
+            UiUtils.ShowError("Another documentation mission has already been deployed.");
             return false;
         }
 
@@ -227,12 +227,12 @@ public class DocumentationMission : Mission
     {
         if (numberInput.Value <= 0)
         {
-            Debug.Log($"Please bring {pluralMaterialName} to continue");
+            UiUtils.ShowError($"Please bring {pluralMaterialName} to continue");
             return false;
         }
         else if (numberInput.Value > GameManager.Instance.GetMaterialValue(materialType))
         {
-            Debug.Log($"Not enough {pluralMaterialName} to deploy");
+            UiUtils.ShowError($"Not enough {pluralMaterialName} to deploy");
             return false;
         }
 

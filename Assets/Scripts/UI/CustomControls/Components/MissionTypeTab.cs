@@ -130,7 +130,7 @@ public partial class MissionTypeTab : VisualElement
         {
             if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 1200)
             {
-                Debug.Log("Not enough payments");
+                UiUtils.ShowError("Not enough payments");
                 return;
             }
 

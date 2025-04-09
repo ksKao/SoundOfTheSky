@@ -100,6 +100,7 @@ public partial class GameplayScreen : VisualElement
                     color = Color.white,
                     position = Position.Absolute,
                     left = UiUtils.GetLengthPercentage(50),
+                    top = UiUtils.GetLengthPercentage(15),
                     fontSize = 24,
                     unityTextOutlineWidth = 2,
                     unityTextOutlineColor = Color.black,

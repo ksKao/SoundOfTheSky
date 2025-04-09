@@ -119,7 +119,7 @@ public partial class TrainCard : VisualElement
                     < _train.trainSO.price
                 )
                 {
-                    Debug.Log("You don't have enough payments to buy this train.");
+                    UiUtils.ShowError("You don't have enough payments to buy this train.");
                     return;
                 }
 

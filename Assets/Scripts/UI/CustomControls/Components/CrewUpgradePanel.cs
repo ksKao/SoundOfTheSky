@@ -46,9 +46,9 @@ public partial class CrewUpgradePanel : VisualElement
                 () =>
                 {
                     if (crew.isResting)
-                        Debug.Log("Crew is currently resting.");
+                        UiUtils.ShowError("Crew is currently resting.");
                     else if (crew.deployedMission is not null)
-                        Debug.Log("Crew is currently on a mission");
+                        UiUtils.ShowError("Crew is currently on a mission");
                     else
                         crew.MedicLevel++;
                     return (crew.MedicLevel, crew.MedicLevelPercentage.ToString());
@@ -71,9 +71,9 @@ public partial class CrewUpgradePanel : VisualElement
                 () =>
                 {
                     if (crew.isResting)
-                        Debug.Log("Crew is currently resting.");
+                        UiUtils.ShowError("Crew is currently resting.");
                     else if (crew.deployedMission is not null)
-                        Debug.Log("Crew is currently on a mission");
+                        UiUtils.ShowError("Crew is currently on a mission");
                     else
                         crew.EnduranceLevel++;
                     return (crew.EnduranceLevel, crew.EnduranceLevelPercentage.ToString());
