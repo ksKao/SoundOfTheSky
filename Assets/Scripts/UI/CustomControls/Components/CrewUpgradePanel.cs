@@ -11,9 +11,32 @@ public partial class CrewUpgradePanel : VisualElement
 
     public CrewUpgradePanel(Crew crew)
     {
-        Add(new Label(crew.Status.ToString()));
+        style.display = DisplayStyle.Flex;
+        style.justifyContent = Justify.SpaceBetween;
+        style.flexDirection = FlexDirection.Column;
+        style.fontSize = 24;
 
-        Add(
+        VisualElement upgradeInterfaceContainer = new()
+        {
+            style =
+            {
+                backgroundImage = UiUtils.LoadTexture("crew_selection_panel_background"),
+                // width = UiUtils.GetLengthPercentage(100),
+                // flexGrow = 1,
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                justifyContent = Justify.SpaceEvenly,
+                alignItems = Align.FlexStart,
+                marginTop = 20,
+                marginBottom = 10,
+                paddingTop = 120,
+                paddingBottom = 120,
+                paddingLeft = 40,
+                paddingRight = 40
+            }
+        };
+
+        upgradeInterfaceContainer.Add(
             new UpgradeInterface(
                 "Medic",
                 100,
@@ -33,7 +56,12 @@ public partial class CrewUpgradePanel : VisualElement
             )
         );
 
-        Add(
+        upgradeInterfaceContainer.Add(new()
+        {
+            style = { height = 120 }
+        });
+
+        upgradeInterfaceContainer.Add(
             new UpgradeInterface(
                 "Endurance",
                 100,
@@ -54,9 +82,23 @@ public partial class CrewUpgradePanel : VisualElement
             )
         );
 
-        Button backButton = new() { text = "Back" };
+        Button backButton = new()
+        {
+            text = "BACK",
+            style =
+            {
+                backgroundImage = UiUtils.LoadTexture("back_button"),
+                backgroundColor = Color.clear,
+                alignSelf = Align.FlexEnd,
+                color = Color.white,
+                width = 120,
+                height = 100
+            }
+        };
         backButton.clicked += UiManager.Instance.GameplayScreen.bottomNavigationBar.ShowCrewList;
+        UiUtils.ToggleBorder(backButton, false);
 
+        Add(upgradeInterfaceContainer);
         Add(backButton);
     }
 }
