@@ -37,6 +37,17 @@ public partial class DeployedMissionUi : VisualElement
         }
     };
 
+    public readonly Button checkHealthButton = new()
+    {
+        text = "Check\nHealth",
+        style =
+        {
+            unityTextAlign = TextAnchor.MiddleCenter,
+            fontSize = 12,
+            color = Color.white,
+            backgroundColor = Color.clear
+        }
+    };
     public readonly Mission mission;
     public readonly Label milesRemainingLabel = new();
     public readonly Button resolveButton = new();
@@ -158,19 +169,9 @@ public partial class DeployedMissionUi : VisualElement
         milesRemainingLabel.text = mission.MilesRemaining + " miles";
         leftContainer.Add(milesRemainingLabel);
 
-        Button checkHealthButton = new()
-        {
-            text = "Check\nHealth",
-            style =
-            {
-                backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber),
-                unityTextAlign = TextAnchor.MiddleCenter,
-                fontSize = 12,
-                color = Color.white,
-                backgroundColor = Color.clear
-            }
-        };
         UiUtils.ToggleBorder(checkHealthButton, false);
+        checkHealthButton.style.backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber);
+        checkHealthButton.clicked += mission.OnCheckHealthButtonClicked;
         leftContainer.Add(checkHealthButton);
 
         weatherLabel.text = mission.WeatherSO.name;

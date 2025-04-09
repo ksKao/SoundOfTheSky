@@ -17,7 +17,6 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_5"),
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
-
     private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture("complete_button");
 
     // state
@@ -30,6 +29,7 @@ public abstract class Mission
     protected VisualElement weatherUiInPendingMission = new();
     protected readonly int initialMiles = 0;
     protected int milesRemaining = 0;
+    protected CheckHealthPanel checkHealthPanel;
     protected VisualElement rewardsContainer = new()
     {
         style =
@@ -47,6 +47,7 @@ public abstract class Mission
     public virtual Train Train { get; } =
         Random.GetFromArray(GameManager.Instance.Trains.ToArray());
     public virtual int MilesPerInterval => 5;
+    public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public WeatherSO WeatherSO => weather;
@@ -94,6 +95,7 @@ public abstract class Mission
     public Mission()
     {
         weather = DataManager.Instance.GetRandomWeather();
+        checkHealthPanel = new(this);
 
         // each tier of the weather will increase the chance by 5%
         int currentWeatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
@@ -227,6 +229,11 @@ public abstract class Mission
     public virtual void OnResolveButtonClicked()
     {
         EventPending = false;
+    }
+
+    public virtual void OnCheckHealthButtonClicked()
+    {
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(checkHealthPanel);
     }
 
     public void ApplyCommonPendingMissionUiStyleSingle(VisualElement element, int index)

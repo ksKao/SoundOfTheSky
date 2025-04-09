@@ -90,7 +90,7 @@ public partial class GameplayScreen : VisualElement
 
     public void AddError(string message)
     {
-        float transitionDuration = 1f;
+        float transitionDuration = 2f;
 
         Label error = new()
         {

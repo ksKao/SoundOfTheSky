@@ -11,6 +11,7 @@ public class Passenger
     private static readonly Texture2D _backgroundBlue = UiUtils.LoadTexture("crew_selection_background");
     private static readonly Texture2D _backgroundBlueSelected = UiUtils.LoadTexture("crew_selection_background_glow");
 
+    public bool selectable = true;
     public readonly VisualElement ui = new()
     {
         style =
@@ -92,7 +93,7 @@ public class Passenger
     protected virtual void OnClick(ClickEvent _)
     {
         // do not select this if passenger is comfortable as there is no reason for player to use supply/crew on them anyways
-        if (Status == PassengerStatus.Comfortable)
+        if (Status == PassengerStatus.Comfortable || !selectable)
             return;
 
         Selected = !Selected;

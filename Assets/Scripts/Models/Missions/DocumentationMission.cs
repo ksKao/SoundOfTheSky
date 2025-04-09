@@ -79,6 +79,7 @@ public class DocumentationMission : Mission
         DeployedMissionUi.materialLabelsContainer.Add(_resourceAmountLabel);
         DeployedMissionUi.materialLabelsContainer.Add(_supplyAmountLabel);
         DeployedMissionUi.materialLabelsContainer.Add(_paymentAmountLabel);
+        DeployedMissionUi.checkHealthButton.style.display = DisplayStyle.None;
 
         UpdateLabels();
     }

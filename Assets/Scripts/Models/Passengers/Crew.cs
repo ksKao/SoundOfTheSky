@@ -33,6 +33,8 @@ public class Crew : Passenger
 
     protected override void OnClick(ClickEvent _)
     {
+        if (!selectable) return;
+
         Selected = !Selected;
         UiManager.Instance.GameplayScreen.crewSelectionPanel.OnCrewSelectChange();
     }

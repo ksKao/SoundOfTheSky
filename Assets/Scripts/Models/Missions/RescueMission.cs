@@ -24,6 +24,18 @@ public class RescueMission : Mission
         new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
+    public override Passenger[] CrewsAndPassengers
+    {
+        get
+        {
+            Passenger[] crewsAndPassengers = new Passenger[Passengers.Count + Crews.Length];
+
+            Passengers.CopyTo(crewsAndPassengers, 0);
+            Crews.CopyTo(crewsAndPassengers, Passengers.Count);
+
+            return crewsAndPassengers;
+        }
+    }
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfResources { get; private set; } = 0;
     public bool ActionTakenDuringThisEvent
@@ -306,7 +318,10 @@ public class RescueMission : Mission
             NumberOfResources += Train.CartLevel;
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
+            {
                 Passengers.Add(new());
+                checkHealthPanel.Refresh();
+            }
 
             _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
         }

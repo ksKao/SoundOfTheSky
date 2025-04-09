@@ -11,6 +11,7 @@ public class ResupplyMission : Mission
     private readonly Label _deployedMissionResourcesLabel = new();
 
     public override MissionType Type { get; } = MissionType.Resupply;
+    public override Passenger[] CrewsAndPassengers => Crews;
     public override Route Route =>
         new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
     public int NumberOfNewSupplies { get; private set; } = 0;
