@@ -7,9 +7,10 @@ using UnityEngine.UIElements;
 public abstract class Mission
 {
     // consts
-    private const float SECONDS_PER_MILE = 0.1f;
+    private const float SECONDS_PER_MILE = 5f;
 
-    public static readonly Texture2D[] pendingMissionBarBackground = {
+    public static readonly Texture2D[] pendingMissionBarBackground =
+    {
         UiUtils.LoadTexture("pending_mission_bar_1"),
         UiUtils.LoadTexture("pending_mission_bar_2"),
         UiUtils.LoadTexture("pending_mission_bar_3"),
@@ -17,7 +18,9 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_5"),
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
-    private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture("complete_button");
+    private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture(
+        "complete_button"
+    );
 
     // state
     private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
@@ -30,17 +33,18 @@ public abstract class Mission
     protected readonly int initialMiles = 0;
     protected int milesRemaining = 0;
     protected CheckHealthPanel checkHealthPanel;
-    protected VisualElement rewardsContainer = new()
-    {
-        style =
+    protected VisualElement rewardsContainer =
+        new()
         {
-            width = UiUtils.GetLengthPercentage(100),
-            display = DisplayStyle.Flex,
-            flexDirection = FlexDirection.Row,
-            flexGrow = 1,
-            alignItems = Align.FlexStart
-        }
-    };
+            style =
+            {
+                width = UiUtils.GetLengthPercentage(100),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                flexGrow = 1,
+                alignItems = Align.FlexStart,
+            },
+        };
 
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
@@ -70,17 +74,18 @@ public abstract class Mission
     }
     public VisualElement PendingMissionUi { get; } = new();
     public DeployedMissionUi DeployedMissionUi { get; protected set; }
-    public VisualElement MissionCompleteUi { get; } = new()
-    {
-        style =
+    public VisualElement MissionCompleteUi { get; } =
+        new()
         {
-            width = UiUtils.GetLengthPercentage(100),
-            height = UiUtils.GetLengthPercentage(100),
-            display = DisplayStyle.Flex,
-            flexDirection = FlexDirection.Column,
-            position = Position.Relative
-        }
-    };
+            style =
+            {
+                width = UiUtils.GetLengthPercentage(100),
+                height = UiUtils.GetLengthPercentage(100),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                position = Position.Relative,
+            },
+        };
     public int MilesRemaining
     {
         get => milesRemaining;
@@ -133,39 +138,35 @@ public abstract class Mission
 
     public virtual void GenerateMissionCompleteUi()
     {
-        VisualElement baseContainer = new()
-        {
-            style =
+        VisualElement baseContainer =
+            new()
             {
-                display = DisplayStyle.Flex,
-                width = UiUtils.GetLengthPercentage(100),
-                flexDirection = FlexDirection.Row,
-                justifyContent = Justify.SpaceBetween,
-            }
-        };
+                style =
+                {
+                    display = DisplayStyle.Flex,
+                    width = UiUtils.GetLengthPercentage(100),
+                    flexDirection = FlexDirection.Row,
+                    justifyContent = Justify.SpaceBetween,
+                },
+            };
 
-        baseContainer.Add(new Label("REWARD")
-        {
-            style =
-            {
-                fontSize = 20
-            }
-        });
+        baseContainer.Add(new Label("REWARD") { style = { fontSize = 20 } });
 
-        Button completeButton = new()
-        {
-            text = "COMPLETE",
-            style =
+        Button completeButton =
+            new()
             {
-                position = Position.Absolute,
-                backgroundImage = _completeButtonBackground,
-                backgroundColor = Color.clear,
-                fontSize = 20,
-                color = Color.white,
-                top = 0,
-                right = 0
-            }
-        };
+                text = "COMPLETE",
+                style =
+                {
+                    position = Position.Absolute,
+                    backgroundImage = _completeButtonBackground,
+                    backgroundColor = Color.clear,
+                    fontSize = 20,
+                    color = Color.white,
+                    top = 0,
+                    right = 0,
+                },
+            };
         UiUtils.ToggleBorder(completeButton, false);
         completeButton.clicked += () =>
         {
@@ -240,13 +241,16 @@ public abstract class Mission
     {
         element.style.display = DisplayStyle.Flex;
         element.style.flexDirection = FlexDirection.Column;
-        element.style.justifyContent = element.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
+        element.style.justifyContent =
+            element.childCount > 1 ? Justify.SpaceBetween : Justify.Center;
         element.style.alignItems = Align.Center;
         element.style.paddingTop = UiUtils.GetLengthPercentage(1.5f);
         element.style.paddingBottom = UiUtils.GetLengthPercentage(1.5f);
         element.style.paddingLeft = UiUtils.GetLengthPercentage(1.5f);
         element.style.paddingRight = UiUtils.GetLengthPercentage(1.5f);
-        element.style.backgroundImage = UiUtils.LoadTexture($"pending_mission_ui_element_background_{index % 5 + 1}");
+        element.style.backgroundImage = UiUtils.LoadTexture(
+            $"pending_mission_ui_element_background_{index % 5 + 1}"
+        );
         element.style.maxWidth = UiUtils.GetLengthPercentage(13);
         element.style.height = UiUtils.GetLengthPercentage(100);
 
@@ -318,13 +322,19 @@ public abstract class Mission
         PendingMissionUi.style.paddingRight = UiUtils.GetLengthPercentage(3);
 
         VisualElement routeElement = new();
-        routeElement.Add(UiUtils.WrapLabel(new Label(Route.start.locationSO.name + "\n" + Route.end.locationSO.name)));
+        routeElement.Add(
+            UiUtils.WrapLabel(
+                new Label(Route.start.locationSO.name + "\n" + Route.end.locationSO.name)
+            )
+        );
         routeElement.Add(UiUtils.WrapLabel(new Label(initialMiles.ToString())));
 
         PendingMissionUi.Add(routeElement);
 
         weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.name)));
-        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.decisionMakingProbability * 100 + "%")));
+        weatherUiInPendingMission.Add(
+            UiUtils.WrapLabel(new Label(weather.decisionMakingProbability * 100 + "%"))
+        );
 
         PendingMissionUi.Add(weatherUiInPendingMission);
     }
@@ -337,27 +347,26 @@ public abstract class Mission
 
     protected void AddRewardLabel(string labelText, string rewardIconFileName)
     {
-        VisualElement container = new()
-        {
-            style =
+        VisualElement container =
+            new()
             {
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Column,
-                alignItems = Align.Center,
-                marginRight = 16
-            }
-        };
+                style =
+                {
+                    display = DisplayStyle.Flex,
+                    flexDirection = FlexDirection.Column,
+                    alignItems = Align.Center,
+                    marginRight = 16,
+                },
+            };
 
         container.Add(new Label(labelText));
-        container.Add(new Image()
-        {
-            sprite = UiUtils.LoadSprite(rewardIconFileName),
-            style =
+        container.Add(
+            new Image()
             {
-                width = 40,
-                height = 40
+                sprite = UiUtils.LoadSprite(rewardIconFileName),
+                style = { width = 40, height = 40 },
             }
-        });
+        );
 
         rewardsContainer.Add(container);
     }

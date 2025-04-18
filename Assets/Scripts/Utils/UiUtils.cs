@@ -8,11 +8,7 @@ public static class UiUtils
 
     public static Length GetLengthPercentage(float percentage)
     {
-        return new Length()
-        {
-            unit = LengthUnit.Percent,
-            value = percentage
-        };
+        return new Length() { unit = LengthUnit.Percent, value = percentage };
     }
 
     public static void SetBorderWidth(VisualElement element, int width)
@@ -41,14 +37,14 @@ public static class UiUtils
         }
     }
 
-    public static Texture2D LoadTexture(string fileName, string extension = "png")
+    public static Texture2D LoadTexture(string fileName)
     {
-        return AssetDatabase.LoadAssetAtPath<Texture2D>($"Assets/Images/{fileName}.{extension}");
+        return Resources.Load<Texture2D>($"Images/{fileName}");
     }
 
-    public static Sprite LoadSprite(string fileName, string extension = "png")
+    public static Sprite LoadSprite(string fileName)
     {
-        return AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/Images/{fileName}.{extension}");
+        return Resources.Load<Sprite>($"Images/{fileName}");
     }
 
     public static Color HexToRgb(string hex)
@@ -56,9 +52,12 @@ public static class UiUtils
         if (hex.StartsWith("#"))
             hex = hex[1..];
 
-        float r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
-        float g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
-        float b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        float r =
+            int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        float g =
+            int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        float b =
+            int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
 
         return new(r, g, b);
     }
@@ -86,7 +85,8 @@ public static class UiUtils
 
     public static void ShowError(string message)
     {
-        if (UiManager.Instance == null || UiManager.Instance.GameplayScreen == null) return;
+        if (UiManager.Instance == null || UiManager.Instance.GameplayScreen == null)
+            return;
 
         UiManager.Instance.GameplayScreen.AddError(message);
     }

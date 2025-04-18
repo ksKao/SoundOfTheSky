@@ -1,6 +1,5 @@
 using System.Linq;
 using DG.Tweening;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
@@ -29,25 +28,28 @@ public partial class GameplayScreen : VisualElement
         style.display = DisplayStyle.Flex;
         style.alignItems = Align.Center;
         style.justifyContent = Justify.Center;
-        style.unityFont = AssetDatabase.LoadAssetAtPath<Font>("Assets/Fonts/myriad_pro.otf");
-        style.unityFontDefinition = new StyleFontDefinition(AssetDatabase.LoadAssetAtPath<FontAsset>("Assets/Fonts/myriad_pro.asset"));
+        style.unityFont = Resources.Load<Font>("Fonts/myriad_pro");
+        style.unityFontDefinition = new StyleFontDefinition(
+            Resources.Load<FontAsset>("Fonts/myriad_pro")
+        );
         style.position = Position.Relative;
 
-        VisualElement container = new()
-        {
-            style =
+        VisualElement container =
+            new()
             {
-                backgroundImage = UiUtils.LoadTexture("wallpaper_border"),
-                width = UiUtils.GetLengthPercentage(95),
-                height = UiUtils.GetLengthPercentage(95),
-                paddingTop = 30,
-                paddingBottom = 30,
-                paddingLeft = 35,
-                paddingRight = 35,
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row
-            }
-        };
+                style =
+                {
+                    backgroundImage = UiUtils.LoadTexture("wallpaper_border"),
+                    width = UiUtils.GetLengthPercentage(95),
+                    height = UiUtils.GetLengthPercentage(95),
+                    paddingTop = 30,
+                    paddingBottom = 30,
+                    paddingLeft = 35,
+                    paddingRight = 35,
+                    display = DisplayStyle.Flex,
+                    flexDirection = FlexDirection.Row,
+                },
+            };
 
         VisualElement left =
             new()
@@ -74,6 +76,7 @@ public partial class GameplayScreen : VisualElement
         container.Add(left);
         container.Add(_right);
     }
+
     public void ChangeRightPanel(VisualElement element)
     {
         if (RightPanel == element)
@@ -92,10 +95,11 @@ public partial class GameplayScreen : VisualElement
     {
         float transitionDuration = 2f;
 
-        Label error = new()
-        {
-            text = message,
-            style =
+        Label error =
+            new()
+            {
+                text = message,
+                style =
                 {
                     color = Color.white,
                     position = Position.Absolute,
@@ -105,11 +109,21 @@ public partial class GameplayScreen : VisualElement
                     unityTextOutlineWidth = 2,
                     unityTextOutlineColor = Color.black,
                     translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
-                }
-        };
+                },
+            };
         Add(error);
 
-        Tweener opacityTween = DOTween.To(() => 1f, x => error.style.opacity = x, 0f, transitionDuration).SetEase(Ease.Linear).OnComplete(() => Remove(error));
-        Tweener translateTween = DOTween.To(() => 15f, x => error.style.top = UiUtils.GetLengthPercentage(x), 14f, transitionDuration).SetEase(Ease.Linear);
+        Tweener opacityTween = DOTween
+            .To(() => 1f, x => error.style.opacity = x, 0f, transitionDuration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => Remove(error));
+        Tweener translateTween = DOTween
+            .To(
+                () => 15f,
+                x => error.style.top = UiUtils.GetLengthPercentage(x),
+                14f,
+                transitionDuration
+            )
+            .SetEase(Ease.Linear);
     }
 }

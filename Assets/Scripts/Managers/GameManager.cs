@@ -12,9 +12,9 @@ public class GameManager : Singleton<GameManager>
     private readonly Dictionary<MaterialType, int> _materials =
         new()
         {
-            { MaterialType.Payments, 100 },
-            { MaterialType.Supplies, 100 },
-            { MaterialType.Resources, 100 },
+            { MaterialType.Payments, 500 },
+            { MaterialType.Supplies, 500 },
+            { MaterialType.Resources, 500 },
             { MaterialType.Citizens, 100 },
         };
 
@@ -106,7 +106,9 @@ public class GameManager : Singleton<GameManager>
 
         // need to update UI after generating the data
         UiManager.Instance.GameplayScreen.missionTypeTab.RefreshTabHighlight();
-        UiManager.Instance.RefreshMissionList(UiManager.Instance.GameplayScreen.missionTypeTab.ActiveTab);
+        UiManager.Instance.RefreshMissionList(
+            UiManager.Instance.GameplayScreen.missionTypeTab.ActiveTab
+        );
     }
 
     public int GetMaterialValue(MaterialType materialType)
