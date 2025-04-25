@@ -34,7 +34,7 @@ public class HelpCommand : Command
             output.AppendLine(command.HelpText);
 
             // cache here to use multiple times
-            Dictionary<string, string> usage = Usage;
+            Dictionary<string, string> usage = command.Usage;
             if (usage.Count > 0)
             {
                 output.AppendLine("Usage:");
