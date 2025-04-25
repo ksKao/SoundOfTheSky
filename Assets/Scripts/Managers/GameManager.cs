@@ -106,7 +106,7 @@ public class GameManager : Singleton<GameManager>
 
         // need to update UI after generating the data
         UiManager.Instance.GameplayScreen.missionTypeTab.RefreshTabHighlight();
-        UiManager.Instance.RefreshMissionList(
+        UiManager.Instance.GameplayScreen.RefreshMissionList(
             UiManager.Instance.GameplayScreen.missionTypeTab.ActiveTab
         );
     }
@@ -160,7 +160,7 @@ public class GameManager : Singleton<GameManager>
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
 
         PendingMissions.Add((Mission)Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
-        UiManager.Instance.RefreshMissionList(_selectedPendingMission.Type);
+        UiManager.Instance.GameplayScreen.RefreshMissionList(_selectedPendingMission.Type);
         _selectedPendingMission = null;
     }
 }

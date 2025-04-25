@@ -21,6 +21,7 @@ public partial class GameplayScreen : VisualElement
 
     public GameplayScreen()
     {
+        style.position = Position.Relative;
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
         style.minHeight = UiUtils.GetLengthPercentage(100);
@@ -125,5 +126,23 @@ public partial class GameplayScreen : VisualElement
                 transitionDuration
             )
             .SetEase(Ease.Linear);
+    }
+
+    public void RefreshMissionList(MissionType selectedType)
+    {
+        pendingMissionList.Clear();
+
+        int i = 0;
+        foreach (Mission mission in GameManager.Instance.PendingMissions)
+        {
+            if (mission.Type != selectedType) continue;
+
+            pendingMissionList.Add(mission.PendingMissionUi);
+            mission.PendingMissionUi.style.backgroundImage = Mission.pendingMissionBarBackground[i % Mission.pendingMissionBarBackground.Length];
+
+            i++;
+        }
+
+        GameManager.Instance.SelectedPendingMission = null;
     }
 }

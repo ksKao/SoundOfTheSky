@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -130,6 +131,8 @@ GameObject:
   - component: {fileID: 241244941}
   - component: {fileID: 241244943}
   - component: {fileID: 241244944}
+  - component: {fileID: 241244945}
+  - component: {fileID: 241244946}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -213,6 +216,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54fcac44c3d7c864882a4a8b1f29f58a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &241244945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241244940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe66d35041ba8da083d20faf3155920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &241244946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241244940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f462d0162fbcce9279d5b205a3f6b0ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &519420028

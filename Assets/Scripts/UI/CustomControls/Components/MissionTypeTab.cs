@@ -48,7 +48,7 @@ public partial class MissionTypeTab : VisualElement
             tab.clicked += () =>
             {
                 _activeTab = missionType;
-                UiManager.Instance.RefreshMissionList(missionType);
+                UiManager.Instance.GameplayScreen.RefreshMissionList(missionType);
                 RefreshTabHighlight();
             };
 

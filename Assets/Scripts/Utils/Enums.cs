@@ -28,3 +28,10 @@ public enum PassengerBackgroundStyle
     Gray,
     Blue,
 }
+
+public enum ConsoleOutputLevel
+{
+    Error,
+    Info,
+    Success,
+}

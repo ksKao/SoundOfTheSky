@@ -1,0 +1,93 @@
+{
+    "name": "GameInputAction",
+    "maps": [
+        {
+            "name": "Main",
+            "id": "80355399-78bb-4b03-ace9-b71a2893c09c",
+            "actions": [
+                {
+                    "name": "Open Console",
+                    "type": "Button",
+                    "id": "8a6e27ce-4338-425c-afe6-ba974d5d4fb6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b011b480-ea26-4302-9f9d-506aaa268fed",
+                    "path": "<Keyboard>/f11",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Console",
+            "id": "9fad337c-a4c2-41fd-9712-6709353147bc",
+            "actions": [
+                {
+                    "name": "Close",
+                    "type": "Button",
+                    "id": "5b79560e-3f38-43b7-8b71-d6d789e8e719",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Submit",
+                    "type": "Button",
+                    "id": "37dc6b2b-7186-4d72-a398-f43dcaf9b01c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "38b8615c-4bf4-46c9-9283-e997f114aa0d",
+                    "path": "<Keyboard>/f11",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Close",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1d3994f-b6c6-4bc6-9b6a-cb557ec94990",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Close",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a6f727a-f8b7-40e8-aa31-585335af8926",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Submit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
