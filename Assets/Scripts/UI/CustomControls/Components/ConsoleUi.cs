@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -29,7 +30,8 @@ public partial class ConsoleUi : VisualElement
         style =
         {
             height = 36,
-            width = UiUtils.GetLengthPercentage(100)
+            width = UiUtils.GetLengthPercentage(100),
+            unityFontStyleAndWeight = FontStyle.Bold,
         }
     };
 
@@ -44,6 +46,10 @@ public partial class ConsoleUi : VisualElement
         style.translate = new Translate(UiUtils.GetLengthPercentage(-50), UiUtils.GetLengthPercentage(-50));
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
+        style.unityFont = Resources.Load<Font>("Fonts/jetbrains_mono");
+        style.unityFontDefinition = new StyleFontDefinition(
+            Resources.Load<FontAsset>("Fonts/jetbrains_mono")
+        );
 
         Add(outputContainer);
 

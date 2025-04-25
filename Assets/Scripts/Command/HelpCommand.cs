@@ -24,7 +24,7 @@ public class HelpCommand : Command
             output.AppendLine("All commands: ");
             foreach (Command command in ConsoleManager.Instance.Commands)
             {
-                output.AppendLine($"{command.Id} - {command.HelpText}");
+                output.AppendLine($"  • {command.Id} - {command.HelpText}");
             }
         }
         else
@@ -41,7 +41,7 @@ public class HelpCommand : Command
 
                 foreach (KeyValuePair<string, string> kv in usage)
                 {
-                    output.AppendLine($"{kv.Key}: {kv.Value}");
+                    output.AppendLine($"  • {kv.Key}: {kv.Value}");
                 }
             }
         }
