@@ -79,7 +79,7 @@ public partial class TrainCard : VisualElement
         Refresh();
     }
 
-    private void Refresh()
+    public void Refresh()
     {
         Remove(_button);
         _button = new()

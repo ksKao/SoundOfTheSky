@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class TrainList : VisualElement
 {
+    private readonly List<TrainCard> _trainCards = new();
+
     public TrainList()
     {
         style.height = UiUtils.GetLengthPercentage(100);
@@ -21,12 +24,16 @@ public partial class TrainList : VisualElement
 
                 foreach (Train train in GameManager.Instance.Trains)
                 {
-                    VisualElement trainCard = new();
-                    scrollView.Add(
-                        new TrainCard(train, e.destinationPanel.visualTree.layout.height / 6)
-                    );
+                    TrainCard trainCard = new(train, e.destinationPanel.visualTree.layout.height / 6);
+                    _trainCards.Add(trainCard);
+                    scrollView.Add(trainCard);
                 }
             }
         );
+    }
+
+    public void Refresh()
+    {
+        _trainCards.ForEach(c => c.Refresh());
     }
 }
