@@ -19,7 +19,8 @@ public class ConsoleManager : Singleton<ConsoleManager>
             new HelpCommand(),
             new ClearCommand(),
             new GiveCommand(),
-            new UnlockCommand()
+            new UnlockCommand(),
+            new SetCommand()
         };
 
         InputManager.Instance.InputAction.Main.OpenConsole.performed += ctx => OpenConsole();

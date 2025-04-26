@@ -6,9 +6,7 @@ using UnityEngine.UIElements;
 
 public abstract class Mission
 {
-    // consts
-    private const float SECONDS_PER_MILE = 5f;
-
+    public const float DEFAULT_SECONDS_PER_MILE = 5f;
     public static readonly Texture2D[] pendingMissionBarBackground =
     {
         UiUtils.LoadTexture("pending_mission_bar_1"),
@@ -18,12 +16,13 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_5"),
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
+
     private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture(
         "complete_button"
     );
 
     // state
-    private float _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+    private float _secondsRemainingUntilNextMile = DEFAULT_SECONDS_PER_MILE;
     private bool _isCompleted = false;
     private bool _eventPending = false;
     private bool _skippedLastInterval = false;
@@ -208,7 +207,7 @@ public abstract class Mission
         if (_secondsRemainingUntilNextMile <= 0)
         {
             // reset the timer
-            _secondsRemainingUntilNextMile = SECONDS_PER_MILE;
+            _secondsRemainingUntilNextMile = GameManager.Instance.SecondsPerMile;
 
             MilesRemaining--;
         }

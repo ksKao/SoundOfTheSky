@@ -24,6 +24,7 @@ public class GameManager : Singleton<GameManager>
     public Location[] Locations { get; private set; } = { };
     public Train[] Trains { get; private set; } = { };
     public List<Mission> PendingMissions { get; private set; } = new();
+    public float SecondsPerMile { get; set; } = Mission.DEFAULT_SECONDS_PER_MILE;
 
     public Mission SelectedPendingMission
     {
