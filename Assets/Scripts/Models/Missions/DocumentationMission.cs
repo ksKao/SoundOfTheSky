@@ -65,6 +65,7 @@ public class DocumentationMission : Mission
         GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -NumberOfPayments);
 
         RerollWeather();
+        UpdateLabels();
 
         return true;
     }
