@@ -21,5 +21,4 @@ public class UiManager : Singleton<UiManager>
             GameplayScreen = uiDocument.rootVisualElement.Q<GameplayScreen>();
         }
     }
-
 }
