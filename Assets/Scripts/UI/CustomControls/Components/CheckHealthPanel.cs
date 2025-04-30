@@ -76,7 +76,6 @@ public class CheckHealthPanel : VisualElement
         foreach (Passenger passenger in _mission.CrewsAndPassengers)
         {
             passenger.Selected = false;
-            passenger.selectable = false;
             _passengersContainer.Add(passenger.ui);
         }
     }
@@ -84,6 +83,9 @@ public class CheckHealthPanel : VisualElement
     private void OnAttach(AttachToPanelEvent e)
     {
         Refresh();
+
+        foreach (Passenger passenger in _mission.CrewsAndPassengers)
+            passenger.selectable = false;
     }
 
     private void OnDetach(DetachFromPanelEvent e)
