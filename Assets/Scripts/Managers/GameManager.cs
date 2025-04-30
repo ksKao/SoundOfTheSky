@@ -48,6 +48,7 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         Locations = DataManager.Instance.AllLocations.Select(l => new Location(l)).ToArray();
         Trains = DataManager.Instance.AllTrains.Select(t => new Train(t)).ToArray();
+        Application.runInBackground = true;
     }
 
     private void OnEnable()
