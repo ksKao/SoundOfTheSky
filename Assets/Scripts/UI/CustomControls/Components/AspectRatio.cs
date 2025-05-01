@@ -1,56 +1,51 @@
 using System;
 using NUnit.Compatibility;
+using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class AspectRatio : VisualElement
 {
-    private readonly float _targetAspectRatio = 16f / 9f;  // You can change this to any ratio you want
-
     public AspectRatio()
     {
         // Initialize the aspect ratio and child container
         style.flexGrow = 1;
         style.backgroundColor = Color.black;
+
         RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
     }
 
     private void OnGeometryChanged(GeometryChangedEvent evt)
     {
+        if (parent is null) return;
+
         // Get the current size of the container
-        float containerWidth = resolvedStyle.width;
-        float containerHeight = resolvedStyle.height;
+        float containerWidth = parent.resolvedStyle.width;
+        float containerHeight = parent.resolvedStyle.height;
 
         if (containerWidth > 0 && containerHeight > 0)
         {
-            // Calculate the aspect ratio of the container
-            float containerAspectRatio = containerWidth / containerHeight;
+            float targetWidth = containerWidth;
+            float targetHeight = targetWidth / 16f * 9f;
 
-            // Check if the container needs to adjust to maintain the target aspect ratio
-            if (containerAspectRatio > _targetAspectRatio)
+            if (targetHeight > containerHeight)
             {
-                // Too wide, adjust the height (vertical black bars)
-                float newHeight = containerWidth / _targetAspectRatio;
-                float padding = (containerHeight - newHeight) / 2;
-
-                style.paddingTop = 0;
-                style.paddingBottom = 0;
-                style.paddingLeft = Math.Abs(padding);
-                style.paddingRight = Math.Abs(padding);
+                // Height is the limiting factor
+                targetHeight = containerHeight;
+                targetWidth = targetHeight / 9f * 16f;
             }
-            else
-            {
-                // Too tall, adjust the width (horizontal black bars)
-                float newWidth = containerHeight * _targetAspectRatio;
-                float padding = (containerWidth - newWidth) / 2;
 
-                // Apply padding (black bars on the left and right)
-                style.paddingTop = Math.Abs(padding);
-                style.paddingBottom = Math.Abs(padding);
-                style.paddingLeft = 0;
-                style.paddingRight = 0;
-            }
+            style.width = targetWidth;
+            style.maxWidth = targetWidth;
+            style.maxHeight = targetHeight;
+            style.height = targetHeight;
         }
+
+        parent.style.display = DisplayStyle.Flex;
+        parent.style.flexDirection = FlexDirection.Row;
+        parent.style.backgroundColor = Color.black;
+        parent.style.justifyContent = Justify.Center;
+        parent.style.alignItems = Align.Center;
     }
 }
