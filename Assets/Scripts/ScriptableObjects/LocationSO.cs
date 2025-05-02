@@ -5,4 +5,7 @@ public class LocationSO : ScriptableObject
 {
     public new string name;
     public int milesToNextStop;
+    public float xMapPinOffsetPercentage;
+    public float yMapPinOffsetPercentage;
+    public bool mapPinReverse;
 }

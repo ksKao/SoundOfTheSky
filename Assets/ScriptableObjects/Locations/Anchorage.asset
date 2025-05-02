@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Anchorage
   milesToNextStop: 40
+  xMapPinOffsetPercentage: 25
+  yMapPinOffsetPercentage: 69
+  mapPinReverse: 0

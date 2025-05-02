@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Seward
   milesToNextStop: 0
+  xMapPinOffsetPercentage: 57
+  yMapPinOffsetPercentage: 94
+  mapPinReverse: 0

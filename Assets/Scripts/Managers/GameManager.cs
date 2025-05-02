@@ -15,7 +15,6 @@ public class GameManager : Singleton<GameManager>
             { MaterialType.Payments, 500 },
             { MaterialType.Supplies, 500 },
             { MaterialType.Resources, 500 },
-            { MaterialType.Citizens, 100 },
         };
 
     public readonly List<Mission> deployedMissions = new();
@@ -59,6 +58,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
+        UiManager.Instance.GameplayScreen.map.Refresh();
         RefreshAllMissions();
         UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
 
@@ -137,10 +137,7 @@ public class GameManager : Singleton<GameManager>
         }
 
         _materials[materialType] += number;
-        UiManager.Instance.GameplayScreen.materialBar.UpdateMaterialAmount(
-            materialType,
-            _materials[materialType]
-        );
+        UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
     }
 
     private void DeploySelectedMission()

@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Denali
   milesToNextStop: 120
+  xMapPinOffsetPercentage: 49
+  yMapPinOffsetPercentage: 23
+  mapPinReverse: 0

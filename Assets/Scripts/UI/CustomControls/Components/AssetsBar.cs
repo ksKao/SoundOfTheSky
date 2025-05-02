@@ -1,39 +1,43 @@
 using System;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class MaterialsBar : VisualElement
 {
-    private readonly Label _paymentsLabel = new();
-    private readonly Label _suppliesLabel = new();
-    private readonly Label _resourcesLabel = new();
-    private readonly Label _citizensLabel = new();
-
     public MaterialsBar()
     {
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
         style.alignItems = Align.Center;
 
-        AddMaterialLabel(MaterialType.Payments, _paymentsLabel);
-        AddMaterialLabel(MaterialType.Supplies, _suppliesLabel);
-        AddMaterialLabel(MaterialType.Resources, _resourcesLabel);
-        AddMaterialLabel(MaterialType.Citizens, _citizensLabel);
+        MaterialType[] allMaterialTypes = (MaterialType[])Enum.GetValues(typeof(MaterialType));
+        foreach (MaterialType materialType in allMaterialTypes)
+        {
+            AddMaterialLabel(materialType);
+        }
     }
 
     public void RefreshAllMaterialAmountUi()
     {
-        MaterialType[] allMaterialTypes = (MaterialType[])Enum.GetValues(typeof(MaterialType));
-        foreach (MaterialType materialType in allMaterialTypes)
+        UpdateMaterialAmount(MaterialType.Payments, GameManager.Instance.GetMaterialValue(MaterialType.Payments));
+        UpdateMaterialAmount(MaterialType.Resources, GameManager.Instance.GetMaterialValue(MaterialType.Resources));
+        UpdateMaterialAmount(MaterialType.Supplies, GameManager.Instance.GetMaterialValue(MaterialType.Supplies));
+
+        int numberOfResidents = 0;
+        int numberOfCitizens = 0;
+
+        foreach (Location location in GameManager.Instance.Locations)
         {
-            UpdateMaterialAmount(materialType, GameManager.Instance.GetMaterialValue(materialType));
+            numberOfResidents += location.Residents;
+            numberOfCitizens += location.Citizens;
         }
+
+        UpdateMaterialAmount(MaterialType.Residents, numberOfResidents);
+        UpdateMaterialAmount(MaterialType.Citizens, numberOfCitizens);
     }
 
-    public void UpdateMaterialAmount(MaterialType materialType, int amount)
+    private void UpdateMaterialAmount(MaterialType materialType, int amount)
     {
         Label materialLabel = this.Query<Label>(name: materialType.ToString()).First();
 
@@ -46,7 +50,7 @@ public partial class MaterialsBar : VisualElement
         materialLabel.text = $"{amount}x";
     }
 
-    private void AddMaterialLabel(MaterialType materialType, Label amountLabel)
+    private void AddMaterialLabel(MaterialType materialType)
     {
         VisualElement container = new();
         container.style.display = DisplayStyle.Flex;
@@ -70,9 +74,15 @@ public partial class MaterialsBar : VisualElement
             }
         };
 
-        amountLabel.text = "0x";
-        amountLabel.name = materialType.ToString();
-        amountLabel.style.color = Color.white;
+        Label amountLabel = new()
+        {
+            text = "0x",
+            name = materialType.ToString(),
+            style =
+            {
+                color = Color.white
+            }
+        };
 
         container.Add(icon);
         container.Add(materialTypeLabel);

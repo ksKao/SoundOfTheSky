@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Portage
   milesToNextStop: 15
+  xMapPinOffsetPercentage: 57
+  yMapPinOffsetPercentage: 79
+  mapPinReverse: 1

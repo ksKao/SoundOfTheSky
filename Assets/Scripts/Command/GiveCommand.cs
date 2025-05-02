@@ -18,13 +18,13 @@ public class GiveCommand : Command
             {
                 string key = $"give {materialType.ToString().ToLower()} <amount>";
 
-                if (materialType != MaterialType.Citizens)
+                if (materialType != MaterialType.Citizens && materialType != MaterialType.Residents)
                 {
                     usage.Add(key, $"Give x amount of {materialType}. Negative numbers are allowed.");
                 }
                 else
                 {
-                    usage.Add(key + " <location>", $"Increase number of undocumented citizens in x location (case insensitive). If location contains space, replace it with underscore.");
+                    usage.Add(key + " <location>", $"Increase number of {materialType.ToString().ToLower()} in x location (case insensitive). If location contains space, replace it with underscore.");
                 }
             }
 
@@ -46,17 +46,17 @@ public class GiveCommand : Command
         if (!int.TryParse(amountStr, out int amount))
             throw new Exception($"\"{amountStr}\" is not a valid integer.");
 
-        if (material == MaterialType.Citizens)
+        if (material == MaterialType.Citizens || material == MaterialType.Residents)
         {
             if (args.Length < 3)
-                throw new Exception($"Location name is required if material is {MaterialType.Citizens.ToString().ToLower()}.");
+                throw new Exception($"Location name is required if material is {material.ToString().ToLower()}.");
 
             Location foundLocation = GameManager.Instance.Locations.FirstOrDefault(l => l.locationSO.name.ToLower().Replace(" ", "_") == args[2]) ?? throw new Exception("Invalid location name.");
 
-            int amountBefore = foundLocation.undocumentedCitizens;
+            int amountBefore = foundLocation.Residents;
             int amountAfter = amountBefore + amount;
 
-            foundLocation.undocumentedCitizens += amount;
+            foundLocation.Residents += amount;
             GameManager.Instance.IncrementMaterialValue(material, amount);
             ConsoleManager.Instance.Output($"{foundLocation.locationSO.name} undocumented {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}", ConsoleOutputLevel.Success);
         }

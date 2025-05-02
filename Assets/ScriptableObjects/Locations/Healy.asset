@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Healy
   milesToNextStop: 15
+  xMapPinOffsetPercentage: 43
+  yMapPinOffsetPercentage: 18
+  mapPinReverse: 0

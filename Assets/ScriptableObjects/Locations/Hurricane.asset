@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Hurricane
   milesToNextStop: 50
+  xMapPinOffsetPercentage: 37
+  yMapPinOffsetPercentage: 37
+  mapPinReverse: 0

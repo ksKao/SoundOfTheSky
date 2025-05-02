@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Spencer
   milesToNextStop: 15
+  xMapPinOffsetPercentage: 64
+  yMapPinOffsetPercentage: 82
+  mapPinReverse: 0

@@ -14,6 +14,7 @@ public partial class GameplayScreen : VisualElement
     public readonly DeployedMissionList deployedMissionList = new();
     public readonly CrewSelectionPanel crewSelectionPanel = new();
     public readonly TrainList trainList = new();
+    public readonly Map map = new();
 
     private readonly VisualElement _right = new();
 
@@ -76,6 +77,8 @@ public partial class GameplayScreen : VisualElement
 
         container.Add(left);
         container.Add(_right);
+
+        ChangeRightPanel(map);
     }
 
     public void ChangeRightPanel(VisualElement element)
@@ -89,6 +92,10 @@ public partial class GameplayScreen : VisualElement
         {
             _right.Add(element);
             element.style.height = UiUtils.GetLengthPercentage(100);
+        }
+        else
+        {
+            _right.Add(map);
         }
     }
 

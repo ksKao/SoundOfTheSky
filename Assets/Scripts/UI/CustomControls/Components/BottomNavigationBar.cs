@@ -70,9 +70,10 @@ public partial class BottomNavigationBar : VisualElement
             }
         };
         deployedMissionListButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.deployedMissionList
-            );
+        {
+            VisualElement element = GameManager.Instance.deployedMissions.Count > 0 ? UiManager.Instance.GameplayScreen.deployedMissionList : UiManager.Instance.GameplayScreen.map;
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(element);
+        };
         Add(deployedMissionListButton);
 
         this.Query<Button>().ForEach(button =>

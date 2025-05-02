@@ -15,6 +15,9 @@ public partial class DeployedMissionList : VisualElement
 
         Clear();
 
+        if (GameManager.Instance.deployedMissions.Count == 0)
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.map);
+
         foreach (Mission mission in GameManager.Instance.deployedMissions)
             Add(mission.DeployedMissionUi);
     }

@@ -20,6 +20,7 @@ public enum MaterialType
     Payments,
     Supplies,
     Resources,
+    Residents,
     Citizens,
 };
 

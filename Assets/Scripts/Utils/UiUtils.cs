@@ -19,22 +19,14 @@ public static class UiUtils
         element.style.borderRightWidth = width;
     }
 
-    public static void ToggleBorder(VisualElement element, bool on)
+    public static void ToggleBorder(VisualElement element, bool on, Color? color = null)
     {
-        if (on)
-        {
-            element.style.borderTopColor = Color.black;
-            element.style.borderBottomColor = Color.black;
-            element.style.borderLeftColor = Color.black;
-            element.style.borderRightColor = Color.black;
-        }
-        else
-        {
-            element.style.borderTopColor = Color.clear;
-            element.style.borderBottomColor = Color.clear;
-            element.style.borderLeftColor = Color.clear;
-            element.style.borderRightColor = Color.clear;
-        }
+        Color finalColor = !on ? Color.clear : color == null ? Color.black : (Color)color;
+
+        element.style.borderTopColor = finalColor;
+        element.style.borderBottomColor = finalColor;
+        element.style.borderLeftColor = finalColor;
+        element.style.borderRightColor = finalColor;
     }
 
     public static Texture2D LoadTexture(string fileName)

@@ -17,7 +17,7 @@ public class DocumentationMission : Mission
     private readonly Label _resourceAmountLabel = new();
     private readonly Label _supplyAmountLabel = new();
     private readonly Label _paymentAmountLabel = new();
-    private int _initialDocumentedCitizens = 0;
+    private int _initialCitizens = 0;
 
     public override int MilesPerInterval => 10;
     public override MissionType Type { get; } = MissionType.Documentation;
@@ -35,7 +35,7 @@ public class DocumentationMission : Mission
 
     public override bool Deploy()
     {
-        if (Route.end.undocumentedCitizens <= 0)
+        if (Route.end.Residents <= 0)
         {
             UiUtils.ShowError("Could not deploy documentation mission with no undocumented citizens.");
             return false;
@@ -58,7 +58,7 @@ public class DocumentationMission : Mission
         NumberOfSupplies = _supplyNumberInput.Value;
         NumberOfPayments = _paymentNumberInput.Value;
 
-        _initialDocumentedCitizens = Route.end.documentedCitizens;
+        _initialCitizens = Route.end.Citizens;
 
         GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
@@ -99,7 +99,7 @@ public class DocumentationMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        AddRewardLabel($"{Route.end.documentedCitizens - _initialDocumentedCitizens} New Citizen(s).", "reward_citizens");
+        AddRewardLabel($"{Route.end.Citizens - _initialCitizens} New Citizen(s).", "reward_citizens");
     }
 
     protected override void OnMileChange()
@@ -110,7 +110,7 @@ public class DocumentationMission : Mission
         // reset miles remaining after each interval since there is no train moving
         milesRemaining = initialMiles;
 
-        if (Route.end.undocumentedCitizens <= 0)
+        if (Route.end.Residents <= 0)
         {
             Complete();
             return;
@@ -119,7 +119,7 @@ public class DocumentationMission : Mission
         int materialsConsumed = (int)
             Math.Round(
                 weather.documentationMissionMaterialComsumptionMultiplier
-                    * Route.end.undocumentedCitizens
+                    * Route.end.Residents
             );
 
         if (
@@ -136,8 +136,8 @@ public class DocumentationMission : Mission
         NumberOfPayments -= materialsConsumed;
         NumberOfResources -= materialsConsumed;
 
-        Route.end.undocumentedCitizens--;
-        Route.start.documentedCitizens++;
+        Route.end.Residents--;
+        Route.end.Citizens++;
 
         UpdateLabels();
 
@@ -187,7 +187,7 @@ public class DocumentationMission : Mission
         }
 
         Location[] eligibleLocations = GameManager
-            .Instance.Locations.Where((l, i) => l.undocumentedCitizens > 0 && i != 0)
+            .Instance.Locations.Where((l, i) => l.Residents > 0 && i != 0)
             .ToArray();
 
         // if there are no locations with undocumented citizens, then only get random from all locations
@@ -244,8 +244,8 @@ public class DocumentationMission : Mission
     private void UpdateLabels()
     {
         _undocumentedCitizenNumberLabel.text =
-            $"Undocumented Citizens: {Route.end.undocumentedCitizens}";
-        _documentedCitizenNumberLabel.text = $"Documented Citizens: {Route.end.documentedCitizens}";
+            $"Undocumented Citizens: {Route.end.Residents}";
+        _documentedCitizenNumberLabel.text = $"Documented Citizens: {Route.end.Citizens}";
         _resourceAmountLabel.text = $"Resources: {NumberOfResources}";
         _supplyAmountLabel.text = $"Supplies: {NumberOfSupplies}";
         _paymentAmountLabel.text = $"Payments: {NumberOfPayments}";

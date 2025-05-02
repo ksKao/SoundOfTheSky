@@ -16,7 +16,7 @@ public class RescueMission : Mission
 
     // state
     private bool _actionTakenDuringThisEvent = false;
-    private int _numberOfNewCitizens = 0;
+    private int _numberOfResidents = 0;
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
 
@@ -276,7 +276,7 @@ public class RescueMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        AddRewardLabel($"{_numberOfNewCitizens} New Citizens!", "reward_citizens");
+        AddRewardLabel($"{_numberOfResidents} New Residents!", "reward_residents");
         AddRewardLabel($"{_numberOfNewResources} Resources!", "reward_resources");
         AddRewardLabel($"{_numberOfDeaths} Deaths!", "reward_deaths");
     }
@@ -285,7 +285,7 @@ public class RescueMission : Mission
     {
         // calculate rewards
         double rewardMultiplier = 1 + weather.rewardMultiplier;
-        _numberOfNewCitizens = (int)
+        _numberOfResidents = (int)
             Math.Round(
                 Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length
                     * rewardMultiplier
@@ -293,12 +293,11 @@ public class RescueMission : Mission
         _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
 
         // include city documented citizens bonus
-        _numberOfNewResources += Route.end.documentedCitizens * 5;
+        _numberOfNewResources += Route.end.Citizens * 5;
 
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Citizens, _numberOfNewCitizens);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, _numberOfNewResources);
         GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
-        Route.end.undocumentedCitizens += _numberOfNewCitizens;
+        Route.end.Residents += _numberOfResidents;
 
         foreach (Crew crew in Crews)
             crew.deployedMission = null;

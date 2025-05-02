@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fairbanks
   milesToNextStop: 110
+  xMapPinOffsetPercentage: 65
+  yMapPinOffsetPercentage: 4
+  mapPinReverse: 0

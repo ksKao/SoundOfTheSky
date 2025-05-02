@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Whittier
   milesToNextStop: 10
+  xMapPinOffsetPercentage: 70
+  yMapPinOffsetPercentage: 76
+  mapPinReverse: 0

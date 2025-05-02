@@ -77,8 +77,8 @@ public class ResupplyMission : Mission
         NumberOfNewSupplies = (int)Mathf.Round((float)rewardMultiplier * NumberOfNewSupplies);
         NumberOfPayments = (int)Mathf.Round((float)rewardMultiplier * NumberOfPayments);
 
-        NumberOfNewSupplies += Route.end.documentedCitizens * 5;
-        NumberOfPayments += Route.end.documentedCitizens * 5;
+        NumberOfNewSupplies += Route.end.Citizens * 5;
+        NumberOfPayments += Route.end.Citizens * 5;
 
         GameManager.Instance.IncrementMaterialValue(
             MaterialType.Supplies,
