@@ -63,7 +63,7 @@ public partial class RescueMissionResolvePanel : VisualElement
             };
 
         _supplyButton.clicked += () =>
-            _mission.UseSupply(_mission.Passengers.Where(p => p.Selected).ToArray());
+            _mission.UseSupply(_mission.CrewsAndPassengers.Where(p => p.Selected).ToArray());
 
         _crewButton.clicked += () => _mission.UseCrew();
 
@@ -111,9 +111,10 @@ public partial class RescueMissionResolvePanel : VisualElement
         _mission.DeployedMissionUi.resolveButton.visible = false;
 
         _passengerListContainer.Clear();
-        foreach (Passenger passenger in _mission.Passengers)
+        foreach (Passenger passenger in _mission.CrewsAndPassengers)
         {
             passenger.BackgroundStyle = PassengerBackgroundStyle.Gray;
+            passenger.Selected = false;
             _passengerListContainer.Add(passenger.ui);
         }
 

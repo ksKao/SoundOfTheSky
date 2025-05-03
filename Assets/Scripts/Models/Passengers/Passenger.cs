@@ -92,9 +92,7 @@ public class Passenger
 
     protected virtual void OnClick(ClickEvent _)
     {
-        // do not select this if passenger is comfortable as there is no reason for player to use supply/crew on them anyways
-        if (Status == PassengerStatus.Comfortable || !selectable)
-            return;
+        if (!selectable) return;
 
         Selected = !Selected;
     }

@@ -117,19 +117,28 @@ public class RescueMission : Mission
             return;
         }
 
-        if (NumberOfSupplies < selectedPassengers.Length)
+        Passenger[] uncomfortablePassengers = selectedPassengers.Where(p => p.Status != PassengerStatus.Comfortable).ToArray();
+
+        if (uncomfortablePassengers.Length == 0)
+        {
+            UiUtils.ShowError("All passengers are already comfortable");
+            return;
+        }
+
+        if (NumberOfSupplies < uncomfortablePassengers.Length)
         {
             UiUtils.ShowError("Not enough supplies.");
             return;
         }
 
+        // can use selected passengers instead of uncomfortable passengers here since calling make better doesnt make a different, and we want to deselect all anyways
         foreach (Passenger passenger in selectedPassengers)
         {
             passenger.MakeBetter();
             passenger.Selected = false;
         }
 
-        NumberOfSupplies -= selectedPassengers.Length;
+        NumberOfSupplies -= uncomfortablePassengers.Length;
         _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
 
         ActionTakenDuringThisEvent = true;
@@ -137,7 +146,7 @@ public class RescueMission : Mission
 
     public void UseCrew()
     {
-        Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
+        Passenger[] selectedPassengers = CrewsAndPassengers.Where(p => p.Selected).ToArray();
 
         // player can only select 1 passenger at a time to use crew on
         if (selectedPassengers.Length > 1)
@@ -154,6 +163,18 @@ public class RescueMission : Mission
             if (selectedPassenger is null)
             {
                 UiUtils.ShowError("No passengers selected");
+                return;
+            }
+
+            if (selectedPassenger is Crew)
+            {
+                UiUtils.ShowError("Could not heal crew with crew.");
+                return;
+            }
+
+            if (selectedPassenger.Status == PassengerStatus.Comfortable)
+            {
+                UiUtils.ShowError("Passenger is already comfortable.");
                 return;
             }
 
