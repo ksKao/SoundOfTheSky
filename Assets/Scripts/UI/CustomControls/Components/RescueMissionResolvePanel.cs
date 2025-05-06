@@ -10,22 +10,38 @@ public partial class RescueMissionResolvePanel : VisualElement
     private static readonly Texture2D _panelBackground = UiUtils.LoadTexture("resolve_passenger_container_panel_background");
 
     private readonly RescueMission _mission;
+    private readonly Button _supplyButton = new();
     private readonly VisualElement _passengerListContainer = new()
     {
         style =
         {
-            backgroundImage = _panelBackground,
-            paddingTop = UiUtils.GetLengthPercentage(5),
-            paddingBottom = UiUtils.GetLengthPercentage(5),
-            paddingLeft = UiUtils.GetLengthPercentage(3),
-            paddingRight = UiUtils.GetLengthPercentage(3),
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
-            flexWrap = Wrap.Wrap
+            flexWrap = Wrap.Wrap,
+            width = UiUtils.GetLengthPercentage(100)
         }
     };
-    private readonly Button _supplyButton = new();
-    private readonly Button _crewButton = new();
+    private readonly VisualElement _crewListContainer = new()
+    {
+        style =
+        {
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            flexWrap = Wrap.Wrap,
+            width = UiUtils.GetLengthPercentage(100)
+        }
+    };
+    private readonly VisualElement _divider = new()
+    {
+        style =
+        {
+            height = 1,
+            width = UiUtils.GetLengthPercentage(100),
+            backgroundColor = Color.black,
+            marginTop = 16,
+            marginBottom = 16,
+        }
+    };
 
     public readonly Button finishButton = new();
     public readonly Button ignoreButton = new();
@@ -46,9 +62,27 @@ public partial class RescueMissionResolvePanel : VisualElement
         style.height = UiUtils.GetLengthPercentage(100);
         style.width = UiUtils.GetLengthPercentage(100);
 
+        VisualElement container = new()
+        {
+            style =
+            {
+                backgroundImage = _panelBackground,
+                paddingTop = UiUtils.GetLengthPercentage(5),
+                paddingBottom = UiUtils.GetLengthPercentage(5),
+                paddingLeft = UiUtils.GetLengthPercentage(3),
+                paddingRight = UiUtils.GetLengthPercentage(3),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                alignItems = Align.Center,
+                flexGrow = 1,
+            }
+        };
         // passenger list
-        _passengerListContainer.style.flexGrow = 1;
-        Add(_passengerListContainer);
+        Add(container);
+
+        container.Add(_passengerListContainer);
+        container.Add(_divider);
+        container.Add(_crewListContainer);
 
         // bottom buttons
         VisualElement bottomButtonsContainer =
@@ -58,14 +92,12 @@ public partial class RescueMissionResolvePanel : VisualElement
                 {
                     display = DisplayStyle.Flex,
                     flexDirection = FlexDirection.Row,
-                    width = UiUtils.GetLengthPercentage(100),
+                    width = UiUtils.GetLengthPercentage(96),
                 },
             };
 
         _supplyButton.clicked += () =>
             _mission.UseSupply(_mission.CrewsAndPassengers.Where(p => p.Selected).ToArray());
-
-        _crewButton.clicked += () => _mission.UseCrew();
 
         ignoreButton.text = "IGNORE";
         ignoreButton.clicked += () => _mission.Ignore();
@@ -75,7 +107,6 @@ public partial class RescueMissionResolvePanel : VisualElement
         finishButton.clicked += () => _mission.Finish();
 
         bottomButtonsContainer.Add(_supplyButton);
-        bottomButtonsContainer.Add(_crewButton);
         bottomButtonsContainer.Add(ignoreButton);
         bottomButtonsContainer.Add(finishButton);
         Add(bottomButtonsContainer);
@@ -97,10 +128,9 @@ public partial class RescueMissionResolvePanel : VisualElement
         RegisterCallback<DetachFromPanelEvent>(OnDetach);
     }
 
-    public void RefreshSupplyAndCrewButtonText()
+    public void RefreshButtonText()
     {
         _supplyButton.text = $"SUPPLY\n{_mission.NumberOfSupplies}";
-        _crewButton.text = $"CREW\n{_mission.Crews.Length}";
     }
 
     private void OnAttach(AttachToPanelEvent e)
@@ -110,15 +140,24 @@ public partial class RescueMissionResolvePanel : VisualElement
         _mission.DeployedMissionUi.SendToBack();
         _mission.DeployedMissionUi.resolveButton.visible = false;
 
+        _divider.style.display = _mission.Passengers.Count == 0 || _mission.Crews.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+
         _passengerListContainer.Clear();
-        foreach (Passenger passenger in _mission.CrewsAndPassengers)
+        foreach (Passenger passenger in _mission.Passengers)
         {
-            passenger.BackgroundStyle = PassengerBackgroundStyle.Gray;
             passenger.Selected = false;
             _passengerListContainer.Add(passenger.ui);
         }
 
-        RefreshSupplyAndCrewButtonText();
+        _crewListContainer.Clear();
+        foreach (Crew crew in _mission.Crews)
+        {
+            crew.Selected = false;
+            _crewListContainer.Add(crew.ui);
+        }
+
+        Crew.OnSelect += _mission.UseCrew;
+        RefreshButtonText();
     }
 
     private void OnDetach(DetachFromPanelEvent e)
@@ -126,5 +165,7 @@ public partial class RescueMissionResolvePanel : VisualElement
         _mission.DeployedMissionUi.resolveButton.visible = _mission.EventPending;
         Remove(_mission.DeployedMissionUi);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+
+        Crew.OnSelect -= _mission.UseCrew;
     }
 }

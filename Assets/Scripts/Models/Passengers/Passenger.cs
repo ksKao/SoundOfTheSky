@@ -6,10 +6,8 @@ using UnityEngine.UIElements;
 
 public class Passenger
 {
-    private static readonly Texture2D _backgroundGray = UiUtils.LoadTexture("passenger_selection_background");
-    private static readonly Texture2D _backgroundGraySelected = UiUtils.LoadTexture("passenger_selection_background_glow");
-    private static readonly Texture2D _backgroundBlue = UiUtils.LoadTexture("crew_selection_background");
-    private static readonly Texture2D _backgroundBlueSelected = UiUtils.LoadTexture("crew_selection_background_glow");
+    private static readonly Texture2D _backgroundImage = UiUtils.LoadTexture("passenger_selection_background");
+    private static readonly Texture2D _backgroundImageSelected = UiUtils.LoadTexture("passenger_selection_background_glow");
 
     public bool selectable = true;
     public readonly VisualElement ui = new()
@@ -34,9 +32,10 @@ public class Passenger
 
     private bool _selected = false;
     private PassengerStatus _status = PassengerStatus.Comfortable;
-    private PassengerBackgroundStyle _backgroundStyle = PassengerBackgroundStyle.Blue;
 
     protected Label StatusLabel => _statusLabel;
+    protected virtual Texture2D BackgroundImage => _backgroundImage;
+    protected virtual Texture2D BackgroundImageSelected => _backgroundImageSelected;
 
     public PassengerStatus Status
     {
@@ -52,26 +51,14 @@ public class Passenger
         get => _selected;
         set
         {
-            if (_backgroundStyle == PassengerBackgroundStyle.Blue)
-                _imageContainer.style.backgroundImage = value ? _backgroundBlueSelected : _backgroundBlue;
-            else
-                _imageContainer.style.backgroundImage = value ? _backgroundGraySelected : _backgroundGray;
+            _imageContainer.style.backgroundImage = value ? BackgroundImageSelected : BackgroundImage;
             _selected = value;
-        }
-    }
-    public PassengerBackgroundStyle BackgroundStyle
-    {
-        get => _backgroundStyle;
-        set
-        {
-            _imageContainer.style.backgroundImage = value == PassengerBackgroundStyle.Blue ? _backgroundBlue : _backgroundGray;
-            _backgroundStyle = value;
         }
     }
 
     public Passenger()
     {
-        _imageContainer.style.backgroundImage = _backgroundStyle == PassengerBackgroundStyle.Blue ? _backgroundBlue : _backgroundGray;
+        _imageContainer.style.backgroundImage = BackgroundImage;
         ui.Add(_imageContainer);
         ui.Add(_statusLabel);
 

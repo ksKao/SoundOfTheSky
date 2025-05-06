@@ -139,21 +139,19 @@ public class RescueMission : Mission
         }
 
         NumberOfSupplies -= uncomfortablePassengers.Length;
-        _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
+        _rescueMissionResolvePanel.RefreshButtonText();
 
         ActionTakenDuringThisEvent = true;
     }
 
-    public void UseCrew()
+    public void UseCrew(Crew selectedCrew)
     {
-        Passenger[] selectedPassengers = CrewsAndPassengers.Where(p => p.Selected).ToArray();
+        Passenger[] selectedPassengers = Passengers.Where(p => p.Selected).ToArray();
+        Crew[] selectedCrews = Crews.Where(c => c.Selected).ToArray();
 
-        // player can only select 1 passenger at a time to use crew on
-        if (selectedPassengers.Length > 1)
-        {
-            UiUtils.ShowError("Only one passenger can be treated by the crew at a time.");
+        // this means that the player probably wants to select multiple crews/passengers to use supply
+        if (selectedPassengers.Length > 1 || selectedCrews.Length > 1)
             return;
-        }
 
         // heal passengers with crew
         if (selectedPassengers.Length == 1)
@@ -163,91 +161,35 @@ public class RescueMission : Mission
             if (selectedPassenger is null)
             {
                 UiUtils.ShowError("No passengers selected");
-                return;
-            }
-
-            if (selectedPassenger is Crew)
-            {
-                UiUtils.ShowError("Could not heal crew with crew.");
+                selectedCrew.Selected = false;
                 return;
             }
 
             if (selectedPassenger.Status == PassengerStatus.Comfortable)
             {
                 UiUtils.ShowError("Passenger is already comfortable.");
+                selectedPassenger.Selected = false;
+                selectedCrew.Selected = false;
                 return;
             }
 
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                Crews,
-                (crews) =>
-                {
-                    Crew selectedCrew = crews.FirstOrDefault(c => c.Selected);
-
-                    // make it so that only one crew can be selected at a time
-                    selectedCrew.Selected = false;
-
-                    // the chance of passenger's health decreasing is same as the weather event occur probability
-                    if (Random.ShouldOccur(weather.decisionMakingProbability))
-                        selectedPassenger.MakeWorse();
-                    else
-                    {
-                        selectedPassenger.MakeBetter();
-
-                        // chance for passenger status to go up by 2
-                        if (Random.ShouldOccur(selectedCrew.MedicLevelPercentage * 0.01))
-                            selectedPassenger.MakeBetter();
-                    }
-                    selectedPassenger.Selected = false;
-
-                    // after taking action, change the screen back
-                    UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
-
-                    _rescueMissionResolvePanel.RefreshSupplyAndCrewButtonText();
-                    ActionTakenDuringThisEvent = true;
-                },
-                null,
-                () => UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel)
-            );
-        }
-        else if (selectedPassengers.Length == 0) // heal crew
-        {
-            Button useSupplyButton = new()
+            // the chance of passenger's health decreasing is same as the weather event occur probability
+            if (Random.ShouldOccur(weather.decisionMakingProbability))
+                selectedPassenger.MakeWorse();
+            else
             {
-                text = "USE\nSUPPLY",
-            };
-            useSupplyButton.SetEnabled(false);
+                selectedPassenger.MakeBetter();
 
-            useSupplyButton.clicked += () =>
-            {
-                UseSupply(Crews.Where(c => c.Selected).ToArray());
+                // chance for passenger status to go up by 2
+                if (Random.ShouldOccur(selectedCrew.MedicLevelPercentage * 0.01))
+                    selectedPassenger.MakeBetter();
+            }
 
-                useSupplyButton.text = "USE\nSUPPLY";
-                useSupplyButton.SetEnabled(false);
-            };
+            selectedPassenger.Selected = false;
+            selectedCrew.Selected = false;
 
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                Crews,
-                (crews) =>
-                {
-                    Crew[] selectedCrews = crews.Where(c => c.Selected).ToArray();
-                    if (selectedCrews.Length > 0)
-                    {
-                        useSupplyButton.text =
-                            $"SUPPLY\n{selectedCrews.Length}";
-                        useSupplyButton.SetEnabled(true);
-                    }
-                    else
-                    {
-                        useSupplyButton.text = "USE\nSUPPLY";
-                        useSupplyButton.SetEnabled(false);
-                    }
-                },
-                null,
-                () =>
-                    UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel),
-                useSupplyButton
-            );
+            _rescueMissionResolvePanel.RefreshButtonText();
+            ActionTakenDuringThisEvent = true;
         }
     }
 

@@ -60,11 +60,8 @@ public partial class CrewSelectionPanel : VisualElement
         _buttonContainer.Add(_additionalUi);
 
         Add(_buttonContainer);
-    }
 
-    public void OnCrewSelectChange()
-    {
-        _onSelect?.Invoke(_crews);
+        Crew.OnSelect += OnSelect;
     }
 
     public void Show(
@@ -84,7 +81,6 @@ public partial class CrewSelectionPanel : VisualElement
         foreach (Crew crew in _crews)
         {
             crew.Selected = false;
-            crew.BackgroundStyle = PassengerBackgroundStyle.Blue;
             _crewListContainer.Add(crew.ui);
 
             string bracketText = "";
@@ -137,5 +133,11 @@ public partial class CrewSelectionPanel : VisualElement
             button.style.backgroundColor = Color.clear;
             UiUtils.ToggleBorder(button, false);
         }
+    }
+
+    private void OnSelect(Crew crew)
+    {
+        if (UiManager.Instance.GameplayScreen.RightPanel == this)
+            _onSelect?.Invoke(_crews);
     }
 }

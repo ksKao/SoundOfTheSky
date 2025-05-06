@@ -24,12 +24,6 @@ public enum MaterialType
     Citizens,
 };
 
-public enum PassengerBackgroundStyle
-{
-    Gray,
-    Blue,
-}
-
 public enum ConsoleOutputLevel
 {
     Error,
