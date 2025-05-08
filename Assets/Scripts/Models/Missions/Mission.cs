@@ -16,6 +16,7 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_5"),
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
+    public Train train = null;
 
     private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture(
         "complete_button"
@@ -45,11 +46,9 @@ public abstract class Mission
     };
 
     public abstract MissionType Type { get; }
-    public abstract Route Route { get; }
-    public virtual Train Train { get; } =
-        Random.GetFromArray(GameManager.Instance.Trains.ToArray());
     public virtual int MilesPerInterval => 5;
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
+    public virtual Route Route { get; } = new();
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public WeatherSO WeatherSO => weather;
@@ -94,6 +93,8 @@ public abstract class Mission
             OnMileChange();
         }
     }
+    protected virtual Location[] EligibleDestinations =>
+        GameManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
 
     public Mission()
     {
@@ -103,7 +104,7 @@ public abstract class Mission
         // each tier of the weather will increase the chance by 5%
         int currentWeatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
 
-        initialMiles = CalculateInitialMiles();
+        initialMiles = Route.distance;
         MilesRemaining = initialMiles;
 
         GeneratePendingMissionUi();
@@ -266,9 +267,9 @@ public abstract class Mission
         else if (IsMilestoneReached(MilesPerInterval))
         {
             if (
-                Train is not null
+                train is not null
                 && Random.ShouldOccur(
-                    weather.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
+                    weather.decisionMakingProbability - train.WarmthLevelPercentage * 0.01
                 )
             )
             {
@@ -276,8 +277,8 @@ public abstract class Mission
                 EventPending = true;
             }
             else if (
-                Train is not null
-                && Random.ShouldOccur(Train.SpeedLevelPercentage * 0.01)
+                train is not null
+                && Random.ShouldOccur(train.SpeedLevelPercentage * 0.01)
                 && !_skippedLastInterval
             ) // when interval is skipped, there is a chance to skip second interval
             {
@@ -341,6 +342,36 @@ public abstract class Mission
             ApplyCommonPendingMissionUiStyleSingle(PendingMissionUi.Children().ElementAt(i), i);
     }
 
+    protected virtual void ShowTrainList(Label trainNameLabel)
+    {
+        UiManager.Instance.GameplayScreen.trainList.Show(
+            GameManager
+                .Instance.Trains.Where(t =>
+                {
+                    int startIndex = Array.FindIndex(
+                        GameManager.Instance.Locations,
+                        (location) => location.locationSO == t.trainSO.routeStartLocation
+                    );
+                    int endIndex = Array.FindIndex(
+                        GameManager.Instance.Locations,
+                        (location) => location.locationSO == t.trainSO.routeEndLocation
+                    );
+
+                    return t.unlocked && startIndex < Route.startIndex && endIndex > Route.endIndex;
+                })
+                .ToArray(),
+            (train) =>
+            {
+                trainNameLabel.text = train.trainSO.name;
+                this.train = train;
+                DeployedMissionUi.trainImage.sprite = train.trainSO.sprite;
+                UiManager.Instance.GameplayScreen.trainList.activeTrain = train;
+                UiManager.Instance.GameplayScreen.trainList.Refresh();
+            },
+            train
+        );
+    }
+
     protected void AddRewardLabel(string labelText, string rewardIconFileName)
     {
         VisualElement container = new()
@@ -364,17 +395,6 @@ public abstract class Mission
         );
 
         rewardsContainer.Add(container);
-    }
-
-    private int CalculateInitialMiles()
-    {
-        int initialMiles = 0;
-        int startIndex = Array.IndexOf(GameManager.Instance.Locations, Route.start);
-
-        for (int i = startIndex; GameManager.Instance.Locations[i] != Route.end; i++)
-            initialMiles += DataManager.Instance.AllLocations[i].milesToNextStop;
-
-        return initialMiles;
     }
 
     private void OnSelectMissionPendingUi(ClickEvent evt)

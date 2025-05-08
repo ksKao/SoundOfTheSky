@@ -40,6 +40,10 @@ public partial class DeployedMissionUi : VisualElement
         },
     };
 
+    public Image trainImage = new()
+    {
+        style = { width = UiUtils.GetLengthPercentage(100), height = 50 },
+    };
     public readonly Button checkHealthButton = new()
     {
         text = "Check\nHealth",
@@ -194,16 +198,7 @@ public partial class DeployedMissionUi : VisualElement
         materialLabelsContainer.style.width = UiUtils.GetLengthPercentage(100);
         centerContainer.Add(materialLabelsContainer);
 
-        if (mission.Train != null)
-        {
-            centerContainer.Add(
-                new Image()
-                {
-                    sprite = mission.Train.trainSO.sprite,
-                    style = { width = UiUtils.GetLengthPercentage(100), height = 50 },
-                }
-            );
-        }
+        centerContainer.Add(trainImage);
 
         routeLabel.text =
             mission.Route.start.locationSO.name + " - " + mission.Route.end.locationSO.name;

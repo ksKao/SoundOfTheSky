@@ -50,11 +50,7 @@ public partial class BottomNavigationBar : VisualElement
         crewButton.clicked += ShowCrewList;
 
         trainButton.clicked += () =>
-        {
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.trainList
-            );
-        };
+            UiManager.Instance.GameplayScreen.trainList.Show(GameManager.Instance.Trains);
 
         deployButton.visible = false;
 

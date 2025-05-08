@@ -12,8 +12,7 @@ public class ResupplyMission : Mission
 
     public override MissionType Type { get; } = MissionType.Resupply;
     public override Passenger[] CrewsAndPassengers => Crews;
-    public override Route Route =>
-        new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
+    public override Route Route { get; } = new(false);
     public int NumberOfNewSupplies { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfPayments { get; private set; } = 0;
@@ -21,10 +20,21 @@ public class ResupplyMission : Mission
 
     public override bool Deploy()
     {
-        // check if this train has already been deployed
+        if (train is null)
+        {
+            UiUtils.ShowError("Please select a train before proceeding");
+            return false;
+        }
+
+        if (!train.unlocked)
+        {
+            UiUtils.ShowError("You must unlock this train first before deploying");
+            return false;
+        }
+
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
+                m.train != null && m.train.trainSO.name == train.trainSO.name
             )
         )
         {
@@ -114,8 +124,8 @@ public class ResupplyMission : Mission
 
         if (IsMilestoneReached(MilesPerInterval))
         {
-            NumberOfNewSupplies += 2 * Train.CartLevel;
-            NumberOfPayments += 5 * Train.CartLevel;
+            NumberOfNewSupplies += 2 * train.CartLevel;
+            NumberOfPayments += 5 * train.CartLevel;
         }
     }
 
@@ -229,7 +239,13 @@ public class ResupplyMission : Mission
     {
         base.GeneratePendingMissionUi();
 
-        PendingMissionUi.Add(UiUtils.WrapLabel(new Label(Train.trainSO.name)));
+        VisualElement labelWrapper = new();
+        Label trainNameLabel = new("Train");
+
+        labelWrapper.Add(UiUtils.WrapLabel(trainNameLabel));
+        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList(trainNameLabel));
+
+        PendingMissionUi.Add(labelWrapper);
 
         PendingMissionUi.Add(_supplyNumberInput);
         PendingMissionUi.Add(_crewSelectionPanelButton);

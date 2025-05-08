@@ -8,7 +8,6 @@ public class DocumentationMission : Mission
 {
     private const int WEATHER_DISTRIBUTION_SUM = 10;
 
-    private readonly LocationSO _destination = GetDestination();
     private readonly NumberInput _resourceNumberInput = new("Resource");
     private readonly NumberInput _supplyNumberInput = new("Supply");
     private readonly NumberInput _paymentNumberInput = new("Payment");
@@ -21,8 +20,7 @@ public class DocumentationMission : Mission
 
     public override int MilesPerInterval => 10;
     public override MissionType Type { get; } = MissionType.Documentation;
-    public override Train Train { get; } = null;
-    public override Route Route => new(DataManager.Instance.AllLocations[0], _destination);
+    public override Route Route { get; } = new(true);
     public int NumberOfResources { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfPayments { get; private set; } = 0;
@@ -177,35 +175,8 @@ public class DocumentationMission : Mission
         }
     }
 
-    private static LocationSO GetDestination()
-    {
-        Location location = null;
-
-        // prevent infinite loop below
-        if (GameManager.Instance.Locations.Length == 1)
-        {
-            Debug.LogWarning(
-                $"{nameof(GameManager.Instance.Locations)}.Length is 1. Could not call {nameof(GetDestination)} with only 1 element."
-            );
-            return GameManager.Instance.Locations[0].locationSO;
-        }
-
-        Location[] eligibleLocations = GameManager
-            .Instance.Locations.Where((l, i) => l.Residents > 0 && i != 0)
-            .ToArray();
-
-        // if there are no locations with undocumented citizens, then only get random from all locations
-        if (eligibleLocations.Length == 0)
-            eligibleLocations = GameManager.Instance.Locations.ToArray();
-
-        // cannot pick the first location as destination
-        while (location == GameManager.Instance.Locations[0] || location == null)
-        {
-            location = Random.GetFromArray(eligibleLocations);
-        }
-
-        return location.locationSO;
-    }
+    // technically not used since documentation has no train, but override just in case
+    protected override void ShowTrainList(Label trainNameLabel) { }
 
     private void RerollWeather()
     {

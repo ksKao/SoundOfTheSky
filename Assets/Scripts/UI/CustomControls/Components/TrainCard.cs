@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,7 +12,10 @@ public partial class TrainCard : VisualElement
         "train_buy_button"
     );
 
+    public event Action<Train> OnSelectClicked;
+
     private readonly Train _train;
+    private readonly bool _selectMode = false;
     private readonly VisualElement _topContainer = new()
     {
         style =
@@ -46,9 +50,10 @@ public partial class TrainCard : VisualElement
         Debug.LogWarning($"Detected calling default constructor of {nameof(TrainCard)}.");
     }
 
-    public TrainCard(Train train, float height)
+    public TrainCard(Train train, float height, bool selectMode = false)
     {
         _train = train;
+        _selectMode = selectMode;
 
         style.height = height;
         style.backgroundImage = _trainCardBackground;
@@ -93,40 +98,56 @@ public partial class TrainCard : VisualElement
         };
         UiUtils.ToggleBorder(_button, false);
 
-        if (_train.unlocked)
+        if (_selectMode)
         {
+            _button.visible = UiManager.Instance.GameplayScreen.trainList.activeTrain != _train; // only want to hide button in select mode
             _overlay.visible = false;
             _priceLabel.text = "";
-            _button.text = "UPGRADE";
+            _button.text = "SELECT";
             _button.clicked += () =>
             {
-                UiManager.Instance.GameplayScreen.ChangeRightPanel(new TrainUpgradePanel(_train));
+                OnSelectClicked.Invoke(_train);
             };
         }
         else
         {
-            _overlay.visible = true;
-            _priceLabel.text = $"${_train.trainSO.price}";
-            _button.text = "BUY";
-            _button.clicked += () =>
+            if (_train.unlocked)
             {
-                if (
-                    GameManager.Instance.GetMaterialValue(MaterialType.Payments)
-                    < _train.trainSO.price
-                )
+                _overlay.visible = false;
+                _priceLabel.text = "";
+                _button.text = "UPGRADE";
+                _button.clicked += () =>
                 {
-                    UiUtils.ShowError("You don't have enough payments to buy this train.");
-                    return;
-                }
+                    UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                        new TrainUpgradePanel(_train)
+                    );
+                };
+            }
+            else
+            {
+                _overlay.visible = true;
+                _priceLabel.text = $"${_train.trainSO.price}";
+                _button.text = "BUY";
+                _button.clicked += () =>
+                {
+                    if (
+                        GameManager.Instance.GetMaterialValue(MaterialType.Payments)
+                        < _train.trainSO.price
+                    )
+                    {
+                        UiUtils.ShowError("You don't have enough payments to buy this train.");
+                        return;
+                    }
 
-                GameManager.Instance.IncrementMaterialValue(
-                    MaterialType.Payments,
-                    -_train.trainSO.price
-                );
+                    GameManager.Instance.IncrementMaterialValue(
+                        MaterialType.Payments,
+                        -_train.trainSO.price
+                    );
 
-                _train.unlocked = true;
-                Refresh();
-            };
+                    _train.unlocked = true;
+                    Refresh();
+                };
+            }
         }
 
         Add(_button);

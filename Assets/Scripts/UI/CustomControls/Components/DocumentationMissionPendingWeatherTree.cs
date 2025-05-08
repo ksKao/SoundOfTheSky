@@ -58,7 +58,7 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
             container.style.fontSize = 12;
             container.style.backgroundImage = UiUtils.LoadTexture(
                 "weather_distribution_background"
-            ); // TODO: Change later, awaiting asset
+            );
             container.style.width = UiUtils.GetLengthPercentage(
                 100 / DataManager.Instance.AllWeathers.Length
             );

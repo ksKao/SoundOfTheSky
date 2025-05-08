@@ -20,8 +20,7 @@ public class RescueMission : Mission
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
 
-    public override Route Route =>
-        new(Train.trainSO.routeStartLocation, Train.trainSO.routeEndLocation);
+    public override Route Route { get; } = new(false);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public override Passenger[] CrewsAndPassengers
@@ -60,8 +59,13 @@ public class RescueMission : Mission
 
     public override bool Deploy()
     {
-        // check if this train has been unlocked
-        if (!Train.unlocked)
+        if (train is null)
+        {
+            UiUtils.ShowError("Please select a train before proceeding");
+            return false;
+        }
+
+        if (!train.unlocked)
         {
             UiUtils.ShowError("You must unlock this train first before deploying");
             return false;
@@ -70,7 +74,7 @@ public class RescueMission : Mission
         // check if this train has already been deployed
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
+                m.train != null && m.train.trainSO.name == train.trainSO.name
             )
         )
         {
@@ -280,7 +284,7 @@ public class RescueMission : Mission
             && Random.ShouldOccur(_passengerIncreaseProbability)
         )
         {
-            NumberOfResources += Train.CartLevel;
+            NumberOfResources += train.CartLevel;
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
             {
@@ -334,8 +338,11 @@ public class RescueMission : Mission
         base.GeneratePendingMissionUi();
 
         VisualElement labelWrapper = new();
+        Label trainNameLabel = new("Train");
 
-        labelWrapper.Add(UiUtils.WrapLabel(new(Train.trainSO.name)));
+        labelWrapper.Add(UiUtils.WrapLabel(trainNameLabel));
+        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList(trainNameLabel));
+
         PendingMissionUi.Add(labelWrapper);
 
         PendingMissionUi.Add(_supplyNumberInput);
