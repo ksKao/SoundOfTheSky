@@ -24,7 +24,10 @@ public partial class TrainList : VisualElement
 
                 foreach (Train train in GameManager.Instance.Trains)
                 {
-                    TrainCard trainCard = new(train, e.destinationPanel.visualTree.layout.height / 6);
+                    TrainCard trainCard = new(
+                        train,
+                        e.destinationPanel.visualTree.layout.height / 6
+                    );
                     _trainCards.Add(trainCard);
                     scrollView.Add(trainCard);
                 }

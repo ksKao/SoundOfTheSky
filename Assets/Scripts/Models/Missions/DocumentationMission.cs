@@ -37,7 +37,9 @@ public class DocumentationMission : Mission
     {
         if (Route.end.Residents <= 0)
         {
-            UiUtils.ShowError("Could not deploy documentation mission with no undocumented citizens.");
+            UiUtils.ShowError(
+                "Could not deploy documentation mission with no undocumented citizens."
+            );
             return false;
         }
 
@@ -99,7 +101,10 @@ public class DocumentationMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        AddRewardLabel($"{Route.end.Citizens - _initialCitizens} New Citizen(s).", "reward_citizens");
+        AddRewardLabel(
+            $"{Route.end.Citizens - _initialCitizens} New Citizen(s).",
+            "reward_citizens"
+        );
     }
 
     protected override void OnMileChange()
@@ -118,8 +123,7 @@ public class DocumentationMission : Mission
 
         int materialsConsumed = (int)
             Math.Round(
-                weather.documentationMissionMaterialComsumptionMultiplier
-                    * Route.end.Residents
+                weather.documentationMissionMaterialComsumptionMultiplier * Route.end.Residents
             );
 
         if (
@@ -243,8 +247,7 @@ public class DocumentationMission : Mission
 
     private void UpdateLabels()
     {
-        _undocumentedCitizenNumberLabel.text =
-            $"Undocumented Citizens: {Route.end.Residents}";
+        _undocumentedCitizenNumberLabel.text = $"Undocumented Citizens: {Route.end.Residents}";
         _documentedCitizenNumberLabel.text = $"Documented Citizens: {Route.end.Citizens}";
         _resourceAmountLabel.text = $"Resources: {NumberOfResources}";
         _supplyAmountLabel.text = $"Supplies: {NumberOfSupplies}";

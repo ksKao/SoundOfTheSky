@@ -20,7 +20,8 @@ public partial class Map : VisualElement
 
     public void Refresh()
     {
-        if (GameManager.Instance == null) return;
+        if (GameManager.Instance == null)
+            return;
         Clear();
 
         foreach (Location location in GameManager.Instance.Locations)

@@ -32,18 +32,17 @@ public abstract class Mission
     protected readonly int initialMiles = 0;
     protected int milesRemaining = 0;
     protected CheckHealthPanel checkHealthPanel;
-    protected VisualElement rewardsContainer =
-        new()
+    protected VisualElement rewardsContainer = new()
+    {
+        style =
         {
-            style =
-            {
-                width = UiUtils.GetLengthPercentage(100),
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row,
-                flexGrow = 1,
-                alignItems = Align.FlexStart,
-            },
-        };
+            width = UiUtils.GetLengthPercentage(100),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            flexGrow = 1,
+            alignItems = Align.FlexStart,
+        },
+    };
 
     public abstract MissionType Type { get; }
     public abstract Route Route { get; }
@@ -137,35 +136,33 @@ public abstract class Mission
 
     public virtual void GenerateMissionCompleteUi()
     {
-        VisualElement baseContainer =
-            new()
+        VisualElement baseContainer = new()
+        {
+            style =
             {
-                style =
-                {
-                    display = DisplayStyle.Flex,
-                    width = UiUtils.GetLengthPercentage(100),
-                    flexDirection = FlexDirection.Row,
-                    justifyContent = Justify.SpaceBetween,
-                },
-            };
+                display = DisplayStyle.Flex,
+                width = UiUtils.GetLengthPercentage(100),
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.SpaceBetween,
+            },
+        };
 
         baseContainer.Add(new Label("REWARD") { style = { fontSize = 20 } });
 
-        Button completeButton =
-            new()
+        Button completeButton = new()
+        {
+            text = "COMPLETE",
+            style =
             {
-                text = "COMPLETE",
-                style =
-                {
-                    position = Position.Absolute,
-                    backgroundImage = _completeButtonBackground,
-                    backgroundColor = Color.clear,
-                    fontSize = 20,
-                    color = Color.white,
-                    top = 0,
-                    right = 0,
-                },
-            };
+                position = Position.Absolute,
+                backgroundImage = _completeButtonBackground,
+                backgroundColor = Color.clear,
+                fontSize = 20,
+                color = Color.white,
+                top = 0,
+                right = 0,
+            },
+        };
         UiUtils.ToggleBorder(completeButton, false);
         completeButton.clicked += () =>
         {
@@ -346,17 +343,16 @@ public abstract class Mission
 
     protected void AddRewardLabel(string labelText, string rewardIconFileName)
     {
-        VisualElement container =
-            new()
+        VisualElement container = new()
+        {
+            style =
             {
-                style =
-                {
-                    display = DisplayStyle.Flex,
-                    flexDirection = FlexDirection.Column,
-                    alignItems = Align.Center,
-                    marginRight = 16,
-                },
-            };
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                alignItems = Align.Center,
+                marginRight = 16,
+            },
+        };
 
         container.Add(new Label(labelText));
         container.Add(

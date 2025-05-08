@@ -9,9 +9,15 @@ public partial class UpgradeInterface : VisualElement
 {
     public const string PLACEHOLDER = "[placeholder]";
 
-    private static readonly Texture2D _plusButtonBackground = UiUtils.LoadTexture("upgrade_plus_button");
-    private static readonly Texture2D _upgradeSegmentEmpty = UiUtils.LoadTexture("upgrade_segment_empty");
-    private static readonly Texture2D _upgradeSegmentFilled = UiUtils.LoadTexture("upgrade_segment_filled");
+    private static readonly Texture2D _plusButtonBackground = UiUtils.LoadTexture(
+        "upgrade_plus_button"
+    );
+    private static readonly Texture2D _upgradeSegmentEmpty = UiUtils.LoadTexture(
+        "upgrade_segment_empty"
+    );
+    private static readonly Texture2D _upgradeSegmentFilled = UiUtils.LoadTexture(
+        "upgrade_segment_filled"
+    );
 
     private readonly Button _upgradeButton = new()
     {
@@ -21,8 +27,8 @@ public partial class UpgradeInterface : VisualElement
             width = 40,
             height = 40,
             color = Color.white,
-            backgroundColor = Color.clear
-        }
+            backgroundColor = Color.clear,
+        },
     };
     private readonly Label _label = new();
     private readonly Label _descriptionLabel = new();
@@ -98,15 +104,10 @@ public partial class UpgradeInterface : VisualElement
 
         Add(labelContainer);
 
-        VisualElement segmentContainer =
-            new()
-            {
-                style =
-                {
-                    display = DisplayStyle.Flex,
-                    flexDirection = FlexDirection.Row,
-                },
-            };
+        VisualElement segmentContainer = new()
+        {
+            style = { display = DisplayStyle.Flex, flexDirection = FlexDirection.Row },
+        };
         VisualElement[] segments = new VisualElement[maxLevel];
 
         for (int i = 0; i < maxLevel; i++)
@@ -118,7 +119,8 @@ public partial class UpgradeInterface : VisualElement
                     height = 30,
                     width = 45,
                     marginRight = 4,
-                    backgroundImage = i < currentLevel ? _upgradeSegmentFilled : _upgradeSegmentEmpty,
+                    backgroundImage =
+                        i < currentLevel ? _upgradeSegmentFilled : _upgradeSegmentEmpty,
                 },
             };
             segmentContainer.Add(segments[i]);

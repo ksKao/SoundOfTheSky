@@ -8,10 +8,14 @@ public class UnlockCommand : Command
 
     public override string HelpText => "Unlocks a train without paying.";
 
-    public override Dictionary<string, string> Usage => new()
-    {
-        {"unlock <train_name>", "Unlocks a train by its name (case insensitive). If train name contains space, replace it with underscore."}
-    };
+    public override Dictionary<string, string> Usage =>
+        new()
+        {
+            {
+                "unlock <train_name>",
+                "Unlocks a train by its name (case insensitive). If train name contains space, replace it with underscore."
+            },
+        };
 
     public override void Execute(string[] args)
     {
@@ -20,7 +24,10 @@ public class UnlockCommand : Command
 
         string inputTrainName = args[0];
 
-        Train foundTrain = GameManager.Instance.Trains.FirstOrDefault(t => t.trainSO.name.ToLower().Replace(" ", "_") == inputTrainName.ToLower()) ?? throw new Exception($"Could not find train with name \"{inputTrainName}\".");
+        Train foundTrain =
+            GameManager.Instance.Trains.FirstOrDefault(t =>
+                t.trainSO.name.ToLower().Replace(" ", "_") == inputTrainName.ToLower()
+            ) ?? throw new Exception($"Could not find train with name \"{inputTrainName}\".");
 
         if (foundTrain.unlocked)
         {
@@ -30,6 +37,9 @@ public class UnlockCommand : Command
 
         foundTrain.unlocked = true;
         UiManager.Instance.GameplayScreen.trainList.Refresh();
-        ConsoleManager.Instance.Output($"{foundTrain.trainSO.name} has been unlocked.", ConsoleOutputLevel.Success);
+        ConsoleManager.Instance.Output(
+            $"{foundTrain.trainSO.name} has been unlocked.",
+            ConsoleOutputLevel.Success
+        );
     }
 }

@@ -21,7 +21,10 @@ public static class UiUtils
 
     public static void ToggleBorder(VisualElement element, bool on, Color? color = null)
     {
-        Color finalColor = !on ? Color.clear : color == null ? Color.black : (Color)color;
+        Color finalColor =
+            !on ? Color.clear
+            : color == null ? Color.black
+            : (Color)color;
 
         element.style.borderTopColor = finalColor;
         element.style.borderBottomColor = finalColor;

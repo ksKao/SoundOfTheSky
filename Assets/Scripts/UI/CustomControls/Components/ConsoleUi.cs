@@ -16,8 +16,8 @@ public partial class ConsoleUi : VisualElement
             flexGrow = 1,
             width = UiUtils.GetLengthPercentage(100),
             paddingLeft = 12,
-            paddingRight = 12
-        }
+            paddingRight = 12,
+        },
     };
 
     public readonly TextField textField = new()
@@ -32,7 +32,7 @@ public partial class ConsoleUi : VisualElement
             height = 36,
             width = UiUtils.GetLengthPercentage(100),
             unityFontStyleAndWeight = FontStyle.Bold,
-        }
+        },
     };
 
     public ConsoleUi()
@@ -43,7 +43,10 @@ public partial class ConsoleUi : VisualElement
         style.top = UiUtils.GetLengthPercentage(50);
         style.left = UiUtils.GetLengthPercentage(50);
         style.backgroundColor = UiUtils.HexToRgb("#222222");
-        style.translate = new Translate(UiUtils.GetLengthPercentage(-50), UiUtils.GetLengthPercentage(-50));
+        style.translate = new Translate(
+            UiUtils.GetLengthPercentage(-50),
+            UiUtils.GetLengthPercentage(-50)
+        );
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
         style.unityFont = Resources.Load<Font>("Fonts/jetbrains_mono");
@@ -69,9 +72,9 @@ public partial class ConsoleUi : VisualElement
                     ConsoleOutputLevel.Error => Color.red,
                     ConsoleOutputLevel.Info => Color.white,
                     ConsoleOutputLevel.Success => Color.green,
-                    _ => throw new NotImplementedException("Invalid console output level")
-                }
-            }
+                    _ => throw new NotImplementedException("Invalid console output level"),
+                },
+            },
         };
         outputContainer.Add(output);
     }

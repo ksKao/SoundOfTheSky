@@ -4,8 +4,12 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class TrainCard : VisualElement
 {
-    private static readonly Texture2D _trainCardBackground = UiUtils.LoadTexture("train_upgrade_overview_background");
-    private static readonly Texture2D _buyButtonBackground = UiUtils.LoadTexture("train_buy_button");
+    private static readonly Texture2D _trainCardBackground = UiUtils.LoadTexture(
+        "train_upgrade_overview_background"
+    );
+    private static readonly Texture2D _buyButtonBackground = UiUtils.LoadTexture(
+        "train_buy_button"
+    );
 
     private readonly Train _train;
     private readonly VisualElement _topContainer = new()
@@ -15,8 +19,8 @@ public partial class TrainCard : VisualElement
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             justifyContent = Justify.SpaceBetween,
-            width = UiUtils.GetLengthPercentage(100)
-        }
+            width = UiUtils.GetLengthPercentage(100),
+        },
     };
     private readonly Label _priceLabel = new();
     private Button _button = new();
@@ -33,8 +37,8 @@ public partial class TrainCard : VisualElement
             borderTopLeftRadius = 22,
             borderTopRightRadius = 22,
             borderBottomLeftRadius = 22,
-            borderBottomRightRadius = 22
-        }
+            borderBottomRightRadius = 22,
+        },
     };
 
     public TrainCard()
@@ -64,15 +68,7 @@ public partial class TrainCard : VisualElement
         _topContainer.Add(new() { style = { width = 100 } }); // add an empty element to align items properly because the button is absolutely positioned
 
         Add(_topContainer);
-        Add(new Image()
-        {
-            sprite = train.trainSO.sprite,
-            style =
-            {
-                width = 600,
-                height = 100
-            }
-        });
+        Add(new Image() { sprite = train.trainSO.sprite, style = { width = 600, height = 100 } });
         Add(_overlay);
         Add(_button);
 
@@ -92,8 +88,8 @@ public partial class TrainCard : VisualElement
                 width = 100,
                 position = Position.Absolute,
                 right = UiUtils.GetLengthPercentage(2.5f),
-                top = 25
-            }
+                top = 25,
+            },
         };
         UiUtils.ToggleBorder(_button, false);
 

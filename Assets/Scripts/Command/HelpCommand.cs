@@ -9,11 +9,12 @@ public class HelpCommand : Command
 
     public override string HelpText => "Get info about command(s).";
 
-    public override Dictionary<string, string> Usage => new()
-    {
-        { "help", "Get all commands." },
-        { "help <command>", "Get info about the command" }
-    };
+    public override Dictionary<string, string> Usage =>
+        new()
+        {
+            { "help", "Get all commands." },
+            { "help <command>", "Get info about the command" },
+        };
 
     public override void Execute(string[] args)
     {
@@ -29,7 +30,9 @@ public class HelpCommand : Command
         }
         else
         {
-            Command command = ConsoleManager.Instance.Commands.FirstOrDefault(c => c.Id == args[0]) ?? throw new Exception($"\"{args[0]}\" is not a valid command");
+            Command command =
+                ConsoleManager.Instance.Commands.FirstOrDefault(c => c.Id == args[0])
+                ?? throw new Exception($"\"{args[0]}\" is not a valid command");
 
             output.AppendLine(command.HelpText);
 

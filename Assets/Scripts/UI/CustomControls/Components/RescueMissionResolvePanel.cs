@@ -6,8 +6,12 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class RescueMissionResolvePanel : VisualElement
 {
-    private static readonly Texture2D _buttonBackground = UiUtils.LoadTexture("crew_selection_button");
-    private static readonly Texture2D _panelBackground = UiUtils.LoadTexture("resolve_passenger_container_panel_background");
+    private static readonly Texture2D _buttonBackground = UiUtils.LoadTexture(
+        "crew_selection_button"
+    );
+    private static readonly Texture2D _panelBackground = UiUtils.LoadTexture(
+        "resolve_passenger_container_panel_background"
+    );
 
     private readonly RescueMission _mission;
     private readonly Button _supplyButton = new();
@@ -18,8 +22,8 @@ public partial class RescueMissionResolvePanel : VisualElement
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             flexWrap = Wrap.Wrap,
-            width = UiUtils.GetLengthPercentage(100)
-        }
+            width = UiUtils.GetLengthPercentage(100),
+        },
     };
     private readonly VisualElement _crewListContainer = new()
     {
@@ -28,8 +32,8 @@ public partial class RescueMissionResolvePanel : VisualElement
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             flexWrap = Wrap.Wrap,
-            width = UiUtils.GetLengthPercentage(100)
-        }
+            width = UiUtils.GetLengthPercentage(100),
+        },
     };
     private readonly VisualElement _divider = new()
     {
@@ -40,7 +44,7 @@ public partial class RescueMissionResolvePanel : VisualElement
             backgroundColor = Color.black,
             marginTop = 16,
             marginBottom = 16,
-        }
+        },
     };
 
     public readonly Button finishButton = new();
@@ -75,7 +79,7 @@ public partial class RescueMissionResolvePanel : VisualElement
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
                 flexGrow = 1,
-            }
+            },
         };
         // passenger list
         Add(container);
@@ -85,16 +89,15 @@ public partial class RescueMissionResolvePanel : VisualElement
         container.Add(_crewListContainer);
 
         // bottom buttons
-        VisualElement bottomButtonsContainer =
-            new()
+        VisualElement bottomButtonsContainer = new()
+        {
+            style =
             {
-                style =
-                {
-                    display = DisplayStyle.Flex,
-                    flexDirection = FlexDirection.Row,
-                    width = UiUtils.GetLengthPercentage(96),
-                },
-            };
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                width = UiUtils.GetLengthPercentage(96),
+            },
+        };
 
         _supplyButton.clicked += () =>
             _mission.UseSupply(_mission.CrewsAndPassengers.Where(p => p.Selected).ToArray());
@@ -140,7 +143,10 @@ public partial class RescueMissionResolvePanel : VisualElement
         _mission.DeployedMissionUi.SendToBack();
         _mission.DeployedMissionUi.resolveButton.visible = false;
 
-        _divider.style.display = _mission.Passengers.Count == 0 || _mission.Crews.Length == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+        _divider.style.display =
+            _mission.Passengers.Count == 0 || _mission.Crews.Length == 0
+                ? DisplayStyle.None
+                : DisplayStyle.Flex;
 
         _passengerListContainer.Clear();
         foreach (Passenger passenger in _mission.Passengers)

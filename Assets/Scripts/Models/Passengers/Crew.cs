@@ -4,8 +4,12 @@ using UnityEngine.UIElements;
 
 public class Crew : Passenger
 {
-    private static readonly Texture2D _backgroundImage = UiUtils.LoadTexture("crew_selection_background");
-    private static readonly Texture2D _backgroundImageSelected = UiUtils.LoadTexture("crew_selection_background_glow");
+    private static readonly Texture2D _backgroundImage = UiUtils.LoadTexture(
+        "crew_selection_background"
+    );
+    private static readonly Texture2D _backgroundImageSelected = UiUtils.LoadTexture(
+        "crew_selection_background_glow"
+    );
 
     public const int MAX_ENDURANCE_LEVEL = 8;
 
@@ -43,7 +47,8 @@ public class Crew : Passenger
 
     protected override void OnClick(ClickEvent _)
     {
-        if (!selectable) return;
+        if (!selectable)
+            return;
 
         Selected = !Selected;
         OnSelect.Invoke(this);

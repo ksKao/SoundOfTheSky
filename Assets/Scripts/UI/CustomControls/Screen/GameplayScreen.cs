@@ -36,34 +36,32 @@ public partial class GameplayScreen : VisualElement
         );
         style.position = Position.Relative;
 
-        VisualElement container =
-            new()
+        VisualElement container = new()
+        {
+            style =
             {
-                style =
-                {
-                    backgroundImage = UiUtils.LoadTexture("wallpaper_border"),
-                    width = UiUtils.GetLengthPercentage(95),
-                    height = UiUtils.GetLengthPercentage(95),
-                    paddingTop = 30,
-                    paddingBottom = 30,
-                    paddingLeft = 35,
-                    paddingRight = 35,
-                    display = DisplayStyle.Flex,
-                    flexDirection = FlexDirection.Row,
-                },
-            };
+                backgroundImage = UiUtils.LoadTexture("wallpaper_border"),
+                width = UiUtils.GetLengthPercentage(95),
+                height = UiUtils.GetLengthPercentage(95),
+                paddingTop = 30,
+                paddingBottom = 30,
+                paddingLeft = 35,
+                paddingRight = 35,
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+            },
+        };
 
-        VisualElement left =
-            new()
+        VisualElement left = new()
+        {
+            style =
             {
-                style =
-                {
-                    width = UiUtils.GetLengthPercentage(50),
-                    height = UiUtils.GetLengthPercentage(100),
-                    display = DisplayStyle.Flex,
-                    flexDirection = FlexDirection.Column,
-                },
-            };
+                width = UiUtils.GetLengthPercentage(50),
+                height = UiUtils.GetLengthPercentage(100),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+            },
+        };
         pendingMissionList.style.height = UiUtils.GetLengthPercentage(100);
 
         left.Add(materialBar);
@@ -103,22 +101,21 @@ public partial class GameplayScreen : VisualElement
     {
         float transitionDuration = 2f;
 
-        Label error =
-            new()
+        Label error = new()
+        {
+            text = message,
+            style =
             {
-                text = message,
-                style =
-                {
-                    color = Color.white,
-                    position = Position.Absolute,
-                    left = UiUtils.GetLengthPercentage(50),
-                    top = UiUtils.GetLengthPercentage(15),
-                    fontSize = 24,
-                    unityTextOutlineWidth = 2,
-                    unityTextOutlineColor = Color.black,
-                    translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
-                },
-            };
+                color = Color.white,
+                position = Position.Absolute,
+                left = UiUtils.GetLengthPercentage(50),
+                top = UiUtils.GetLengthPercentage(15),
+                fontSize = 24,
+                unityTextOutlineWidth = 2,
+                unityTextOutlineColor = Color.black,
+                translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
+            },
+        };
         Add(error);
 
         Tweener opacityTween = DOTween
@@ -142,10 +139,13 @@ public partial class GameplayScreen : VisualElement
         int i = 0;
         foreach (Mission mission in GameManager.Instance.PendingMissions)
         {
-            if (mission.Type != selectedType) continue;
+            if (mission.Type != selectedType)
+                continue;
 
             pendingMissionList.Add(mission.PendingMissionUi);
-            mission.PendingMissionUi.style.backgroundImage = Mission.pendingMissionBarBackground[i % Mission.pendingMissionBarBackground.Length];
+            mission.PendingMissionUi.style.backgroundImage = Mission.pendingMissionBarBackground[
+                i % Mission.pendingMissionBarBackground.Length
+            ];
 
             i++;
         }

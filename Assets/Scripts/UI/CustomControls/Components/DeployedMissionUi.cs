@@ -5,9 +5,12 @@ using UnityEngine.UIElements;
 public partial class DeployedMissionUi : VisualElement
 {
     private const string DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX = "deployed_mission_background_";
-    private const string DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX = DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + "border_";
-    private const string DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX = "check_health_button_";
-    private const string DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX = "resolve_button_";
+    private const string DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX =
+        DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + "border_";
+    private const string DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX =
+        "check_health_button_";
+    private const string DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX =
+        "resolve_button_";
     private const int NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS = 5;
 
     private static readonly Sprite _arrivalsBadgeImage = UiUtils.LoadSprite("arrivals_badge");
@@ -21,7 +24,7 @@ public partial class DeployedMissionUi : VisualElement
             height = UiUtils.GetLengthPercentage(100),
             position = Position.Relative,
             display = DisplayStyle.Flex,
-        }
+        },
     };
     private readonly VisualElement _contentContainer = new()
     {
@@ -34,7 +37,7 @@ public partial class DeployedMissionUi : VisualElement
             paddingLeft = UiUtils.GetLengthPercentage(3f),
             paddingRight = UiUtils.GetLengthPercentage(3f),
             flexDirection = FlexDirection.Row,
-        }
+        },
     };
 
     public readonly Button checkHealthButton = new()
@@ -45,8 +48,8 @@ public partial class DeployedMissionUi : VisualElement
             unityTextAlign = TextAnchor.MiddleCenter,
             fontSize = 12,
             color = Color.white,
-            backgroundColor = Color.clear
-        }
+            backgroundColor = Color.clear,
+        },
     };
     public readonly Mission mission;
     public readonly Label milesRemainingLabel = new();
@@ -63,7 +66,10 @@ public partial class DeployedMissionUi : VisualElement
     public DeployedMissionUi(Mission mission)
     {
         this.mission = mission;
-        int backgroundNumber = Random.GetRandomIntInRange(1, NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS);
+        int backgroundNumber = Random.GetRandomIntInRange(
+            1,
+            NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS
+        );
 
         style.height = UiUtils.GetLengthPercentage(100 / 6f);
         style.maxHeight = UiUtils.GetLengthPercentage(100 / 6f);
@@ -75,14 +81,19 @@ public partial class DeployedMissionUi : VisualElement
         {
             style =
             {
-                backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + backgroundNumber),
+                backgroundImage = UiUtils.LoadTexture(
+                    DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + backgroundNumber
+                ),
                 position = Position.Absolute,
                 width = UiUtils.GetLengthPercentage(95),
                 height = UiUtils.GetLengthPercentage(65),
                 top = UiUtils.GetLengthPercentage(50),
                 left = UiUtils.GetLengthPercentage(50),
-                translate = new Translate(UiUtils.GetLengthPercentage(-50), UiUtils.GetLengthPercentage(-52))
-            }
+                translate = new Translate(
+                    UiUtils.GetLengthPercentage(-50),
+                    UiUtils.GetLengthPercentage(-52)
+                ),
+            },
         };
         _container.Add(backgroundImage);
 
@@ -90,13 +101,15 @@ public partial class DeployedMissionUi : VisualElement
         {
             style =
             {
-                backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX + backgroundNumber),
+                backgroundImage = UiUtils.LoadTexture(
+                    DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX + backgroundNumber
+                ),
                 position = Position.Absolute,
                 width = UiUtils.GetLengthPercentage(100),
                 height = UiUtils.GetLengthPercentage(100),
                 top = 0,
                 left = 0,
-            }
+            },
         };
         _container.Add(borderImage);
 
@@ -112,16 +125,11 @@ public partial class DeployedMissionUi : VisualElement
         _arriveOverlay.style.alignItems = Align.Center;
         Add(_arriveOverlay);
 
-        Image arriveLabel =
-            new()
-            {
-                sprite = _arrivalsBadgeImage,
-                style =
-                {
-                    width = 250,
-                    height = 50
-                }
-            };
+        Image arriveLabel = new()
+        {
+            sprite = _arrivalsBadgeImage,
+            style = { width = 250, height = 50 },
+        };
         _arriveOverlay.Add(arriveLabel);
 
         VisualElement leftContainer = new()
@@ -133,8 +141,8 @@ public partial class DeployedMissionUi : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
-                justifyContent = Justify.SpaceBetween
-            }
+                justifyContent = Justify.SpaceBetween,
+            },
         };
 
         VisualElement centerContainer = new()
@@ -145,8 +153,8 @@ public partial class DeployedMissionUi : VisualElement
                 height = UiUtils.GetLengthPercentage(100),
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
-                justifyContent = Justify.SpaceBetween
-            }
+                justifyContent = Justify.SpaceBetween,
+            },
         };
 
         VisualElement rightContainer = new()
@@ -158,8 +166,8 @@ public partial class DeployedMissionUi : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
-                justifyContent = Justify.Center
-            }
+                justifyContent = Justify.Center,
+            },
         };
 
         _contentContainer.Add(leftContainer);
@@ -170,7 +178,9 @@ public partial class DeployedMissionUi : VisualElement
         leftContainer.Add(milesRemainingLabel);
 
         UiUtils.ToggleBorder(checkHealthButton, false);
-        checkHealthButton.style.backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber);
+        checkHealthButton.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber
+        );
         checkHealthButton.clicked += mission.OnCheckHealthButtonClicked;
         leftContainer.Add(checkHealthButton);
 
@@ -186,15 +196,13 @@ public partial class DeployedMissionUi : VisualElement
 
         if (mission.Train != null)
         {
-            centerContainer.Add(new Image()
-            {
-                sprite = mission.Train.trainSO.sprite,
-                style =
+            centerContainer.Add(
+                new Image()
                 {
-                    width = UiUtils.GetLengthPercentage(100),
-                    height = 50,
+                    sprite = mission.Train.trainSO.sprite,
+                    style = { width = UiUtils.GetLengthPercentage(100), height = 50 },
                 }
-            });
+            );
         }
 
         routeLabel.text =
@@ -204,7 +212,9 @@ public partial class DeployedMissionUi : VisualElement
         resolveButton.text = "Resolve";
         resolveButton.visible = mission.EventPending;
         resolveButton.clicked += mission.OnResolveButtonClicked;
-        resolveButton.style.backgroundImage = UiUtils.LoadTexture(DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber);
+        resolveButton.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber
+        );
         resolveButton.style.unityTextAlign = TextAnchor.MiddleCenter;
         resolveButton.style.color = Color.white;
         resolveButton.style.backgroundColor = Color.clear;

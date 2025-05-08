@@ -6,8 +6,12 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class CrewSelectionPanel : VisualElement
 {
-    private readonly static Texture2D _crewSelectionPanelBackground = UiUtils.LoadTexture("crew_selection_panel_background");
-    private readonly static Texture2D _buttonBackground = UiUtils.LoadTexture("crew_selection_button");
+    private static readonly Texture2D _crewSelectionPanelBackground = UiUtils.LoadTexture(
+        "crew_selection_panel_background"
+    );
+    private static readonly Texture2D _buttonBackground = UiUtils.LoadTexture(
+        "crew_selection_button"
+    );
 
     private Crew[] _crews = { };
     private readonly Button _cancelButton = new();
@@ -23,16 +27,10 @@ public partial class CrewSelectionPanel : VisualElement
             paddingRight = UiUtils.GetLengthPercentage(3f),
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
-            flexWrap = Wrap.Wrap
-        }
+            flexWrap = Wrap.Wrap,
+        },
     };
-    private readonly VisualElement _additionalUi = new()
-    {
-        style =
-        {
-            flexGrow = 1
-        }
-    };
+    private readonly VisualElement _additionalUi = new() { style = { flexGrow = 1 } };
     private readonly VisualElement _buttonContainer = new()
     {
         style =
@@ -41,7 +39,7 @@ public partial class CrewSelectionPanel : VisualElement
             flexDirection = FlexDirection.Row,
             alignItems = Align.Center,
             width = UiUtils.GetLengthPercentage(100),
-        }
+        },
     };
 
     private Action<Crew[]> _onSelect;

@@ -20,9 +20,18 @@ public partial class MaterialsBar : VisualElement
 
     public void RefreshAllMaterialAmountUi()
     {
-        UpdateMaterialAmount(MaterialType.Payments, GameManager.Instance.GetMaterialValue(MaterialType.Payments));
-        UpdateMaterialAmount(MaterialType.Resources, GameManager.Instance.GetMaterialValue(MaterialType.Resources));
-        UpdateMaterialAmount(MaterialType.Supplies, GameManager.Instance.GetMaterialValue(MaterialType.Supplies));
+        UpdateMaterialAmount(
+            MaterialType.Payments,
+            GameManager.Instance.GetMaterialValue(MaterialType.Payments)
+        );
+        UpdateMaterialAmount(
+            MaterialType.Resources,
+            GameManager.Instance.GetMaterialValue(MaterialType.Resources)
+        );
+        UpdateMaterialAmount(
+            MaterialType.Supplies,
+            GameManager.Instance.GetMaterialValue(MaterialType.Supplies)
+        );
 
         int numberOfResidents = 0;
         int numberOfCitizens = 0;
@@ -58,30 +67,21 @@ public partial class MaterialsBar : VisualElement
 
         Image icon = new()
         {
-            style =
-            {
-                height = 24
-            },
-            sprite = UiUtils.LoadSprite(materialType.ToString().ToLower())
+            style = { height = 24 },
+            sprite = UiUtils.LoadSprite(materialType.ToString().ToLower()),
         };
 
         Label materialTypeLabel = new()
         {
             text = materialType.ToString(),
-            style =
-            {
-                color = Color.white
-            }
+            style = { color = Color.white },
         };
 
         Label amountLabel = new()
         {
             text = "0x",
             name = materialType.ToString(),
-            style =
-            {
-                color = Color.white
-            }
+            style = { color = Color.white },
         };
 
         container.Add(icon);

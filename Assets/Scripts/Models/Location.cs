@@ -26,7 +26,6 @@ public class Location
         }
     }
 
-
     public Location(LocationSO locationSO)
     {
         this.locationSO = locationSO;

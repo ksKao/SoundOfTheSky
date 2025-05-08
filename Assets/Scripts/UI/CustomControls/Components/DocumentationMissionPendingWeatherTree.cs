@@ -5,8 +5,9 @@ using UnityEngine.UIElements;
 
 public class DocumentationMissionPendingWeatherTree : VisualElement
 {
-    private readonly List<VisualElement> _weatherContainers =
-        new(DataManager.Instance.AllWeathers.Length);
+    private readonly List<VisualElement> _weatherContainers = new(
+        DataManager.Instance.AllWeathers.Length
+    );
 
     public DocumentationMissionPendingWeatherTree()
     {
@@ -34,25 +35,30 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
 
         for (int i = 0; i < mission.WeatherProbabilities.Count; i++)
         {
-            KeyValuePair<WeatherSO, int> weatherProbability = mission.WeatherProbabilities.ElementAt(i);
+            KeyValuePair<WeatherSO, int> weatherProbability =
+                mission.WeatherProbabilities.ElementAt(i);
 
             VisualElement container = new();
             container.Add(UiUtils.WrapLabel(new Label(weatherProbability.Key.name)));
-            container.Add(new Image()
-            {
-                sprite = weatherProbability.Key.sprite,
-                style =
+            container.Add(
+                new Image()
                 {
-                    width = UiUtils.GetLengthPercentage(45),
-                    height = UiUtils.GetLengthPercentage(45),
+                    sprite = weatherProbability.Key.sprite,
+                    style =
+                    {
+                        width = UiUtils.GetLengthPercentage(45),
+                        height = UiUtils.GetLengthPercentage(45),
+                    },
                 }
-            });
+            );
             container.Add(UiUtils.WrapLabel(new Label(weatherProbability.Value * 10 + "%")));
             container.style.color = Color.white;
 
             mission.ApplyCommonPendingMissionUiStyleSingle(container, i);
             container.style.fontSize = 12;
-            container.style.backgroundImage = UiUtils.LoadTexture("weather_distribution_background"); // TODO: Change later, awaiting asset
+            container.style.backgroundImage = UiUtils.LoadTexture(
+                "weather_distribution_background"
+            ); // TODO: Change later, awaiting asset
             container.style.width = UiUtils.GetLengthPercentage(
                 100 / DataManager.Instance.AllWeathers.Length
             );
@@ -78,7 +84,9 @@ public class DocumentationMissionPendingWeatherTree : VisualElement
                 Vector2 lineStartOffset = new(0, 10); // add few pixels offset because of the background image not filling the dimension
                 painter.BeginPath();
                 Vector2 lineStart =
-                    container.layout.position + new Vector2(container.layout.width / 2, 0) + lineStartOffset;
+                    container.layout.position
+                    + new Vector2(container.layout.width / 2, 0)
+                    + lineStartOffset;
                 Vector2 lineEnd = lineStart + new Vector2(0, -container.layout.height);
                 painter.MoveTo(lineStart);
                 painter.LineTo(lineEnd);

@@ -29,28 +29,21 @@ public partial class TrainUpgradePanel : VisualElement
                 color = UiUtils.darkBlueTextColor,
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column,
-                alignItems = Align.Center
-            }
+                alignItems = Align.Center,
+            },
         };
 
-        trainOverviewContainer.Add(new Label()
-        {
-            text = train.trainSO.name.ToUpper(),
-            style =
+        trainOverviewContainer.Add(
+            new Label()
             {
-                alignSelf = Align.FlexStart
+                text = train.trainSO.name.ToUpper(),
+                style = { alignSelf = Align.FlexStart },
             }
-        });
+        );
 
-        trainOverviewContainer.Add(new Image()
-        {
-            sprite = train.trainSO.sprite,
-            style =
-            {
-                width = 600,
-                height = 100
-            }
-        });
+        trainOverviewContainer.Add(
+            new Image() { sprite = train.trainSO.sprite, style = { width = 600, height = 100 } }
+        );
 
         Add(trainOverviewContainer);
 
@@ -67,8 +60,8 @@ public partial class TrainUpgradePanel : VisualElement
                 marginTop = 20,
                 marginBottom = 10,
                 paddingLeft = 40,
-                paddingRight = 40
-            }
+                paddingRight = 40,
+            },
         };
 
         Add(upgradeInterfaceContainer);
@@ -126,8 +119,8 @@ public partial class TrainUpgradePanel : VisualElement
                 alignSelf = Align.FlexEnd,
                 color = Color.white,
                 width = 120,
-                height = 100
-            }
+                height = 100,
+            },
         };
         UiUtils.ToggleBorder(backButton, false);
         backButton.clicked += () =>

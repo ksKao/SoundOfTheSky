@@ -9,13 +9,12 @@ public class GameManager : Singleton<GameManager>
     public const int MAX_UPGRADE_LEVEL = 10;
 
     private Mission _selectedPendingMission = null;
-    private readonly Dictionary<MaterialType, int> _materials =
-        new()
-        {
-            { MaterialType.Payments, 500 },
-            { MaterialType.Supplies, 500 },
-            { MaterialType.Resources, 500 },
-        };
+    private readonly Dictionary<MaterialType, int> _materials = new()
+    {
+        { MaterialType.Payments, 500 },
+        { MaterialType.Supplies, 500 },
+        { MaterialType.Resources, 500 },
+    };
 
     public readonly List<Mission> deployedMissions = new();
     public readonly List<Crew> crews = new(INITIAL_NUMBER_OF_CREWS);

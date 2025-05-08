@@ -19,7 +19,7 @@ public partial class NumberInput : VisualElement
             paddingTop = 0,
             paddingBottom = 0,
             height = UiUtils.GetLengthPercentage(100),
-        }
+        },
     };
     private readonly Button DecrementButton = new()
     {
@@ -30,8 +30,8 @@ public partial class NumberInput : VisualElement
             paddingRight = 0,
             paddingTop = 0,
             paddingBottom = 0,
-            height = UiUtils.GetLengthPercentage(100)
-        }
+            height = UiUtils.GetLengthPercentage(100),
+        },
     };
 
     [UxmlAttribute]
@@ -44,13 +44,15 @@ public partial class NumberInput : VisualElement
             TextLabel.text = value;
         }
     }
+
     [UxmlAttribute]
     public int Value
     {
         get => _value;
         set
         {
-            if (value < 0) return;
+            if (value < 0)
+                return;
 
             _value = value;
             ValueLabel.text = _value.ToString();
@@ -86,7 +88,7 @@ public partial class NumberInput : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
                 alignItems = Align.Center,
-            }
+            },
         };
         buttonsContainer.Add(DecrementButton);
         buttonsContainer.Add(ValueLabel);
@@ -96,5 +98,6 @@ public partial class NumberInput : VisualElement
     }
 
     private void IncrementValue() => Value++;
+
     private void DecrementValue() => Value--;
 }

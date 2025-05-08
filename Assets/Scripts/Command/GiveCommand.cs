@@ -20,11 +20,17 @@ public class GiveCommand : Command
 
                 if (materialType != MaterialType.Citizens && materialType != MaterialType.Residents)
                 {
-                    usage.Add(key, $"Give x amount of {materialType}. Negative numbers are allowed.");
+                    usage.Add(
+                        key,
+                        $"Give x amount of {materialType}. Negative numbers are allowed."
+                    );
                 }
                 else
                 {
-                    usage.Add(key + " <location>", $"Increase number of {materialType.ToString().ToLower()} in x location (case insensitive). If location contains space, replace it with underscore.");
+                    usage.Add(
+                        key + " <location>",
+                        $"Increase number of {materialType.ToString().ToLower()} in x location (case insensitive). If location contains space, replace it with underscore."
+                    );
                 }
             }
 
@@ -49,16 +55,24 @@ public class GiveCommand : Command
         if (material == MaterialType.Citizens || material == MaterialType.Residents)
         {
             if (args.Length < 3)
-                throw new Exception($"Location name is required if material is {material.ToString().ToLower()}.");
+                throw new Exception(
+                    $"Location name is required if material is {material.ToString().ToLower()}."
+                );
 
-            Location foundLocation = GameManager.Instance.Locations.FirstOrDefault(l => l.locationSO.name.ToLower().Replace(" ", "_") == args[2]) ?? throw new Exception("Invalid location name.");
+            Location foundLocation =
+                GameManager.Instance.Locations.FirstOrDefault(l =>
+                    l.locationSO.name.ToLower().Replace(" ", "_") == args[2]
+                ) ?? throw new Exception("Invalid location name.");
 
             int amountBefore = foundLocation.Residents;
             int amountAfter = amountBefore + amount;
 
             foundLocation.Residents += amount;
             GameManager.Instance.IncrementMaterialValue(material, amount);
-            ConsoleManager.Instance.Output($"{foundLocation.locationSO.name} undocumented {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}", ConsoleOutputLevel.Success);
+            ConsoleManager.Instance.Output(
+                $"{foundLocation.locationSO.name} undocumented {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}",
+                ConsoleOutputLevel.Success
+            );
         }
         else
         {
@@ -66,7 +80,10 @@ public class GiveCommand : Command
             int amountAfter = amountBefore + amount;
 
             GameManager.Instance.IncrementMaterialValue(material, amount);
-            ConsoleManager.Instance.Output($"{material}: {amountBefore} -> {amountAfter}", ConsoleOutputLevel.Success);
+            ConsoleManager.Instance.Output(
+                $"{material}: {amountBefore} -> {amountAfter}",
+                ConsoleOutputLevel.Success
+            );
         }
     }
 }

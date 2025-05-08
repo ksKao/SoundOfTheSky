@@ -20,14 +20,18 @@ public class ConsoleManager : Singleton<ConsoleManager>
             new ClearCommand(),
             new GiveCommand(),
             new UnlockCommand(),
-            new SetCommand()
+            new SetCommand(),
         };
 
         InputManager.Instance.InputAction.Main.OpenConsole.performed += ctx => OpenConsole();
         InputManager.Instance.InputAction.Console.Close.performed += ctx => CloseConsole();
         InputManager.Instance.InputAction.Console.Submit.performed += ctx => SubmitCommand();
     }
-    public void Output(string message, ConsoleOutputLevel consoleOutputLevel = ConsoleOutputLevel.Info)
+
+    public void Output(
+        string message,
+        ConsoleOutputLevel consoleOutputLevel = ConsoleOutputLevel.Info
+    )
     {
         _ui.AddOutput(message, consoleOutputLevel);
     }
@@ -58,7 +62,9 @@ public class ConsoleManager : Singleton<ConsoleManager>
             if (string.IsNullOrWhiteSpace(input) || split.Length == 0)
                 return;
 
-            Command found = Commands.FirstOrDefault(c => c.Id == split[0]) ?? throw new Exception($"\"{split[0]}\" is not a valid command.");
+            Command found =
+                Commands.FirstOrDefault(c => c.Id == split[0])
+                ?? throw new Exception($"\"{split[0]}\" is not a valid command.");
 
             found.Execute(split.Skip(1).ToArray());
         }

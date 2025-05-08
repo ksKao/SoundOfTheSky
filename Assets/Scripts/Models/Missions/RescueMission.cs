@@ -50,7 +50,8 @@ public class RescueMission : Mission
         }
     }
 
-    public RescueMission() : base()
+    public RescueMission()
+        : base()
     {
         int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
@@ -117,7 +118,9 @@ public class RescueMission : Mission
             return;
         }
 
-        Passenger[] uncomfortablePassengers = selectedPassengers.Where(p => p.Status != PassengerStatus.Comfortable).ToArray();
+        Passenger[] uncomfortablePassengers = selectedPassengers
+            .Where(p => p.Status != PassengerStatus.Comfortable)
+            .ToArray();
 
         if (uncomfortablePassengers.Length == 0)
         {

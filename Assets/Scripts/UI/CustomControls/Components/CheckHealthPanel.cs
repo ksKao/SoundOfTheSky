@@ -15,8 +15,8 @@ public class CheckHealthPanel : VisualElement
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             flexWrap = Wrap.Wrap,
-            flexGrow = 1
-        }
+            flexGrow = 1,
+        },
     };
     private readonly Mission _mission;
 
@@ -41,7 +41,7 @@ public class CheckHealthPanel : VisualElement
                 flexDirection = FlexDirection.Row,
                 alignItems = Align.Center,
                 width = UiUtils.GetLengthPercentage(100),
-            }
+            },
         };
 
         Button backButton = new()
@@ -55,10 +55,13 @@ public class CheckHealthPanel : VisualElement
                 height = 90,
                 fontSize = 24,
                 backgroundColor = Color.clear,
-            }
+            },
         };
         UiUtils.ToggleBorder(backButton, false);
-        backButton.clicked += () => UiManager.Instance.GameplayScreen.ChangeRightPanel(UiManager.Instance.GameplayScreen.deployedMissionList);
+        backButton.clicked += () =>
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.deployedMissionList
+            );
 
         buttonContainer.Add(backButton);
 

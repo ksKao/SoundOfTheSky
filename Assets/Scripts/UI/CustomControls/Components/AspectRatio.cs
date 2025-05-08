@@ -15,7 +15,8 @@ public partial class AspectRatio : VisualElement
 
     private void OnGeometryChanged(GeometryChangedEvent evt)
     {
-        if (parent is null) return;
+        if (parent is null)
+            return;
 
         // Get the current size of the container
         float containerWidth = parent.resolvedStyle.width;

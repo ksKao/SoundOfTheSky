@@ -12,8 +12,8 @@ public partial class BottomNavigationBar : VisualElement
         {
             color = UiUtils.HexToRgb("#74def4"),
             backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
-            width = 60
-        }
+            width = 60,
+        },
     };
     public readonly Button trainButton = new()
     {
@@ -22,8 +22,8 @@ public partial class BottomNavigationBar : VisualElement
         {
             color = UiUtils.HexToRgb("#74def4"),
             backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
-            width = 60
-        }
+            width = 60,
+        },
     };
     public readonly Button deployButton = new()
     {
@@ -32,8 +32,8 @@ public partial class BottomNavigationBar : VisualElement
         {
             color = UiUtils.HexToRgb("#74def4"),
             backgroundImage = UiUtils.LoadTexture("bottom_bar_button"),
-            width = 60
-        }
+            width = 60,
+        },
     };
 
     public BottomNavigationBar()
@@ -42,8 +42,10 @@ public partial class BottomNavigationBar : VisualElement
         style.flexDirection = FlexDirection.Row;
         style.justifyContent = Justify.SpaceBetween;
 
-        VisualElement buttonGroup =
-            new() { style = { display = DisplayStyle.Flex, flexDirection = FlexDirection.Row } };
+        VisualElement buttonGroup = new()
+        {
+            style = { display = DisplayStyle.Flex, flexDirection = FlexDirection.Row },
+        };
 
         crewButton.clicked += ShowCrewList;
 
@@ -66,22 +68,25 @@ public partial class BottomNavigationBar : VisualElement
             style =
             {
                 backgroundImage = UiUtils.LoadTexture("bottom_bar_deployed_mission_button"),
-                width = 400
-            }
+                width = 400,
+            },
         };
         deployedMissionListButton.clicked += () =>
         {
-            VisualElement element = GameManager.Instance.deployedMissions.Count > 0 ? UiManager.Instance.GameplayScreen.deployedMissionList : UiManager.Instance.GameplayScreen.map;
+            VisualElement element =
+                GameManager.Instance.deployedMissions.Count > 0
+                    ? UiManager.Instance.GameplayScreen.deployedMissionList
+                    : UiManager.Instance.GameplayScreen.map;
             UiManager.Instance.GameplayScreen.ChangeRightPanel(element);
         };
         Add(deployedMissionListButton);
 
-        this.Query<Button>().ForEach(button =>
+        this.Query<Button>()
+            .ForEach(button =>
             {
                 UiUtils.ToggleBorder(button, false);
                 button.style.backgroundColor = Color.clear;
-            }
-        );
+            });
     }
 
     public void ShowCrewList()
@@ -91,10 +96,7 @@ public partial class BottomNavigationBar : VisualElement
         // );
         Crew[] selectedCrews = { };
 
-        Button restButton = new()
-        {
-            text = "REST"
-        };
+        Button restButton = new() { text = "REST" };
         restButton.clicked += () =>
         {
             VisualElement container = new()
@@ -104,17 +106,14 @@ public partial class BottomNavigationBar : VisualElement
                     display = DisplayStyle.Flex,
                     flexDirection = FlexDirection.Row,
                     width = UiUtils.GetLengthPercentage(100),
-                    justifyContent = Justify.FlexEnd
-                }
+                    justifyContent = Justify.FlexEnd,
+                },
             };
 
             Button applyRestButton = new()
             {
                 text = "REST",
-                style =
-                {
-                    display = DisplayStyle.None
-                }
+                style = { display = DisplayStyle.None },
             };
             applyRestButton.clicked += () =>
             {
@@ -128,7 +127,13 @@ public partial class BottomNavigationBar : VisualElement
             container.Add(applyRestButton);
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                GameManager.Instance.crews.Where(c => !c.isResting && c.deployedMission is null && c.Status != PassengerStatus.Comfortable).ToArray(),
+                GameManager
+                    .Instance.crews.Where(c =>
+                        !c.isResting
+                        && c.deployedMission is null
+                        && c.Status != PassengerStatus.Comfortable
+                    )
+                    .ToArray(),
                 (crews) =>
                 {
                     int selectedCount = crews.Where(c => c.Selected).Count();
@@ -150,10 +155,7 @@ public partial class BottomNavigationBar : VisualElement
             );
         };
 
-        Button cureButton = new()
-        {
-            text = "CURE"
-        };
+        Button cureButton = new() { text = "CURE" };
         cureButton.clicked += () =>
         {
             VisualElement container = new()
@@ -163,23 +165,23 @@ public partial class BottomNavigationBar : VisualElement
                     display = DisplayStyle.Flex,
                     flexDirection = FlexDirection.Row,
                     width = UiUtils.GetLengthPercentage(100),
-                    justifyContent = Justify.FlexEnd
-                }
+                    justifyContent = Justify.FlexEnd,
+                },
             };
 
             Button applyCureButton = new()
             {
                 text = "CURE",
-                style =
-                {
-                    display = DisplayStyle.None
-                }
+                style = { display = DisplayStyle.None },
             };
             applyCureButton.clicked += () =>
             {
                 Crew[] selectedCrews = GameManager.Instance.crews.Where(c => c.Selected).ToArray();
 
-                if (selectedCrews.Length > GameManager.Instance.GetMaterialValue(MaterialType.Supplies))
+                if (
+                    selectedCrews.Length
+                    > GameManager.Instance.GetMaterialValue(MaterialType.Supplies)
+                )
                 {
                     UiUtils.ShowError("Not enough supplies");
                     return;
@@ -198,7 +200,13 @@ public partial class BottomNavigationBar : VisualElement
             container.Add(applyCureButton);
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                GameManager.Instance.crews.Where(c => !c.isResting && c.deployedMission is null && c.Status != PassengerStatus.Comfortable).ToArray(),
+                GameManager
+                    .Instance.crews.Where(c =>
+                        !c.isResting
+                        && c.deployedMission is null
+                        && c.Status != PassengerStatus.Comfortable
+                    )
+                    .ToArray(),
                 (crews) =>
                 {
                     int selectedCount = crews.Where(c => c.Selected).Count();
@@ -223,10 +231,7 @@ public partial class BottomNavigationBar : VisualElement
         Button newCrewButton = new()
         {
             text = "CREW\n$300",
-            style =
-            {
-                marginLeft = StyleKeyword.Auto,
-            }
+            style = { marginLeft = StyleKeyword.Auto },
         };
         newCrewButton.clicked += () =>
         {
@@ -249,7 +254,7 @@ public partial class BottomNavigationBar : VisualElement
                 width = UiUtils.GetLengthPercentage(100),
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
-            }
+            },
         };
 
         buttonContainer.Add(restButton);
@@ -258,7 +263,10 @@ public partial class BottomNavigationBar : VisualElement
 
         UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
             GameManager.Instance.crews.ToArray(),
-            (crews) => UiManager.Instance.GameplayScreen.ChangeRightPanel(new CrewUpgradePanel(crews.First(c => c.Selected))),
+            (crews) =>
+                UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                    new CrewUpgradePanel(crews.First(c => c.Selected))
+                ),
             GetBracketText,
             null,
             buttonContainer
@@ -267,8 +275,10 @@ public partial class BottomNavigationBar : VisualElement
 
     private string GetBracketText(Crew crew)
     {
-        if (crew.isResting) return "Resting";
-        if (crew.deployedMission is not null) return "Deployed";
+        if (crew.isResting)
+            return "Resting";
+        if (crew.deployedMission is not null)
+            return "Deployed";
         return "";
     }
 }

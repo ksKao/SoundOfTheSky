@@ -32,8 +32,8 @@ public partial class CrewUpgradePanel : VisualElement
                 paddingTop = 120,
                 paddingBottom = 120,
                 paddingLeft = 40,
-                paddingRight = 40
-            }
+                paddingRight = 40,
+            },
         };
 
         upgradeInterfaceContainer.Add(
@@ -56,10 +56,7 @@ public partial class CrewUpgradePanel : VisualElement
             )
         );
 
-        upgradeInterfaceContainer.Add(new()
-        {
-            style = { height = 120 }
-        });
+        upgradeInterfaceContainer.Add(new() { style = { height = 120 } });
 
         upgradeInterfaceContainer.Add(
             new UpgradeInterface(
@@ -92,8 +89,8 @@ public partial class CrewUpgradePanel : VisualElement
                 alignSelf = Align.FlexEnd,
                 color = Color.white,
                 width = 120,
-                height = 100
-            }
+                height = 100,
+            },
         };
         backButton.clicked += UiManager.Instance.GameplayScreen.bottomNavigationBar.ShowCrewList;
         UiUtils.ToggleBorder(backButton, false);

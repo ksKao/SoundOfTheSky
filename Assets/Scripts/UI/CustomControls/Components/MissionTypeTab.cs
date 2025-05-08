@@ -27,7 +27,9 @@ public partial class MissionTypeTab : VisualElement
         style.paddingLeft = 10;
         style.paddingRight = 10;
 
-        List<MissionType> missionTypes = Enum.GetValues(typeof(MissionType)).Cast<MissionType>().ToList();
+        List<MissionType> missionTypes = Enum.GetValues(typeof(MissionType))
+            .Cast<MissionType>()
+            .ToList();
         _tabElements.Capacity = missionTypes.Count;
 
         Add(CreateSeparator());
@@ -40,10 +42,7 @@ public partial class MissionTypeTab : VisualElement
             Button tab = new()
             {
                 text = missionType.ToString().ToUpper(),
-                style =
-                {
-                    backgroundColor = Color.clear
-                }
+                style = { backgroundColor = Color.clear },
             };
             tab.clicked += () =>
             {
@@ -64,7 +63,7 @@ public partial class MissionTypeTab : VisualElement
                     height = UiUtils.GetLengthPercentage(50),
                     width = UiUtils.GetLengthPercentage(100),
                     translate = new Translate(0, UiUtils.GetLengthPercentage(-50)),
-                }
+                },
             };
 
             _tabElements.Add((tabBackdrop, tab));
@@ -105,8 +104,8 @@ public partial class MissionTypeTab : VisualElement
                 borderLeftColor = Color.white,
                 borderRightColor = Color.white,
                 borderTopColor = Color.white,
-                borderBottomColor = Color.white
-            }
+                borderBottomColor = Color.white,
+            },
         };
 
         UiUtils.SetBorderWidth(separator, 1);
