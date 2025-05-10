@@ -13,6 +13,7 @@ public class RescueMission : Mission
     private readonly Label _deployedMissionCrewLabel = new();
     private readonly Label _deployedMissionPassengerLabel = new();
     private readonly CrewSelectionPanelButton _crewSelectionPanelButton = new();
+    private readonly List<Crew> _crewsOnCooldown = new();
 
     // state
     private bool _actionTakenDuringThisEvent = false;
@@ -20,6 +21,7 @@ public class RescueMission : Mission
     private int _numberOfNewResources = 0;
     private int _numberOfDeaths = 0;
 
+    public List<Crew> CrewsOnCooldown => _crewsOnCooldown;
     public override Route Route { get; } = new(false);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
@@ -180,10 +182,15 @@ public class RescueMission : Mission
                 return;
             }
 
+            if (_crewsOnCooldown.Contains(selectedCrew))
+            {
+                UiUtils.ShowError("This crew is currently on cooldown");
+                selectedCrew.Selected = false;
+                return;
+            }
+
             // the chance of passenger's health decreasing is same as the weather event occur probability
-            if (Random.ShouldOccur(weather.decisionMakingProbability))
-                selectedPassenger.MakeWorse();
-            else
+            if (!Random.ShouldOccur(weather.decisionMakingProbability))
             {
                 selectedPassenger.MakeBetter();
 
@@ -197,6 +204,10 @@ public class RescueMission : Mission
 
             _rescueMissionResolvePanel.RefreshButtonText();
             ActionTakenDuringThisEvent = true;
+
+            _crewsOnCooldown.Add(selectedCrew);
+            selectedCrew.bracketLabel.text = "(Cooldown)";
+            selectedCrew.bracketLabel.style.display = DisplayStyle.Flex;
         }
     }
 
@@ -233,6 +244,7 @@ public class RescueMission : Mission
         UiManager.Instance.GameplayScreen.ChangeRightPanel(
             UiManager.Instance.GameplayScreen.deployedMissionList
         );
+
         EventPending = false;
     }
 
@@ -279,27 +291,42 @@ public class RescueMission : Mission
     {
         base.OnMileChange();
 
-        if (
-            IsMilestoneReached(MilesPerInterval)
-            && Random.ShouldOccur(_passengerIncreaseProbability)
-        )
+        if (IsMilestoneReached(MilesPerInterval))
         {
-            NumberOfResources += train.CartLevel;
+            // 15% chance to refresh crew usage
+            _crewsOnCooldown.RemoveAll(c =>
+            {
+                if (Random.ShouldOccur(0.15))
+                {
+                    c.bracketLabel.text = "";
+                    c.bracketLabel.style.display = DisplayStyle.None;
+                    return true;
+                }
+
+                c.bracketLabel.text = "(Cooldown)";
+                c.bracketLabel.style.display = DisplayStyle.Flex;
+                return false;
+            });
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
             {
-                Passengers.Add(new());
-                checkHealthPanel.Refresh();
-            }
+                NumberOfResources += train.CartLevel;
 
-            _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
+                if (Random.ShouldOccur(_passengerIncreaseProbability))
+                {
+                    Passengers.Add(new());
+                    checkHealthPanel.Refresh();
+                }
+
+                _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
+            }
         }
     }
 
     protected override void EventOccur()
     {
-        Passenger[] allPassengers = Passengers.Concat(Crews).ToArray();
-        foreach (Passenger passenger in allPassengers)
+        Passenger[] crewsAndPassengers = CrewsAndPassengers; // cache
+        foreach (Passenger passenger in crewsAndPassengers)
         {
             // 50% chance for a passenger health to change
             if (Random.ShouldOccur(0.5))
@@ -327,8 +354,8 @@ public class RescueMission : Mission
         // which can cause confusion as there are no passengers but there is still an event
         // also check for if all passengers have status of comfortable, otherwise there is no reason for an event to happen
         if (
-            allPassengers.Length == 0
-            || allPassengers.All(p => p.Status == PassengerStatus.Comfortable)
+            crewsAndPassengers.Length == 0
+            || crewsAndPassengers.All(p => p.Status == PassengerStatus.Comfortable)
         )
             EventPending = false;
     }

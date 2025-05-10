@@ -160,6 +160,17 @@ public partial class RescueMissionResolvePanel : VisualElement
         {
             crew.Selected = false;
             _crewListContainer.Add(crew.ui);
+
+            if (_mission.CrewsOnCooldown.Contains(crew))
+            {
+                crew.bracketLabel.text = "(Cooldown)";
+                crew.bracketLabel.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                crew.bracketLabel.text = "";
+                crew.bracketLabel.style.display = DisplayStyle.None;
+            }
         }
 
         Crew.OnSelect += _mission.UseCrew;
@@ -171,6 +182,12 @@ public partial class RescueMissionResolvePanel : VisualElement
         _mission.DeployedMissionUi.resolveButton.visible = _mission.EventPending;
         Remove(_mission.DeployedMissionUi);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+
+        foreach (Crew crew in _mission.Crews)
+        {
+            crew.bracketLabel.text = "";
+            crew.bracketLabel.style.display = DisplayStyle.None;
+        }
 
         Crew.OnSelect -= _mission.UseCrew;
     }
