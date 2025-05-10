@@ -15,6 +15,7 @@ public class UnlockCommand : Command
                 "unlock <train_name>",
                 "Unlocks a train by its name (case insensitive). If train name contains space, replace it with underscore."
             },
+            { "unlock all", "Unlocks all trains at once" },
         };
 
     public override void Execute(string[] args)
@@ -24,22 +25,44 @@ public class UnlockCommand : Command
 
         string inputTrainName = args[0];
 
-        Train foundTrain =
-            GameManager.Instance.Trains.FirstOrDefault(t =>
-                t.trainSO.name.ToLower().Replace(" ", "_") == inputTrainName.ToLower()
-            ) ?? throw new Exception($"Could not find train with name \"{inputTrainName}\".");
-
-        if (foundTrain.unlocked)
+        if (inputTrainName == "all")
         {
-            ConsoleManager.Instance.Output("Train has already been unlocked.");
-            return;
+            int numberOfTrainsUnlocked = 0;
+
+            foreach (Train train in GameManager.Instance.Trains)
+            {
+                if (train.unlocked)
+                    continue;
+
+                train.unlocked = true;
+                numberOfTrainsUnlocked++;
+            }
+
+            ConsoleManager.Instance.Output(
+                $"Unlocked {numberOfTrainsUnlocked} new train(s).",
+                ConsoleOutputLevel.Success
+            );
+        }
+        else
+        {
+            Train foundTrain =
+                GameManager.Instance.Trains.FirstOrDefault(t =>
+                    t.trainSO.name.ToLower().Replace(" ", "_") == inputTrainName.ToLower()
+                ) ?? throw new Exception($"Could not find train with name \"{inputTrainName}\".");
+
+            if (foundTrain.unlocked)
+            {
+                ConsoleManager.Instance.Output("Train has already been unlocked.");
+                return;
+            }
+
+            foundTrain.unlocked = true;
+            ConsoleManager.Instance.Output(
+                $"{foundTrain.trainSO.name} has been unlocked.",
+                ConsoleOutputLevel.Success
+            );
         }
 
-        foundTrain.unlocked = true;
         UiManager.Instance.GameplayScreen.trainList.Refresh();
-        ConsoleManager.Instance.Output(
-            $"{foundTrain.trainSO.name} has been unlocked.",
-            ConsoleOutputLevel.Success
-        );
     }
 }
