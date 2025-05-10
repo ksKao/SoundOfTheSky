@@ -398,7 +398,7 @@ public abstract class Mission
                 new Label(Route.start.locationSO.name + "\n" + Route.end.locationSO.name)
             )
         );
-        routeElement.Add(UiUtils.WrapLabel(new Label(initialMiles.ToString())));
+        routeElement.Add(UiUtils.WrapLabel(new Label($"{initialMiles} Miles")));
 
         PendingMissionUi.Add(routeElement);
 
