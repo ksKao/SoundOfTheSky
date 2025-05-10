@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -115,6 +116,73 @@ public abstract class Mission
     protected virtual Location[] EligibleDestinations =>
         GameManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
 
+    static Mission()
+    {
+        GameManager.Instance.OnSelectedPendingMissionChange += static (oldMission, newMission) =>
+        {
+            float transitionDuration = .3f,
+                marginOffset = 3f;
+
+            if (oldMission is not null)
+            {
+                oldMission
+                    .PendingMissionUi.Query<Button>()
+                    .ForEach(button => button.visible = false);
+                DOTween.To(
+                    () => -marginOffset,
+                    x =>
+                        oldMission.PendingMissionUi.style.marginLeft = UiUtils.GetLengthPercentage(
+                            x
+                        ),
+                    0,
+                    transitionDuration
+                );
+                DOTween.To(
+                    () => marginOffset,
+                    x =>
+                        oldMission.PendingMissionUi.style.marginRight = UiUtils.GetLengthPercentage(
+                            x
+                        ),
+                    0,
+                    transitionDuration
+                );
+            }
+
+            if (newMission is not null)
+            {
+                newMission
+                    .PendingMissionUi.Query<Button>()
+                    .ForEach(button => button.visible = true);
+                DOTween.To(
+                    () => 0f,
+                    x =>
+                        newMission.PendingMissionUi.style.marginLeft = UiUtils.GetLengthPercentage(
+                            x
+                        ),
+                    -marginOffset,
+                    transitionDuration
+                );
+                DOTween.To(
+                    () => 0f,
+                    x =>
+                        newMission.PendingMissionUi.style.marginRight = UiUtils.GetLengthPercentage(
+                            x
+                        ),
+                    marginOffset,
+                    transitionDuration
+                );
+            }
+
+            if (
+                UiManager.Instance.GameplayScreen.RightPanel
+                    == UiManager.Instance.GameplayScreen.crewSelectionPanel
+                || UiManager.Instance.GameplayScreen.RightPanel
+                    == UiManager.Instance.GameplayScreen.trainList
+            )
+                UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
+        };
+    }
+
     public Mission()
     {
         weather = DataManager.Instance.GetRandomWeather();
@@ -139,21 +207,6 @@ public abstract class Mission
         }
 
         PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
-
-        GameManager.Instance.OnSelectedPendingMissionChange += static (oldMission, newMission) =>
-        {
-            oldMission?.PendingMissionUi.Query<Button>().ForEach(button => button.visible = false);
-
-            newMission?.PendingMissionUi.Query<Button>().ForEach(button => button.visible = true);
-
-            if (
-                UiManager.Instance.GameplayScreen.RightPanel
-                    == UiManager.Instance.GameplayScreen.crewSelectionPanel
-                || UiManager.Instance.GameplayScreen.RightPanel
-                    == UiManager.Instance.GameplayScreen.trainList
-            )
-                UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
-        };
     }
 
     /// <summary>

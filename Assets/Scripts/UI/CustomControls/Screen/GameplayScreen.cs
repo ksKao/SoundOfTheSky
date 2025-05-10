@@ -118,11 +118,11 @@ public partial class GameplayScreen : VisualElement
         };
         Add(error);
 
-        Tweener opacityTween = DOTween
+        DOTween
             .To(() => 1f, x => error.style.opacity = x, 0f, transitionDuration)
             .SetEase(Ease.Linear)
             .OnComplete(() => Remove(error));
-        Tweener translateTween = DOTween
+        DOTween
             .To(
                 () => 15f,
                 x => error.style.top = UiUtils.GetLengthPercentage(x),
