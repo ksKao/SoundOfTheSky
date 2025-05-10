@@ -176,7 +176,7 @@ public class DocumentationMission : Mission
     }
 
     // technically not used since documentation has no train, but override just in case
-    protected override void ShowTrainList(Label trainNameLabel) { }
+    protected override void ShowTrainList() { }
 
     private void RerollWeather()
     {

@@ -87,9 +87,6 @@ public partial class BottomNavigationBar : VisualElement
 
     public void ShowCrewList()
     {
-        // UiManager.Instance.GameplayScreen.ChangeRightPanel(
-        //     UiManager.Instance.GameplayScreen.crewList
-        // );
         Crew[] selectedCrews = { };
 
         Button restButton = new() { text = "REST" };

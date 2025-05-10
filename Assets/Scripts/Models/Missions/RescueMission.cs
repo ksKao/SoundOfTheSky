@@ -61,13 +61,13 @@ public class RescueMission : Mission
 
     public override bool Deploy()
     {
-        if (train is null)
+        if (Train is null)
         {
             UiUtils.ShowError("Please select a train before proceeding");
             return false;
         }
 
-        if (!train.unlocked)
+        if (!Train.unlocked)
         {
             UiUtils.ShowError("You must unlock this train first before deploying");
             return false;
@@ -76,7 +76,7 @@ public class RescueMission : Mission
         // check if this train has already been deployed
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.train != null && m.train.trainSO.name == train.trainSO.name
+                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
         {
@@ -310,7 +310,7 @@ public class RescueMission : Mission
 
             if (Random.ShouldOccur(_passengerIncreaseProbability))
             {
-                NumberOfResources += train.CartLevel;
+                NumberOfResources += Train.CartLevel;
 
                 if (Random.ShouldOccur(_passengerIncreaseProbability))
                 {
@@ -365,10 +365,9 @@ public class RescueMission : Mission
         base.GeneratePendingMissionUi();
 
         VisualElement labelWrapper = new();
-        Label trainNameLabel = new("Train");
 
-        labelWrapper.Add(UiUtils.WrapLabel(trainNameLabel));
-        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList(trainNameLabel));
+        labelWrapper.Add(UiUtils.WrapLabel(_trainNameLabel));
+        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList());
 
         PendingMissionUi.Add(labelWrapper);
 

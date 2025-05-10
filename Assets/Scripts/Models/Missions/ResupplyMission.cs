@@ -20,13 +20,13 @@ public class ResupplyMission : Mission
 
     public override bool Deploy()
     {
-        if (train is null)
+        if (Train is null)
         {
             UiUtils.ShowError("Please select a train before proceeding");
             return false;
         }
 
-        if (!train.unlocked)
+        if (!Train.unlocked)
         {
             UiUtils.ShowError("You must unlock this train first before deploying");
             return false;
@@ -34,7 +34,7 @@ public class ResupplyMission : Mission
 
         if (
             GameManager.Instance.deployedMissions.Any(m =>
-                m.train != null && m.train.trainSO.name == train.trainSO.name
+                m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
         {
@@ -124,8 +124,8 @@ public class ResupplyMission : Mission
 
         if (IsMilestoneReached(MilesPerInterval))
         {
-            NumberOfNewSupplies += 2 * train.CartLevel;
-            NumberOfPayments += 5 * train.CartLevel;
+            NumberOfNewSupplies += 2 * Train.CartLevel;
+            NumberOfPayments += 5 * Train.CartLevel;
         }
     }
 
@@ -240,10 +240,9 @@ public class ResupplyMission : Mission
         base.GeneratePendingMissionUi();
 
         VisualElement labelWrapper = new();
-        Label trainNameLabel = new("Train");
 
-        labelWrapper.Add(UiUtils.WrapLabel(trainNameLabel));
-        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList(trainNameLabel));
+        labelWrapper.Add(UiUtils.WrapLabel(_trainNameLabel));
+        labelWrapper.RegisterCallback<ClickEvent>((e) => ShowTrainList());
 
         PendingMissionUi.Add(labelWrapper);
 

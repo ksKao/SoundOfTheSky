@@ -16,7 +16,6 @@ public abstract class Mission
         UiUtils.LoadTexture("pending_mission_bar_5"),
         UiUtils.LoadTexture("pending_mission_bar_6"),
     };
-    public Train train = null;
 
     private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture(
         "complete_button"
@@ -27,8 +26,10 @@ public abstract class Mission
     private bool _isCompleted = false;
     private bool _eventPending = false;
     private bool _skippedLastInterval = false;
+    private Train _train = null;
 
     protected WeatherSO weather;
+    protected readonly Label _trainNameLabel = new("Train");
     protected VisualElement weatherUiInPendingMission = new();
     protected readonly int initialMiles = 0;
     protected int milesRemaining = 0;
@@ -52,6 +53,24 @@ public abstract class Mission
     public Crew[] Crews =>
         GameManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public WeatherSO WeatherSO => weather;
+    public Train Train
+    {
+        get => _train;
+        set
+        {
+            _train = value;
+            if (value is not null)
+            {
+                DeployedMissionUi.trainImage.sprite = value.trainSO.sprite;
+                _trainNameLabel.text = value.trainSO.name;
+            }
+            else
+            {
+                DeployedMissionUi.trainImage.sprite = null;
+                _trainNameLabel.text = "Train";
+            }
+        }
+    }
     public bool EventPending
     {
         get => _eventPending;
@@ -120,6 +139,21 @@ public abstract class Mission
         }
 
         PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
+
+        GameManager.Instance.OnSelectedPendingMissionChange += static (oldMission, newMission) =>
+        {
+            oldMission?.PendingMissionUi.Query<Button>().ForEach(button => button.visible = false);
+
+            newMission?.PendingMissionUi.Query<Button>().ForEach(button => button.visible = true);
+
+            if (
+                UiManager.Instance.GameplayScreen.RightPanel
+                    == UiManager.Instance.GameplayScreen.crewSelectionPanel
+                || UiManager.Instance.GameplayScreen.RightPanel
+                    == UiManager.Instance.GameplayScreen.trainList
+            )
+                UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
+        };
     }
 
     /// <summary>
@@ -211,19 +245,6 @@ public abstract class Mission
         }
     }
 
-    public void OnDeselectMissionPendingUi()
-    {
-        PendingMissionUi.Query<Button>().ForEach(button => button.visible = false);
-
-        UiUtils.ToggleBorder(PendingMissionUi, false);
-
-        if (
-            UiManager.Instance.GameplayScreen.RightPanel
-            == UiManager.Instance.GameplayScreen.crewSelectionPanel
-        )
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
-    }
-
     public virtual void OnResolveButtonClicked()
     {
         EventPending = false;
@@ -267,9 +288,9 @@ public abstract class Mission
         else if (IsMilestoneReached(MilesPerInterval))
         {
             if (
-                train is not null
+                Train is not null
                 && Random.ShouldOccur(
-                    weather.decisionMakingProbability - train.WarmthLevelPercentage * 0.01
+                    weather.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
                 )
             )
             {
@@ -277,8 +298,8 @@ public abstract class Mission
                 EventPending = true;
             }
             else if (
-                train is not null
-                && Random.ShouldOccur(train.SpeedLevelPercentage * 0.01)
+                Train is not null
+                && Random.ShouldOccur(Train.SpeedLevelPercentage * 0.01)
                 && !_skippedLastInterval
             ) // when interval is skipped, there is a chance to skip second interval
             {
@@ -342,7 +363,7 @@ public abstract class Mission
             ApplyCommonPendingMissionUiStyleSingle(PendingMissionUi.Children().ElementAt(i), i);
     }
 
-    protected virtual void ShowTrainList(Label trainNameLabel)
+    protected virtual void ShowTrainList()
     {
         UiManager.Instance.GameplayScreen.trainList.Show(
             GameManager
@@ -357,18 +378,21 @@ public abstract class Mission
                         (location) => location.locationSO == t.trainSO.routeEndLocation
                     );
 
-                    return t.unlocked && startIndex < Route.startIndex && endIndex > Route.endIndex;
+                    return t.unlocked
+                        && startIndex <= Route.startIndex
+                        && endIndex >= Route.endIndex
+                        && GameManager.Instance.deployedMissions.Find(mission => mission.Train == t)
+                            is null; // hide already deployed train
                 })
                 .ToArray(),
             (train) =>
             {
-                trainNameLabel.text = train.trainSO.name;
-                this.train = train;
+                Train = train;
                 DeployedMissionUi.trainImage.sprite = train.trainSO.sprite;
                 UiManager.Instance.GameplayScreen.trainList.activeTrain = train;
                 UiManager.Instance.GameplayScreen.trainList.Refresh();
             },
-            train
+            Train
         );
     }
 
@@ -399,8 +423,6 @@ public abstract class Mission
 
     private void OnSelectMissionPendingUi(ClickEvent evt)
     {
-        PendingMissionUi.Query<Button>().ForEach(button => button.visible = true);
-
         GameManager.Instance.SelectedPendingMission = this;
     }
 }

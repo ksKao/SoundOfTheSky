@@ -23,6 +23,7 @@ public class GameManager : Singleton<GameManager>
     public Train[] Trains { get; private set; } = { };
     public List<Mission> PendingMissions { get; private set; } = new();
     public float SecondsPerMile { get; set; } = Mission.DEFAULT_SECONDS_PER_MILE;
+    public event Action<Mission, Mission> OnSelectedPendingMissionChange;
 
     public Mission SelectedPendingMission
     {
@@ -36,8 +37,10 @@ public class GameManager : Singleton<GameManager>
             if (_selectedPendingMission == value)
                 return;
 
-            _selectedPendingMission?.OnDeselectMissionPendingUi();
+            Mission oldMission = _selectedPendingMission;
+
             _selectedPendingMission = value;
+            OnSelectedPendingMissionChange.Invoke(oldMission, value);
         }
     }
 
@@ -157,8 +160,18 @@ public class GameManager : Singleton<GameManager>
         deployedMissions.Add(_selectedPendingMission);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
 
+        // check if pending mission has the same train selected as the deployed mission, if yes, set it back to null
+        foreach (Mission mission in PendingMissions)
+        {
+            if (mission.Train == _selectedPendingMission.Train)
+                mission.Train = null;
+        }
+
         PendingMissions.Add((Mission)Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
         UiManager.Instance.GameplayScreen.RefreshMissionList(_selectedPendingMission.Type);
+        UiManager.Instance.GameplayScreen.ChangeRightPanel(
+            UiManager.Instance.GameplayScreen.deployedMissionList
+        );
         _selectedPendingMission = null;
     }
 }
