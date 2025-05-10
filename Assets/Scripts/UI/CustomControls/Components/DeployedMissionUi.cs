@@ -200,9 +200,34 @@ public partial class DeployedMissionUi : VisualElement
 
         centerContainer.Add(trainImage);
 
+        VisualElement routeLabelContainer = new()
+        {
+            style =
+            {
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.Center,
+                alignItems = Align.Center,
+                width = UiUtils.GetLengthPercentage(100),
+            },
+        };
+
+        Label missionTypeLabel = new(mission.Type.ToString().ToUpper())
+        {
+            style =
+            {
+                color = Color.red,
+                unityFontStyleAndWeight = FontStyle.Bold,
+                marginRight = 16,
+            },
+        };
+        routeLabelContainer.Add(missionTypeLabel);
+
         routeLabel.text =
-            mission.Route.start.locationSO.name + " - " + mission.Route.end.locationSO.name;
-        centerContainer.Add(routeLabel);
+            $"{mission.Type.ToString().ToUpper()} {mission.Route.start.locationSO.name} - {mission.Route.end.locationSO.name}";
+        routeLabelContainer.Add(routeLabel);
+
+        centerContainer.Add(routeLabelContainer);
 
         resolveButton.text = "Resolve";
         resolveButton.visible = mission.EventPending;
