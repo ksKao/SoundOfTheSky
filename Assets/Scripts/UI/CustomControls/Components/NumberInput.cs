@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -95,9 +96,56 @@ public partial class NumberInput : VisualElement
         buttonsContainer.Add(IncrementButton);
 
         Add(buttonsContainer);
+
+        Coroutine incrementCoroutine = null;
+        Coroutine decrementCoroutine = null;
+
+        IncrementButton.RegisterCallback<PointerDownEvent>(
+            e => incrementCoroutine = GameManager.Instance.StartCoroutine(IncrementCoroutine()),
+            TrickleDown.TrickleDown
+        );
+        IncrementButton.RegisterCallback<PointerUpEvent>(
+            e =>
+            {
+                if (incrementCoroutine is not null)
+                    GameManager.Instance.StopCoroutine(incrementCoroutine);
+            },
+            TrickleDown.TrickleDown
+        );
+
+        DecrementButton.RegisterCallback<PointerDownEvent>(
+            e => decrementCoroutine = GameManager.Instance.StartCoroutine(DecrementCoroutine()),
+            TrickleDown.TrickleDown
+        );
+        DecrementButton.RegisterCallback<PointerUpEvent>(
+            e =>
+            {
+                if (decrementCoroutine is not null)
+                    GameManager.Instance.StopCoroutine(decrementCoroutine);
+            },
+            TrickleDown.TrickleDown
+        );
     }
 
     private void IncrementValue() => Value++;
 
     private void DecrementValue() => Value--;
+
+    private IEnumerator IncrementCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            IncrementValue();
+        }
+    }
+
+    private IEnumerator DecrementCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            DecrementValue();
+        }
+    }
 }

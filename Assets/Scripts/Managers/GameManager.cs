@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,9 +12,9 @@ public class GameManager : Singleton<GameManager>
     private Mission _selectedPendingMission = null;
     private readonly Dictionary<MaterialType, int> _materials = new()
     {
-        { MaterialType.Payments, 500 },
-        { MaterialType.Supplies, 500 },
-        { MaterialType.Resources, 500 },
+        { MaterialType.Payments, 100 },
+        { MaterialType.Supplies, 100 },
+        { MaterialType.Resources, 100 },
     };
 
     public readonly List<Mission> deployedMissions = new();
@@ -42,6 +43,16 @@ public class GameManager : Singleton<GameManager>
             _selectedPendingMission = value;
             OnSelectedPendingMissionChange.Invoke(oldMission, value);
         }
+    }
+
+    public Coroutine StartExternalCoroutine(IEnumerator coroutine)
+    {
+        return StartCoroutine(coroutine);
+    }
+
+    public void StopExternalCoroutine(Coroutine coroutine)
+    {
+        StopCoroutine(coroutine);
     }
 
     protected override void Awake()
