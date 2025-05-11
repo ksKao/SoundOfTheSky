@@ -87,6 +87,8 @@ public abstract class Mission
             // need to check if value is different than previous one in case accidentally call multiple times
             if (value && value != oldValue)
                 EventOccur();
+
+            UiManager.Instance.GameplayScreen.bottomNavigationBar.RefreshEventPendingMissionCount();
         }
     }
     public VisualElement PendingMissionUi { get; } = new();

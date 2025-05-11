@@ -36,6 +36,21 @@ public partial class BottomNavigationBar : VisualElement
         },
     };
 
+    private readonly Label _deployedMissionListCountLabel = new()
+    {
+        style =
+        {
+            marginLeft = 0,
+            marginRight = 0,
+            marginTop = 0,
+            marginBottom = 0,
+            paddingLeft = 0,
+            paddingRight = 0,
+            paddingBottom = 0,
+            paddingTop = 0,
+        },
+    };
+
     public BottomNavigationBar()
     {
         style.display = DisplayStyle.Flex;
@@ -59,6 +74,12 @@ public partial class BottomNavigationBar : VisualElement
         buttonGroup.Add(deployButton);
         Add(buttonGroup);
 
+        VisualElement deployedMissionListButtonContainer = new()
+        {
+            style = { position = Position.Relative },
+        };
+        Add(deployedMissionListButtonContainer);
+
         Button deployedMissionListButton = new()
         {
             style =
@@ -75,7 +96,34 @@ public partial class BottomNavigationBar : VisualElement
                     : UiManager.Instance.GameplayScreen.map;
             UiManager.Instance.GameplayScreen.ChangeRightPanel(element);
         };
-        Add(deployedMissionListButton);
+        deployedMissionListButtonContainer.Add(deployedMissionListButton);
+
+        VisualElement deployedMissionListLabelContainer = new()
+        {
+            style =
+            {
+                position = Position.Absolute,
+                display = DisplayStyle.None,
+                backgroundColor = Color.red,
+                color = Color.white,
+                top = 0,
+                left = 0,
+                translate = new Translate(
+                    UiUtils.GetLengthPercentage(-50),
+                    UiUtils.GetLengthPercentage(-50)
+                ),
+                borderTopLeftRadius = UiUtils.GetLengthPercentage(50),
+                borderTopRightRadius = UiUtils.GetLengthPercentage(50),
+                borderBottomLeftRadius = UiUtils.GetLengthPercentage(50),
+                borderBottomRightRadius = UiUtils.GetLengthPercentage(50),
+                justifyContent = Justify.Center,
+                alignItems = Align.Center,
+                width = 16,
+                height = 16,
+            },
+        };
+        deployedMissionListLabelContainer.Add(_deployedMissionListCountLabel);
+        deployedMissionListButtonContainer.Add(deployedMissionListLabelContainer);
 
         this.Query<Button>()
             .ForEach(button =>
@@ -264,6 +312,15 @@ public partial class BottomNavigationBar : VisualElement
             null,
             buttonContainer
         );
+    }
+
+    public void RefreshEventPendingMissionCount()
+    {
+        int count = GameManager.Instance.deployedMissions.Where(e => e.EventPending).Count();
+
+        _deployedMissionListCountLabel.parent.style.display =
+            count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+        _deployedMissionListCountLabel.text = count.ToString();
     }
 
     private string GetBracketText(Crew crew)
