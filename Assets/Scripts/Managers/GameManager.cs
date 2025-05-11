@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -170,6 +171,17 @@ public class GameManager : Singleton<GameManager>
         PendingMissions.Remove(_selectedPendingMission);
         deployedMissions.Add(_selectedPendingMission);
         UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+
+        Mission cacheSelectedPendingMission = _selectedPendingMission; // need to do this, otherwise the instance will be null when accessed inside the DOTween setter
+        DOTween.To(
+            () => 0.5f,
+            (x) =>
+            {
+                cacheSelectedPendingMission.DeployedMissionUi.style.scale = new Vector2(x, x);
+            },
+            1f,
+            .4f
+        );
 
         // check if pending mission has the same train selected as the deployed mission, if yes, set it back to null
         foreach (Mission mission in PendingMissions)
