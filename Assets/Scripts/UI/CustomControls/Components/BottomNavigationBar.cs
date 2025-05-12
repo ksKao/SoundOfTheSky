@@ -282,6 +282,12 @@ public partial class BottomNavigationBar : VisualElement
                 return;
             }
 
+            if (GameManager.Instance.crews.Count >= 200)
+            {
+                UiUtils.ShowError("You may only have up to 200 crews at a time.");
+                return;
+            }
+
             GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -300);
             GameManager.Instance.crews.Add(new());
 
@@ -300,7 +306,9 @@ public partial class BottomNavigationBar : VisualElement
 
         buttonContainer.Add(restButton);
         buttonContainer.Add(cureButton);
-        buttonContainer.Add(newCrewButton);
+
+        if (GameManager.Instance.crews.Count < 10)
+            buttonContainer.Add(newCrewButton);
 
         UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
             GameManager.Instance.crews.ToArray(),

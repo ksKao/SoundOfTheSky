@@ -12,6 +12,12 @@ public class Passenger
     private static readonly Texture2D _backgroundImageSelected = UiUtils.LoadTexture(
         "passenger_selection_background_glow"
     );
+    private static readonly Color _comfortableColor = UiUtils.HexToRgb("#39b54a");
+    private static readonly Color _coldColor = UiUtils.HexToRgb("#0000ff");
+    private static readonly Color _sickColor = UiUtils.HexToRgb("#ff00ff");
+    private static readonly Color _terminalColor = UiUtils.HexToRgb("#662d91");
+    private static readonly Color _criticalColor = UiUtils.HexToRgb("#ff0000");
+    private static readonly Color _deathColor = Color.black;
 
     public bool selectable = true;
     public readonly VisualElement ui = new()
@@ -24,10 +30,11 @@ public class Passenger
         },
     };
 
-    private readonly Label _statusLabel = new();
+    private readonly Label _statusLabel = new() { style = { color = _comfortableColor } };
     private readonly VisualElement _imageContainer = new() { style = { width = 100, height = 90 } };
 
     private bool _selected = false;
+    private Label _nameLabel = new(DataManager.Instance.GetRandomName());
     private PassengerStatus _status = PassengerStatus.Comfortable;
 
     protected Label StatusLabel => _statusLabel;
@@ -40,7 +47,16 @@ public class Passenger
         private set
         {
             _status = value;
-            _statusLabel.text = _status.ToString();
+            _statusLabel.text = $"({value})";
+            _statusLabel.style.color = value switch
+            {
+                PassengerStatus.Comfortable => _comfortableColor,
+                PassengerStatus.Cold => _coldColor,
+                PassengerStatus.Sick => _sickColor,
+                PassengerStatus.Terminal => _terminalColor,
+                PassengerStatus.Critical => _criticalColor,
+                _ => _deathColor,
+            };
         }
     }
     public bool Selected
@@ -59,9 +75,10 @@ public class Passenger
     {
         _imageContainer.style.backgroundImage = BackgroundImage;
         ui.Add(_imageContainer);
+        ui.Add(_nameLabel);
         ui.Add(_statusLabel);
 
-        _statusLabel.text = _status.ToString();
+        _statusLabel.text = $"({_status})";
 
         ui.RegisterCallback<ClickEvent>(OnClick);
     }
