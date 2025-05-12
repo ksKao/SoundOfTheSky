@@ -7,13 +7,42 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class MissionTypeTab : VisualElement
 {
+    private const string NON_ACTIVE_BUTTON_TEXT_COLOR_HEX_CODE = "#74def4";
+
     public static Action<Tab, Tab> OnMissionTabChanged;
 
-    public readonly Button refreshButton = new();
-
-    private readonly Color _nonActiveButtonTextColor = UiUtils.HexToRgb("#74def4");
+    private readonly Color _nonActiveButtonTextColor = UiUtils.HexToRgb(
+        NON_ACTIVE_BUTTON_TEXT_COLOR_HEX_CODE
+    );
     private readonly List<(VisualElement backdrop, Button tabButton)> _tabElements = new();
-
+    private readonly Button _refreshButton = new()
+    {
+        text = "REFRESH (1200 payments)",
+        style =
+        {
+            unityTextAlign = TextAnchor.MiddleLeft,
+            marginLeft = 0,
+            marginRight = 0,
+            marginTop = 0,
+            marginBottom = 0,
+            backgroundColor = Color.clear,
+            color = UiUtils.HexToRgb(NON_ACTIVE_BUTTON_TEXT_COLOR_HEX_CODE),
+        },
+    };
+    private readonly Button _citiesButton = new()
+    {
+        text = "Cities",
+        style =
+        {
+            unityTextAlign = TextAnchor.MiddleLeft,
+            marginLeft = 0,
+            marginRight = 0,
+            marginTop = 0,
+            marginBottom = 0,
+            backgroundColor = Color.clear,
+            color = UiUtils.HexToRgb(NON_ACTIVE_BUTTON_TEXT_COLOR_HEX_CODE),
+        },
+    };
     private MissionType _activeTab = MissionType.Rescue;
 
     public MissionType ActiveTab => _activeTab;
@@ -74,6 +103,7 @@ public partial class MissionTypeTab : VisualElement
         }
 
         GenerateRefreshButton();
+        GenerateCitiesButton();
     }
 
     public void RefreshTabHighlight()
@@ -115,17 +145,9 @@ public partial class MissionTypeTab : VisualElement
 
     private void GenerateRefreshButton()
     {
-        refreshButton.text = "REFRESH (1200 payments)";
-        refreshButton.style.unityTextAlign = TextAnchor.MiddleLeft;
-        refreshButton.style.marginLeft = 0;
-        refreshButton.style.marginRight = 0;
-        refreshButton.style.marginTop = 0;
-        refreshButton.style.marginBottom = 0;
-        refreshButton.style.backgroundColor = Color.clear;
-        refreshButton.style.color = _nonActiveButtonTextColor;
-        UiUtils.ToggleBorder(refreshButton, false);
+        UiUtils.ToggleBorder(_refreshButton, false);
 
-        refreshButton.clicked += () =>
+        _refreshButton.clicked += () =>
         {
             if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 1200)
             {
@@ -137,7 +159,22 @@ public partial class MissionTypeTab : VisualElement
             GameManager.Instance.RefreshAllMissions();
         };
 
-        Add(refreshButton);
+        Add(_refreshButton);
+        Add(CreateSeparator());
+    }
+
+    private void GenerateCitiesButton()
+    {
+        UiUtils.ToggleBorder(_citiesButton, false);
+
+        _citiesButton.clicked += () =>
+        {
+            UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.GameplayScreen.map
+            );
+        };
+
+        Add(_citiesButton);
         Add(CreateSeparator());
     }
 }
