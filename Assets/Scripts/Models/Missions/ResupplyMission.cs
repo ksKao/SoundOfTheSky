@@ -142,7 +142,7 @@ public class ResupplyMission : Mission
             );
         };
 
-        Button useSupplyButton = new() { text = "USE\nSUPPLY" };
+        Button useSupplyButton = new() { text = $"SUPPLY\n{NumberOfSupplies}" };
         useSupplyButton.clicked += () =>
         {
             // check if player has selected crew(s)
@@ -166,7 +166,8 @@ public class ResupplyMission : Mission
             }
 
             NumberOfSupplies -= selectedCrews.Length;
-            ignoreOrFinishButton.text = "Finish";
+            ignoreOrFinishButton.text = "FINISH";
+            useSupplyButton.text = $"SUPPLY\n{NumberOfSupplies}";
 
             EventPending = false;
         };
