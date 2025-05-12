@@ -190,7 +190,18 @@ public class GameManager : Singleton<GameManager>
                 mission.Train = null;
         }
 
-        PendingMissions.Add((Mission)Activator.CreateInstance(_selectedPendingMission.GetType())); // replace current deployed mission with another one
+        Mission newMission = (Mission)Activator.CreateInstance(_selectedPendingMission.GetType()); // replace current deployed mission with another one
+        DOTween.To(
+            () => 0.5f,
+            (x) =>
+            {
+                newMission.PendingMissionUi.style.scale = new Vector2(x, x);
+            },
+            1f,
+            .4f
+        );
+        PendingMissions.Add(newMission);
+
         UiManager.Instance.GameplayScreen.RefreshMissionList(_selectedPendingMission.Type);
         UiManager.Instance.GameplayScreen.ChangeRightPanel(
             UiManager.Instance.GameplayScreen.deployedMissionList
