@@ -150,7 +150,8 @@ public class GameManager : Singleton<GameManager>
             return;
         }
 
-        _materials[materialType] += number;
+        if (_materials.ContainsKey(materialType))
+            _materials[materialType] += number;
         UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
     }
 

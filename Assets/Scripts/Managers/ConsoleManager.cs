@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class ConsoleManager : Singleton<ConsoleManager>
 {
     private ConsoleUi _ui;
+    private readonly List<string> _commandHistory = new();
+    private int _currentNavigationIndex = 0;
 
     public List<Command> Commands { get; private set; }
 
@@ -27,6 +30,10 @@ public class ConsoleManager : Singleton<ConsoleManager>
         InputManager.Instance.InputAction.Main.OpenConsole.performed += ctx => OpenConsole();
         InputManager.Instance.InputAction.Console.Close.performed += ctx => CloseConsole();
         InputManager.Instance.InputAction.Console.Submit.performed += ctx => SubmitCommand();
+        InputManager.Instance.InputAction.Console.PreviousCommand.performed += ctx =>
+            CycleCommand(true);
+        InputManager.Instance.InputAction.Console.NextCommand.performed += ctx =>
+            CycleCommand(false);
     }
 
     public void Output(
@@ -58,6 +65,10 @@ public class ConsoleManager : Singleton<ConsoleManager>
         {
             string input = _ui.textField.value;
 
+            _commandHistory.Add(input);
+
+            Output(input);
+
             string[] split = input.Split(' ');
 
             if (string.IsNullOrWhiteSpace(input) || split.Length == 0)
@@ -76,9 +87,20 @@ public class ConsoleManager : Singleton<ConsoleManager>
         finally
         {
             _ui.textField.value = "";
+            _currentNavigationIndex = 0;
             StartCoroutine(FocusTextField());
             StartCoroutine(ScrollToBottom());
         }
+    }
+
+    private void CycleCommand(bool isUp)
+    {
+        _currentNavigationIndex += isUp ? 1 : -1;
+
+        // Ensure we are not trying to access an out-of-bounds index
+        _currentNavigationIndex = Math.Clamp(_currentNavigationIndex, 1, _commandHistory.Count);
+
+        _ui.textField.value = _commandHistory[^_currentNavigationIndex];
     }
 
     public void Clear()

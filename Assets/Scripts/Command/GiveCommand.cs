@@ -67,10 +67,15 @@ public class GiveCommand : Command
             int amountBefore = foundLocation.Residents;
             int amountAfter = amountBefore + amount;
 
-            foundLocation.Residents += amount;
+            if (material == MaterialType.Citizens)
+                foundLocation.Citizens += amount;
+            else
+                foundLocation.Residents += amount;
+
             GameManager.Instance.IncrementMaterialValue(material, amount);
+
             ConsoleManager.Instance.Output(
-                $"{foundLocation.locationSO.name} undocumented {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}",
+                $"{foundLocation.locationSO.name} {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}",
                 ConsoleOutputLevel.Success
             );
         }

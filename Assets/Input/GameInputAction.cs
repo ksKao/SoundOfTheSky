@@ -72,6 +72,24 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PreviousCommand"",
+                    ""type"": ""Button"",
+                    ""id"": ""34122df6-2979-4312-9063-a9a6cf4b1973"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NextCommand"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b900eba-81a4-4029-9428-a749dbb98413"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -107,6 +125,28 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c9ff6a7-feca-45f5-abe0-5750e2ec764a"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PreviousCommand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae16e356-d52f-4ffd-b372-ab9d7cdbdcd6"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextCommand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,6 +160,8 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
         m_Console_Close = m_Console.FindAction("Close", throwIfNotFound: true);
         m_Console_Submit = m_Console.FindAction("Submit", throwIfNotFound: true);
+        m_Console_PreviousCommand = m_Console.FindAction("PreviousCommand", throwIfNotFound: true);
+        m_Console_NextCommand = m_Console.FindAction("NextCommand", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -235,12 +277,16 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private List<IConsoleActions> m_ConsoleActionsCallbackInterfaces = new List<IConsoleActions>();
     private readonly InputAction m_Console_Close;
     private readonly InputAction m_Console_Submit;
+    private readonly InputAction m_Console_PreviousCommand;
+    private readonly InputAction m_Console_NextCommand;
     public struct ConsoleActions
     {
         private @GameInputAction m_Wrapper;
         public ConsoleActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
         public InputAction @Close => m_Wrapper.m_Console_Close;
         public InputAction @Submit => m_Wrapper.m_Console_Submit;
+        public InputAction @PreviousCommand => m_Wrapper.m_Console_PreviousCommand;
+        public InputAction @NextCommand => m_Wrapper.m_Console_NextCommand;
         public InputActionMap Get() { return m_Wrapper.m_Console; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +302,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @Submit.started += instance.OnSubmit;
             @Submit.performed += instance.OnSubmit;
             @Submit.canceled += instance.OnSubmit;
+            @PreviousCommand.started += instance.OnPreviousCommand;
+            @PreviousCommand.performed += instance.OnPreviousCommand;
+            @PreviousCommand.canceled += instance.OnPreviousCommand;
+            @NextCommand.started += instance.OnNextCommand;
+            @NextCommand.performed += instance.OnNextCommand;
+            @NextCommand.canceled += instance.OnNextCommand;
         }
 
         private void UnregisterCallbacks(IConsoleActions instance)
@@ -266,6 +318,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @Submit.started -= instance.OnSubmit;
             @Submit.performed -= instance.OnSubmit;
             @Submit.canceled -= instance.OnSubmit;
+            @PreviousCommand.started -= instance.OnPreviousCommand;
+            @PreviousCommand.performed -= instance.OnPreviousCommand;
+            @PreviousCommand.canceled -= instance.OnPreviousCommand;
+            @NextCommand.started -= instance.OnNextCommand;
+            @NextCommand.performed -= instance.OnNextCommand;
+            @NextCommand.canceled -= instance.OnNextCommand;
         }
 
         public void RemoveCallbacks(IConsoleActions instance)
@@ -291,5 +349,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     {
         void OnClose(InputAction.CallbackContext context);
         void OnSubmit(InputAction.CallbackContext context);
+        void OnPreviousCommand(InputAction.CallbackContext context);
+        void OnNextCommand(InputAction.CallbackContext context);
     }
 }
