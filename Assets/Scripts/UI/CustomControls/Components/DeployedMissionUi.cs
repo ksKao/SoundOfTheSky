@@ -75,7 +75,7 @@ public partial class DeployedMissionUi : VisualElement
             NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS
         );
 
-        style.height = UiUtils.GetLengthPercentage(100 / 6f);
+        style.minHeight = UiUtils.GetLengthPercentage(100 / 6f);
         style.maxHeight = UiUtils.GetLengthPercentage(100 / 6f);
         style.color = UiUtils.darkBlueTextColor;
 

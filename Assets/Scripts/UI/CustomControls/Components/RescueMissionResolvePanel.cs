@@ -72,7 +72,7 @@ public partial class RescueMissionResolvePanel : VisualElement
             {
                 backgroundImage = _panelBackground,
                 paddingTop = UiUtils.GetLengthPercentage(5),
-                paddingBottom = UiUtils.GetLengthPercentage(5),
+                paddingBottom = UiUtils.GetLengthPercentage(9),
                 paddingLeft = UiUtils.GetLengthPercentage(3),
                 paddingRight = UiUtils.GetLengthPercentage(3),
                 display = DisplayStyle.Flex,
@@ -84,9 +84,21 @@ public partial class RescueMissionResolvePanel : VisualElement
         // passenger list
         Add(container);
 
-        container.Add(_passengerListContainer);
-        container.Add(_divider);
-        container.Add(_crewListContainer);
+        ScrollView scrollView = new()
+        {
+            style =
+            {
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                width = UiUtils.GetLengthPercentage(100),
+            },
+        };
+        scrollView.Add(_passengerListContainer);
+        scrollView.Add(_divider);
+        scrollView.Add(_crewListContainer);
+
+        container.Add(scrollView);
+        Add(container);
 
         // bottom buttons
         VisualElement bottomButtonsContainer = new()
@@ -95,7 +107,8 @@ public partial class RescueMissionResolvePanel : VisualElement
             {
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
-                width = UiUtils.GetLengthPercentage(96),
+                minHeight = 90,
+                width = UiUtils.GetLengthPercentage(100),
             },
         };
 

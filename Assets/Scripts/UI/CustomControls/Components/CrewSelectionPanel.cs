@@ -15,16 +15,21 @@ public partial class CrewSelectionPanel : VisualElement
 
     private Crew[] _crews = { };
     private readonly Button _cancelButton = new();
-    private readonly VisualElement _crewListContainer = new()
+    private readonly ScrollView _scrollView = new()
     {
         style =
         {
             backgroundImage = _crewSelectionPanelBackground,
             flexGrow = 1,
-            paddingTop = UiUtils.GetLengthPercentage(3f),
-            paddingBottom = UiUtils.GetLengthPercentage(3f),
+            paddingTop = UiUtils.GetLengthPercentage(4f),
+            paddingBottom = UiUtils.GetLengthPercentage(4f),
             paddingLeft = UiUtils.GetLengthPercentage(3f),
-            paddingRight = UiUtils.GetLengthPercentage(3f),
+        },
+    };
+    private readonly VisualElement _crewListContainer = new()
+    {
+        style =
+        {
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             flexWrap = Wrap.Wrap,
@@ -38,6 +43,7 @@ public partial class CrewSelectionPanel : VisualElement
             display = DisplayStyle.Flex,
             flexDirection = FlexDirection.Row,
             alignItems = Align.Center,
+            minHeight = UiUtils.GetLengthPercentage(10),
             width = UiUtils.GetLengthPercentage(100),
         },
     };
@@ -52,7 +58,8 @@ public partial class CrewSelectionPanel : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
 
-        Add(_crewListContainer);
+        Add(_scrollView);
+        _scrollView.Add(_crewListContainer);
 
         _buttonContainer.Add(_cancelButton);
         _buttonContainer.Add(_additionalUi);
