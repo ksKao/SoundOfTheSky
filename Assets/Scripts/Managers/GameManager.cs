@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
 {
     private const int INITIAL_NUMBER_OF_CREWS = 5;
     public const int MAX_UPGRADE_LEVEL = 10;
+    public const int MAX_CREW_COUNT = 200;
 
     private Mission _selectedPendingMission = null;
     private readonly Dictionary<MaterialType, int> _materials = new()
