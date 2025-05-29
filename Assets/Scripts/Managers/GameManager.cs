@@ -5,7 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+public class CityModeManager : Singleton<CityModeManager>
 {
     private const int INITIAL_NUMBER_OF_CREWS = 5;
     public const int MAX_UPGRADE_LEVEL = 10;

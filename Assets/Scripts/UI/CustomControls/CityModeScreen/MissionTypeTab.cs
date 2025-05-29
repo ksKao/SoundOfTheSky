@@ -149,14 +149,14 @@ public partial class MissionTypeTab : VisualElement
 
         _refreshButton.clicked += () =>
         {
-            if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 1200)
+            if (CityModeManager.Instance.GetMaterialValue(MaterialType.Payments) < 1200)
             {
                 UiUtils.ShowError("Not enough payments");
                 return;
             }
 
-            GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -1200);
-            GameManager.Instance.RefreshAllMissions();
+            CityModeManager.Instance.IncrementMaterialValue(MaterialType.Payments, -1200);
+            CityModeManager.Instance.RefreshAllMissions();
         };
 
         Add(_refreshButton);

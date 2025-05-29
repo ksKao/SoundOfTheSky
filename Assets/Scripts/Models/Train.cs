@@ -12,17 +12,17 @@ public class Train
     public int CartLevel
     {
         get => _cartLevel;
-        set => _cartLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+        set => _cartLevel = Math.Min(value, CityModeManager.MAX_UPGRADE_LEVEL);
     }
     public int SpeedLevel
     {
         get => _speedLevel;
-        set => _speedLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+        set => _speedLevel = Math.Min(value, CityModeManager.MAX_UPGRADE_LEVEL);
     }
     public int WarmthLevel
     {
         get => _warmthLevel;
-        set => _warmthLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+        set => _warmthLevel = Math.Min(value, CityModeManager.MAX_UPGRADE_LEVEL);
     }
 
     public int SpeedLevelPercentage => _speedLevel - 1;

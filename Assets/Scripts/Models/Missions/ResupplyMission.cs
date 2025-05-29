@@ -33,7 +33,7 @@ public class ResupplyMission : Mission
         }
 
         if (
-            GameManager.Instance.deployedMissions.Any(m =>
+            CityModeManager.Instance.deployedMissions.Any(m =>
                 m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
@@ -50,7 +50,10 @@ public class ResupplyMission : Mission
         }
 
         // check if player has enough supply
-        if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
+        if (
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Supplies)
+            < _supplyNumberInput.Value
+        )
         {
             UiUtils.ShowError("Not enough supplies to deploy this mission");
             return false;
@@ -58,7 +61,7 @@ public class ResupplyMission : Mission
 
         // check if player has enough resources
         if (
-            GameManager.Instance.GetMaterialValue(MaterialType.Resources)
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Resources)
             < _resourceNumberInput.Value
         )
         {
@@ -67,10 +70,10 @@ public class ResupplyMission : Mission
         }
 
         NumberOfSupplies = _supplyNumberInput.Value;
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
 
         NumberOfResources = _resourceNumberInput.Value;
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.deployedMission = this;
@@ -90,11 +93,11 @@ public class ResupplyMission : Mission
         NumberOfNewSupplies += Route.end.Citizens * 5;
         NumberOfPayments += Route.end.Citizens * 5;
 
-        GameManager.Instance.IncrementMaterialValue(
+        CityModeManager.Instance.IncrementMaterialValue(
             MaterialType.Supplies,
             NumberOfNewSupplies + NumberOfSupplies
         );
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, NumberOfPayments);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Payments, NumberOfPayments);
 
         foreach (Crew crew in Crews)
             crew.deployedMission = null;
@@ -221,7 +224,7 @@ public class ResupplyMission : Mission
                 if (NumberOfResources == 0)
                 {
                     UiUtils.ShowError("Resupply mission failed");
-                    GameManager.Instance.deployedMissions.Remove(this);
+                    CityModeManager.Instance.deployedMissions.Remove(this);
                     UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
                 }
             }

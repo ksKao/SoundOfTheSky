@@ -26,7 +26,7 @@ public class SetCommand : Command
             case "seconds_per_mile":
                 if (!float.TryParse(args[1], out float value))
                     throw new Exception($"\"{args[1]}\" is not a valid number.");
-                GameManager.Instance.SecondsPerMile = value;
+                CityModeManager.Instance.SecondsPerMile = value;
                 ConsoleManager.Instance.Output(
                     $"Seconds per mile has been set to {args[1]}. It will take effect on the next interval."
                 );

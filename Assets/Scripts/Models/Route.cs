@@ -18,47 +18,49 @@ public readonly struct Route
         startIndex = 0;
         endIndex = 0;
 
-        if (GameManager.Instance.Locations.Length == 0)
+        if (CityModeManager.Instance.Locations.Length == 0)
         {
-            Debug.LogWarning($"No locations found in {nameof(GameManager.Instance.Locations)}.");
+            Debug.LogWarning(
+                $"No locations found in {nameof(CityModeManager.Instance.Locations)}."
+            );
         }
 
         // prevent infinite loop below
-        if (GameManager.Instance.Locations.Length == 1)
+        if (CityModeManager.Instance.Locations.Length == 1)
         {
             Debug.LogWarning(
-                $"{nameof(GameManager.Instance.Locations)}.Length is 1. Could not call {nameof(Route)} constructor with only 1 element."
+                $"{nameof(CityModeManager.Instance.Locations)}.Length is 1. Could not call {nameof(Route)} constructor with only 1 element."
             );
 
-            start = GameManager.Instance.Locations[0];
-            end = GameManager.Instance.Locations[0];
+            start = CityModeManager.Instance.Locations[0];
+            end = CityModeManager.Instance.Locations[0];
         }
 
         Location[] eligibleDestinations = { };
 
         if (destinationMustContainResidents)
         {
-            Location[] eligibleLocations = GameManager
+            Location[] eligibleLocations = CityModeManager
                 .Instance.Locations.Where((l, i) => l.Residents > 0 && i != 0)
                 .ToArray();
 
             // if there are no locations with undocumented citizens, then only get random from all locations
             if (eligibleLocations.Length == 0)
-                eligibleLocations = GameManager.Instance.Locations.ToArray();
+                eligibleLocations = CityModeManager.Instance.Locations.ToArray();
         }
 
         // cannot pick the first location as destination
-        while (end == GameManager.Instance.Locations[0] || end == null)
+        while (end == CityModeManager.Instance.Locations[0] || end == null)
         {
             // only get from all locations if there is no eligible destinations
             end = Random.GetFromArray(
                 eligibleDestinations.Length > 0
                     ? eligibleDestinations
-                    : GameManager.Instance.Locations
+                    : CityModeManager.Instance.Locations
             );
         }
 
-        endIndex = Array.IndexOf(GameManager.Instance.Locations, end);
+        endIndex = Array.IndexOf(CityModeManager.Instance.Locations, end);
 
         if (endIndex < 0)
         {
@@ -69,11 +71,11 @@ public readonly struct Route
         }
 
         Location[] subArray = new Location[endIndex];
-        Array.Copy(GameManager.Instance.Locations, subArray, endIndex);
+        Array.Copy(CityModeManager.Instance.Locations, subArray, endIndex);
 
         start = Random.GetFromArray(subArray);
 
-        startIndex = Array.IndexOf(GameManager.Instance.Locations, start);
+        startIndex = Array.IndexOf(CityModeManager.Instance.Locations, start);
 
         for (int i = startIndex; i < endIndex; i++)
         {

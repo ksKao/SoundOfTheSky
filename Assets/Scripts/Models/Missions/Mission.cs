@@ -53,7 +53,7 @@ public abstract class Mission
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
     public virtual Route Route { get; } = new();
     public Crew[] Crews =>
-        GameManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
+        CityModeManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public WeatherSO WeatherSO => weather;
     public Train Train
     {
@@ -118,11 +118,14 @@ public abstract class Mission
     }
     public bool IsCompleted => _isCompleted;
     protected virtual Location[] EligibleDestinations =>
-        GameManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
+        CityModeManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
 
     static Mission()
     {
-        GameManager.Instance.OnSelectedPendingMissionChange += static (oldMission, newMission) =>
+        CityModeManager.Instance.OnSelectedPendingMissionChange += static (
+            oldMission,
+            newMission
+        ) =>
         {
             float transitionDuration = .3f,
                 marginOffset = 3f;
@@ -258,7 +261,7 @@ public abstract class Mission
         UiUtils.ToggleBorder(completeButton, false);
         completeButton.clicked += () =>
         {
-            GameManager.Instance.deployedMissions.Remove(this);
+            CityModeManager.Instance.deployedMissions.Remove(this);
             UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
         };
         MissionCompleteUi.Add(baseContainer);
@@ -274,7 +277,7 @@ public abstract class Mission
         DeployedMissionUi.Arrive();
 
         // when a mission has been completed, there is a 25% chance for resting crews' status to go up by 1
-        IEnumerable<Crew> restingCrews = GameManager.Instance.crews.Where(c => c.isResting);
+        IEnumerable<Crew> restingCrews = CityModeManager.Instance.crews.Where(c => c.isResting);
 
         foreach (Crew restingCrew in restingCrews)
         {
@@ -296,7 +299,7 @@ public abstract class Mission
         if (_secondsRemainingUntilNextMile <= 0)
         {
             // reset the timer
-            _secondsRemainingUntilNextMile = GameManager.Instance.SecondsPerMile;
+            _secondsRemainingUntilNextMile = CityModeManager.Instance.SecondsPerMile;
 
             MilesRemaining--;
         }
@@ -423,22 +426,24 @@ public abstract class Mission
     protected virtual void ShowTrainList()
     {
         UiManager.Instance.GameplayScreen.trainList.Show(
-            GameManager
+            CityModeManager
                 .Instance.Trains.Where(t =>
                 {
                     int startIndex = Array.FindIndex(
-                        GameManager.Instance.Locations,
+                        CityModeManager.Instance.Locations,
                         (location) => location.locationSO == t.trainSO.routeStartLocation
                     );
                     int endIndex = Array.FindIndex(
-                        GameManager.Instance.Locations,
+                        CityModeManager.Instance.Locations,
                         (location) => location.locationSO == t.trainSO.routeEndLocation
                     );
 
                     return t.unlocked
                         && startIndex <= Route.startIndex
                         && endIndex >= Route.endIndex
-                        && GameManager.Instance.deployedMissions.Find(mission => mission.Train == t)
+                        && CityModeManager.Instance.deployedMissions.Find(mission =>
+                            mission.Train == t
+                        )
                             is null; // hide already deployed train
                 })
                 .ToArray(),
@@ -480,6 +485,6 @@ public abstract class Mission
 
     private void OnSelectMissionPendingUi(ClickEvent evt)
     {
-        GameManager.Instance.SelectedPendingMission = this;
+        CityModeManager.Instance.SelectedPendingMission = this;
     }
 }

@@ -26,7 +26,7 @@ public class Crew : Passenger
     public int MedicLevel
     {
         get => _medicLevel;
-        set => _medicLevel = Math.Min(value, GameManager.MAX_UPGRADE_LEVEL);
+        set => _medicLevel = Math.Min(value, CityModeManager.MAX_UPGRADE_LEVEL);
     }
     public int EnduranceLevel
     {

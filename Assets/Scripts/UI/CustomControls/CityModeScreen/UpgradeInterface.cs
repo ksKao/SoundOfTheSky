@@ -66,13 +66,13 @@ public partial class UpgradeInterface : VisualElement
         UiUtils.ToggleBorder(_upgradeButton, false);
         _upgradeButton.clicked += () =>
         {
-            if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < _upgradeCost)
+            if (CityModeManager.Instance.GetMaterialValue(MaterialType.Payments) < _upgradeCost)
             {
                 UiUtils.ShowError("Not enough payments to upgrade");
                 return;
             }
 
-            GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -_upgradeCost);
+            CityModeManager.Instance.IncrementMaterialValue(MaterialType.Payments, -_upgradeCost);
 
             (int newLevel, string newPlaceholderValue) = onUpgrade();
             _upgradeCost = (int)Math.Round(_upgradeCost * 1.1);

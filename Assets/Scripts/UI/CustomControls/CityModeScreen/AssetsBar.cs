@@ -22,21 +22,21 @@ public partial class MaterialsBar : VisualElement
     {
         UpdateMaterialAmount(
             MaterialType.Payments,
-            GameManager.Instance.GetMaterialValue(MaterialType.Payments)
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Payments)
         );
         UpdateMaterialAmount(
             MaterialType.Resources,
-            GameManager.Instance.GetMaterialValue(MaterialType.Resources)
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Resources)
         );
         UpdateMaterialAmount(
             MaterialType.Supplies,
-            GameManager.Instance.GetMaterialValue(MaterialType.Supplies)
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Supplies)
         );
 
         int numberOfResidents = 0;
         int numberOfCitizens = 0;
 
-        foreach (Location location in GameManager.Instance.Locations)
+        foreach (Location location in CityModeManager.Instance.Locations)
         {
             numberOfResidents += location.Residents;
             numberOfCitizens += location.Citizens;

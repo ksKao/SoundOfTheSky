@@ -29,7 +29,7 @@ public class UnlockCommand : Command
         {
             int numberOfTrainsUnlocked = 0;
 
-            foreach (Train train in GameManager.Instance.Trains)
+            foreach (Train train in CityModeManager.Instance.Trains)
             {
                 if (train.unlocked)
                     continue;
@@ -46,7 +46,7 @@ public class UnlockCommand : Command
         else
         {
             Train foundTrain =
-                GameManager.Instance.Trains.FirstOrDefault(t =>
+                CityModeManager.Instance.Trains.FirstOrDefault(t =>
                     t.trainSO.name.ToLower().Replace(" ", "_") == inputTrainName.ToLower()
                 ) ?? throw new Exception($"Could not find train with name \"{inputTrainName}\".");
 

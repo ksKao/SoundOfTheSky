@@ -20,7 +20,7 @@ public class DocumentationMission : Mission
     private int _initialCitizens = 0;
 
     public override int MilesPerInterval =>
-        (int)Math.Round(base.MilesPerInterval / GameManager.Instance.SecondsPerMile); // 5 seconds per interval
+        (int)Math.Round(base.MilesPerInterval / CityModeManager.Instance.SecondsPerMile); // 5 seconds per interval
     public float SecondsPassed { get; private set; } = 0;
     public override MissionType Type { get; } = MissionType.Documentation;
     public override Route Route { get; } = new(true);
@@ -55,7 +55,7 @@ public class DocumentationMission : Mission
             return false;
         }
 
-        if (GameManager.Instance.deployedMissions.Any(m => m.Type == Type))
+        if (CityModeManager.Instance.deployedMissions.Any(m => m.Type == Type))
         {
             UiUtils.ShowError("Another documentation mission has already been deployed.");
             return false;
@@ -74,9 +74,9 @@ public class DocumentationMission : Mission
 
         _initialCitizens = Route.end.Citizens;
 
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -NumberOfPayments);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Resources, -NumberOfResources);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Payments, -NumberOfPayments);
 
         RerollWeather();
         UpdateLabels();
@@ -216,7 +216,7 @@ public class DocumentationMission : Mission
             UiUtils.ShowError($"Please bring {pluralMaterialName} to continue");
             return false;
         }
-        else if (numberInput.Value > GameManager.Instance.GetMaterialValue(materialType))
+        else if (numberInput.Value > CityModeManager.Instance.GetMaterialValue(materialType))
         {
             UiUtils.ShowError($"Not enough {pluralMaterialName} to deploy");
             return false;

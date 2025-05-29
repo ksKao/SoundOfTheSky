@@ -16,7 +16,7 @@ public partial class CrewSelectionPanelButton : VisualElement
             (_) =>
             {
                 UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                    GameManager.Instance.crews.Where(c => !c.isResting).ToArray(),
+                    CityModeManager.Instance.crews.Where(c => !c.isResting).ToArray(),
                     (crews) =>
                     {
                         _selectedCrews = crews.Where(c => c.Selected).ToList();

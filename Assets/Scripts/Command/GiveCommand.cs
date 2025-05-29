@@ -60,7 +60,7 @@ public class GiveCommand : Command
                 );
 
             Location foundLocation =
-                GameManager.Instance.Locations.FirstOrDefault(l =>
+                CityModeManager.Instance.Locations.FirstOrDefault(l =>
                     l.locationSO.name.ToLower().Replace(" ", "_") == args[2]
                 ) ?? throw new Exception("Invalid location name.");
 
@@ -79,10 +79,10 @@ public class GiveCommand : Command
         }
         else
         {
-            int amountBefore = GameManager.Instance.GetMaterialValue(material);
+            int amountBefore = CityModeManager.Instance.GetMaterialValue(material);
             int amountAfter = amountBefore + amount;
 
-            GameManager.Instance.IncrementMaterialValue(material, amount);
+            CityModeManager.Instance.IncrementMaterialValue(material, amount);
             ConsoleManager.Instance.Output(
                 $"{material}: {amountBefore} -> {amountAfter}",
                 ConsoleOutputLevel.Success

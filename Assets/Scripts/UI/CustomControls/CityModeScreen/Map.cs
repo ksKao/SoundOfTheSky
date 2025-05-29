@@ -20,11 +20,11 @@ public partial class Map : VisualElement
 
     public void Refresh()
     {
-        if (GameManager.Instance == null)
+        if (CityModeManager.Instance == null)
             return;
         Clear();
 
-        foreach (Location location in GameManager.Instance.Locations)
+        foreach (Location location in CityModeManager.Instance.Locations)
         {
             Add(new MapLocationLabel(location));
         }

@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 public class UiManager : Singleton<UiManager>
 {
     public GameplayScreen GameplayScreen { get; private set; }
+    public MainMenuScreen MainMenuScreen { get; private set; }
 
     protected override void Awake()
     {
@@ -14,11 +15,11 @@ public class UiManager : Singleton<UiManager>
         if (uiDocument == null)
         {
             Debug.LogWarning($"Could not find {nameof(UIDocument)} object in scene.");
-            GameplayScreen = new GameplayScreen();
         }
         else
         {
             GameplayScreen = uiDocument.rootVisualElement.Q<GameplayScreen>();
+            MainMenuScreen = uiDocument.rootVisualElement.Q<MainMenuScreen>();
         }
     }
 }

@@ -65,7 +65,7 @@ public partial class BottomNavigationBar : VisualElement
         crewButton.clicked += ShowCrewList;
 
         trainButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.trainList.Show(GameManager.Instance.Trains);
+            UiManager.Instance.GameplayScreen.trainList.Show(CityModeManager.Instance.Trains);
 
         deployButton.visible = false;
 
@@ -91,7 +91,7 @@ public partial class BottomNavigationBar : VisualElement
         deployedMissionListButton.clicked += () =>
         {
             VisualElement element =
-                GameManager.Instance.deployedMissions.Count > 0
+                CityModeManager.Instance.deployedMissions.Count > 0
                     ? UiManager.Instance.GameplayScreen.deployedMissionList
                     : UiManager.Instance.GameplayScreen.map;
             UiManager.Instance.GameplayScreen.ChangeRightPanel(element);
@@ -158,7 +158,9 @@ public partial class BottomNavigationBar : VisualElement
             };
             applyRestButton.clicked += () =>
             {
-                Crew[] selectedCrews = GameManager.Instance.crews.Where(c => c.Selected).ToArray();
+                Crew[] selectedCrews = CityModeManager
+                    .Instance.crews.Where(c => c.Selected)
+                    .ToArray();
 
                 foreach (Crew crew in selectedCrews)
                     crew.isResting = true;
@@ -168,7 +170,7 @@ public partial class BottomNavigationBar : VisualElement
             container.Add(applyRestButton);
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                GameManager
+                CityModeManager
                     .Instance.crews.Where(c =>
                         !c.isResting
                         && c.deployedMission is null
@@ -217,18 +219,20 @@ public partial class BottomNavigationBar : VisualElement
             };
             applyCureButton.clicked += () =>
             {
-                Crew[] selectedCrews = GameManager.Instance.crews.Where(c => c.Selected).ToArray();
+                Crew[] selectedCrews = CityModeManager
+                    .Instance.crews.Where(c => c.Selected)
+                    .ToArray();
 
                 if (
                     selectedCrews.Length
-                    > GameManager.Instance.GetMaterialValue(MaterialType.Supplies)
+                    > CityModeManager.Instance.GetMaterialValue(MaterialType.Supplies)
                 )
                 {
                     UiUtils.ShowError("Not enough supplies");
                     return;
                 }
 
-                GameManager.Instance.IncrementMaterialValue(
+                CityModeManager.Instance.IncrementMaterialValue(
                     MaterialType.Supplies,
                     -selectedCrews.Count()
                 );
@@ -241,7 +245,7 @@ public partial class BottomNavigationBar : VisualElement
             container.Add(applyCureButton);
 
             UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-                GameManager
+                CityModeManager
                     .Instance.crews.Where(c =>
                         !c.isResting
                         && c.deployedMission is null
@@ -276,20 +280,20 @@ public partial class BottomNavigationBar : VisualElement
         };
         newCrewButton.clicked += () =>
         {
-            if (GameManager.Instance.GetMaterialValue(MaterialType.Payments) < 300)
+            if (CityModeManager.Instance.GetMaterialValue(MaterialType.Payments) < 300)
             {
                 UiUtils.ShowError("Not enough payments");
                 return;
             }
 
-            if (GameManager.Instance.crews.Count >= GameManager.MAX_CREW_COUNT)
+            if (CityModeManager.Instance.crews.Count >= CityModeManager.MAX_CREW_COUNT)
             {
                 UiUtils.ShowError("You may only have up to 200 crews at a time.");
                 return;
             }
 
-            GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, -300);
-            GameManager.Instance.crews.Add(new());
+            CityModeManager.Instance.IncrementMaterialValue(MaterialType.Payments, -300);
+            CityModeManager.Instance.crews.Add(new());
 
             ShowCrewList();
         };
@@ -307,11 +311,11 @@ public partial class BottomNavigationBar : VisualElement
         buttonContainer.Add(restButton);
         buttonContainer.Add(cureButton);
 
-        if (GameManager.Instance.crews.Count < GameManager.MAX_CREW_COUNT)
+        if (CityModeManager.Instance.crews.Count < CityModeManager.MAX_CREW_COUNT)
             buttonContainer.Add(newCrewButton);
 
         UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
-            GameManager.Instance.crews.ToArray(),
+            CityModeManager.Instance.crews.ToArray(),
             (crews) =>
                 UiManager.Instance.GameplayScreen.ChangeRightPanel(
                     new CrewUpgradePanel(crews.First(c => c.Selected))
@@ -324,7 +328,7 @@ public partial class BottomNavigationBar : VisualElement
 
     public void RefreshEventPendingMissionCount()
     {
-        int count = GameManager.Instance.deployedMissions.Where(e => e.EventPending).Count();
+        int count = CityModeManager.Instance.deployedMissions.Where(e => e.EventPending).Count();
 
         _deployedMissionListCountLabel.parent.style.display =
             count > 0 ? DisplayStyle.Flex : DisplayStyle.None;

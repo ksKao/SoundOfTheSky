@@ -137,7 +137,7 @@ public partial class GameplayScreen : VisualElement
         pendingMissionList.Clear();
 
         int i = 0;
-        foreach (Mission mission in GameManager.Instance.PendingMissions)
+        foreach (Mission mission in CityModeManager.Instance.PendingMissions)
         {
             if (mission.Type != selectedType)
                 continue;
@@ -150,6 +150,6 @@ public partial class GameplayScreen : VisualElement
             i++;
         }
 
-        GameManager.Instance.SelectedPendingMission = null;
+        CityModeManager.Instance.SelectedPendingMission = null;
     }
 }

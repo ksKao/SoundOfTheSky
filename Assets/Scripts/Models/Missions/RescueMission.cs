@@ -74,7 +74,7 @@ public class RescueMission : Mission
 
         // check if this train has already been deployed
         if (
-            GameManager.Instance.deployedMissions.Any(m =>
+            CityModeManager.Instance.deployedMissions.Any(m =>
                 m.Train != null && m.Train.trainSO.name == Train.trainSO.name
             )
         )
@@ -89,14 +89,17 @@ public class RescueMission : Mission
             return false;
         }
 
-        if (GameManager.Instance.GetMaterialValue(MaterialType.Supplies) < _supplyNumberInput.Value)
+        if (
+            CityModeManager.Instance.GetMaterialValue(MaterialType.Supplies)
+            < _supplyNumberInput.Value
+        )
         {
             UiUtils.ShowError("Not enough supplies to deploy this mission");
             return false;
         }
 
         NumberOfSupplies = _supplyNumberInput.Value;
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Supplies, -NumberOfSupplies);
 
         foreach (Crew crew in _crewSelectionPanelButton.SelectedCrews)
             crew.deployedMission = this;
@@ -276,8 +279,11 @@ public class RescueMission : Mission
         // include city documented citizens bonus
         _numberOfNewResources += Route.end.Citizens * 5;
 
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, _numberOfNewResources);
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
+        CityModeManager.Instance.IncrementMaterialValue(
+            MaterialType.Resources,
+            _numberOfNewResources
+        );
+        CityModeManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
         Route.end.Residents += _numberOfResidents;
 
         foreach (Crew crew in Crews)
@@ -343,7 +349,7 @@ public class RescueMission : Mission
         Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
         _numberOfDeaths += numberOfPassengers - Passengers.Count;
 
-        GameManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
+        CityModeManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
 
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
         _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";

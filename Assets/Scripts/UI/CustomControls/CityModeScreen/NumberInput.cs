@@ -103,7 +103,7 @@ public partial class NumberInput : VisualElement
             e =>
             {
                 _secondsSinceStartHold = 0;
-                incrementCoroutine = GameManager.Instance.StartCoroutine(IncrementCoroutine());
+                incrementCoroutine = CityModeManager.Instance.StartCoroutine(IncrementCoroutine());
             },
             TrickleDown.TrickleDown
         );
@@ -111,7 +111,7 @@ public partial class NumberInput : VisualElement
             e =>
             {
                 if (incrementCoroutine is not null)
-                    GameManager.Instance.StopCoroutine(incrementCoroutine);
+                    CityModeManager.Instance.StopCoroutine(incrementCoroutine);
             },
             TrickleDown.TrickleDown
         );
@@ -120,7 +120,7 @@ public partial class NumberInput : VisualElement
             e =>
             {
                 _secondsSinceStartHold = 0;
-                decrementCoroutine = GameManager.Instance.StartCoroutine(DecrementCoroutine());
+                decrementCoroutine = CityModeManager.Instance.StartCoroutine(DecrementCoroutine());
             },
             TrickleDown.TrickleDown
         );
@@ -128,7 +128,7 @@ public partial class NumberInput : VisualElement
             e =>
             {
                 if (decrementCoroutine is not null)
-                    GameManager.Instance.StopCoroutine(decrementCoroutine);
+                    CityModeManager.Instance.StopCoroutine(decrementCoroutine);
             },
             TrickleDown.TrickleDown
         );

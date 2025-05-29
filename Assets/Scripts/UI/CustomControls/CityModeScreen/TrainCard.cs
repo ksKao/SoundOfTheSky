@@ -131,7 +131,7 @@ public partial class TrainCard : VisualElement
                 _button.clicked += () =>
                 {
                     if (
-                        GameManager.Instance.GetMaterialValue(MaterialType.Payments)
+                        CityModeManager.Instance.GetMaterialValue(MaterialType.Payments)
                         < _train.trainSO.price
                     )
                     {
@@ -139,7 +139,7 @@ public partial class TrainCard : VisualElement
                         return;
                     }
 
-                    GameManager.Instance.IncrementMaterialValue(
+                    CityModeManager.Instance.IncrementMaterialValue(
                         MaterialType.Payments,
                         -_train.trainSO.price
                     );
