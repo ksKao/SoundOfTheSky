@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -115,6 +116,7 @@ public abstract class Mission
             OnMileChange();
         }
     }
+    public bool IsCompleted => _isCompleted;
     protected virtual Location[] EligibleDestinations =>
         GameManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
 

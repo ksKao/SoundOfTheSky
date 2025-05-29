@@ -38,6 +38,9 @@ public class DocumentationMission : Mission
     {
         base.Update();
 
+        if (IsCompleted)
+            return;
+
         SecondsPassed += Time.deltaTime;
         _timeRemainingLabel.text = TimeSpan.FromSeconds(300 - SecondsPassed).ToString(@"mm\:ss");
     }

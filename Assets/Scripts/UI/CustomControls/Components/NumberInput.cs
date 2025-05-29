@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,9 +9,10 @@ public partial class NumberInput : VisualElement
     private string _text = "";
     private int _value = 0;
 
-    private readonly Label TextLabel = new();
-    private readonly Label ValueLabel = new();
-    private readonly Button IncrementButton = new()
+    private float _secondsSinceStartHold = 0;
+    private readonly Label _textLabel = new();
+    private readonly Label _valueLabel = new();
+    private readonly Button _incrementButton = new()
     {
         style =
         {
@@ -22,7 +24,7 @@ public partial class NumberInput : VisualElement
             height = UiUtils.GetLengthPercentage(100),
         },
     };
-    private readonly Button DecrementButton = new()
+    private readonly Button _decrementButton = new()
     {
         style =
         {
@@ -42,7 +44,7 @@ public partial class NumberInput : VisualElement
         set
         {
             _text = value;
-            TextLabel.text = value;
+            _textLabel.text = value;
         }
     }
 
@@ -52,11 +54,8 @@ public partial class NumberInput : VisualElement
         get => _value;
         set
         {
-            if (value < 0)
-                return;
-
-            _value = value;
-            ValueLabel.text = _value.ToString();
+            _value = Math.Max(0, value);
+            _valueLabel.text = _value.ToString();
         }
     }
 
@@ -70,17 +69,17 @@ public partial class NumberInput : VisualElement
         Text = text;
         Value = value;
 
-        IncrementButton.clicked += IncrementValue;
-        IncrementButton.text = ">";
-        IncrementButton.visible = false;
-        UiUtils.ToggleBorder(IncrementButton, false);
+        _incrementButton.clicked += IncrementValue;
+        _incrementButton.text = ">";
+        _incrementButton.visible = false;
+        UiUtils.ToggleBorder(_incrementButton, false);
 
-        DecrementButton.clicked += DecrementValue;
-        DecrementButton.text = "<";
-        DecrementButton.visible = false;
-        UiUtils.ToggleBorder(DecrementButton, false);
+        _decrementButton.clicked += DecrementValue;
+        _decrementButton.text = "<";
+        _decrementButton.visible = false;
+        UiUtils.ToggleBorder(_decrementButton, false);
 
-        Add(TextLabel);
+        Add(_textLabel);
 
         VisualElement buttonsContainer = new()
         {
@@ -91,20 +90,24 @@ public partial class NumberInput : VisualElement
                 alignItems = Align.Center,
             },
         };
-        buttonsContainer.Add(DecrementButton);
-        buttonsContainer.Add(ValueLabel);
-        buttonsContainer.Add(IncrementButton);
+        buttonsContainer.Add(_decrementButton);
+        buttonsContainer.Add(_valueLabel);
+        buttonsContainer.Add(_incrementButton);
 
         Add(buttonsContainer);
 
         Coroutine incrementCoroutine = null;
         Coroutine decrementCoroutine = null;
 
-        IncrementButton.RegisterCallback<PointerDownEvent>(
-            e => incrementCoroutine = GameManager.Instance.StartCoroutine(IncrementCoroutine()),
+        _incrementButton.RegisterCallback<PointerDownEvent>(
+            e =>
+            {
+                _secondsSinceStartHold = 0;
+                incrementCoroutine = GameManager.Instance.StartCoroutine(IncrementCoroutine());
+            },
             TrickleDown.TrickleDown
         );
-        IncrementButton.RegisterCallback<PointerUpEvent>(
+        _incrementButton.RegisterCallback<PointerUpEvent>(
             e =>
             {
                 if (incrementCoroutine is not null)
@@ -113,11 +116,15 @@ public partial class NumberInput : VisualElement
             TrickleDown.TrickleDown
         );
 
-        DecrementButton.RegisterCallback<PointerDownEvent>(
-            e => decrementCoroutine = GameManager.Instance.StartCoroutine(DecrementCoroutine()),
+        _decrementButton.RegisterCallback<PointerDownEvent>(
+            e =>
+            {
+                _secondsSinceStartHold = 0;
+                decrementCoroutine = GameManager.Instance.StartCoroutine(DecrementCoroutine());
+            },
             TrickleDown.TrickleDown
         );
-        DecrementButton.RegisterCallback<PointerUpEvent>(
+        _decrementButton.RegisterCallback<PointerUpEvent>(
             e =>
             {
                 if (decrementCoroutine is not null)
@@ -127,15 +134,36 @@ public partial class NumberInput : VisualElement
         );
     }
 
-    private void IncrementValue() => Value++;
+    private void IncrementValue()
+    {
+        if (_secondsSinceStartHold >= 10)
+            Value += 20;
+        else if (_secondsSinceStartHold >= 5)
+            Value += 10;
+        else if (_secondsSinceStartHold >= 3)
+            Value += 5;
+        else
+            Value++;
+    }
 
-    private void DecrementValue() => Value--;
+    private void DecrementValue()
+    {
+        if (_secondsSinceStartHold >= 10)
+            Value -= 20;
+        else if (_secondsSinceStartHold >= 5)
+            Value -= 10;
+        else if (_secondsSinceStartHold >= 3)
+            Value -= 5;
+        else
+            Value--;
+    }
 
     private IEnumerator IncrementCoroutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
+            _secondsSinceStartHold += 0.1f;
             IncrementValue();
         }
     }
@@ -145,6 +173,7 @@ public partial class NumberInput : VisualElement
         while (true)
         {
             yield return new WaitForSeconds(0.1f);
+            _secondsSinceStartHold += 0.1f;
             DecrementValue();
         }
     }
