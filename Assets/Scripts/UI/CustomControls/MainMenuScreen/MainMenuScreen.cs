@@ -1,3 +1,4 @@
+using UnityEngine; // This is needed here for Application.Quit, otherwise the build will fail
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
