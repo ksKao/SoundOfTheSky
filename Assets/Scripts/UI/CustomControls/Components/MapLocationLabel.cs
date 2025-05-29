@@ -6,10 +6,8 @@ public partial class MapLocationLabel : VisualElement
 {
     private readonly Sprite _citizensIcon = UiUtils.LoadSprite("citizens");
 
-    public MapLocationLabel()
-    {
+    public MapLocationLabel() =>
         Debug.LogWarning($"Detected calling the default constructor of {nameof(MapLocationLabel)}");
-    }
 
     public MapLocationLabel(Location location)
     {
@@ -50,12 +48,45 @@ public partial class MapLocationLabel : VisualElement
 
         Label numberOfCitizensLabel = new()
         {
-            text = $"{location.Citizens}x",
-            style = { color = UiUtils.HexToRgb("#1b1464"), fontSize = 24 },
+            text = location.Citizens.ToString(),
+            style =
+            {
+                color = UiUtils.HexToRgb("#1b1464"),
+                fontSize = 24,
+                paddingRight = 0,
+                marginRight = 0,
+            },
         };
 
         Add(nameLabelContainer);
         Add(citizensIcon);
         Add(numberOfCitizensLabel);
+        Add(
+            new Label("/")
+            {
+                style =
+                {
+                    fontSize = 24,
+                    paddingLeft = 0,
+                    marginLeft = 0,
+                    paddingRight = 0,
+                    marginRight = 0,
+                },
+            }
+        );
+        Add(
+            new Label($"{location.Residents}x")
+            {
+                style =
+                {
+                    color = UiUtils.HexToRgb("#93278f"),
+                    fontSize = 24,
+                    paddingLeft = 0,
+                    marginLeft = 0,
+                    paddingRight = 0,
+                    marginRight = 0,
+                },
+            }
+        );
     }
 }
