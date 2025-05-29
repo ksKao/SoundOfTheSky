@@ -72,8 +72,6 @@ public class GiveCommand : Command
             else
                 foundLocation.Residents += amount;
 
-            GameManager.Instance.IncrementMaterialValue(material, amount);
-
             ConsoleManager.Instance.Output(
                 $"{foundLocation.locationSO.name} {material.ToString().ToLower()}: {amountBefore} -> {amountAfter}",
                 ConsoleOutputLevel.Success

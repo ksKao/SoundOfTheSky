@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 public class DocumentationMission : Mission
@@ -15,9 +16,11 @@ public class DocumentationMission : Mission
     private readonly Label _resourceAmountLabel = new();
     private readonly Label _supplyAmountLabel = new();
     private readonly Label _paymentAmountLabel = new();
+    private readonly Label _timeRemainingLabel = new("00:00");
     private int _initialCitizens = 0;
 
     public override int MilesPerInterval => 10;
+    public float SecondsPassed { get; private set; } = 0;
     public override MissionType Type { get; } = MissionType.Documentation;
     public override Route Route { get; } = new(true);
     public int NumberOfResources { get; private set; } = 0;
@@ -29,6 +32,14 @@ public class DocumentationMission : Mission
             .DistributeNumbers(WEATHER_DISTRIBUTION_SUM, DataManager.Instance.AllWeathers.Length)
             .Select((prob, i) => new { index = i, prob })
             .ToDictionary((el) => DataManager.Instance.AllWeathers[el.index], el => el.prob);
+
+    public override void Update()
+    {
+        base.Update();
+
+        SecondsPassed += Time.deltaTime;
+        _timeRemainingLabel.text = TimeSpan.FromSeconds(300 - SecondsPassed).ToString(@"mm\:ss");
+    }
 
     public override bool Deploy()
     {
@@ -79,6 +90,7 @@ public class DocumentationMission : Mission
         DeployedMissionUi.materialLabelsContainer.Add(_resourceAmountLabel);
         DeployedMissionUi.materialLabelsContainer.Add(_supplyAmountLabel);
         DeployedMissionUi.materialLabelsContainer.Add(_paymentAmountLabel);
+        DeployedMissionUi.materialLabelsContainer.Add(_timeRemainingLabel);
         DeployedMissionUi.checkHealthButton.style.display = DisplayStyle.None;
 
         UpdateLabels();
@@ -99,12 +111,8 @@ public class DocumentationMission : Mission
         if (!IsMilestoneReached(MilesPerInterval))
             return;
 
-        int milesTravelled = initialMiles - milesRemaining;
-
-        float secondsPassed = milesTravelled * GameManager.Instance.SecondsPerMile;
-
         // max 5 minutes on documentation mission
-        if (secondsPassed >= 300)
+        if (SecondsPassed >= 300)
         {
             Complete();
             return;
