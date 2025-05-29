@@ -137,11 +137,11 @@ public partial class NumberInput : VisualElement
     private void IncrementValue()
     {
         if (_secondsSinceStartHold >= 10)
-            Value += 20;
+            Value += 40;
         else if (_secondsSinceStartHold >= 5)
-            Value += 10;
+            Value += 20;
         else if (_secondsSinceStartHold >= 3)
-            Value += 5;
+            Value += 10;
         else
             Value++;
     }
@@ -149,11 +149,11 @@ public partial class NumberInput : VisualElement
     private void DecrementValue()
     {
         if (_secondsSinceStartHold >= 10)
-            Value -= 20;
+            Value -= 40;
         else if (_secondsSinceStartHold >= 5)
-            Value -= 10;
+            Value -= 20;
         else if (_secondsSinceStartHold >= 3)
-            Value -= 5;
+            Value -= 10;
         else
             Value--;
     }
