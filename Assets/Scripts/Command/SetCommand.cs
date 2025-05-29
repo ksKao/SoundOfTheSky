@@ -12,7 +12,7 @@ public class SetCommand : Command
         {
             {
                 "set seconds_per_mile <value>",
-                "Set how many seconds per mile, default is 5. Decimal numbers are allowed."
+                "Set how many seconds per mile, default is 5. Decimal numbers are allowed. This will also affect the 5 mins timer for documentation mission."
             },
         };
 

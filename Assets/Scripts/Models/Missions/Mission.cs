@@ -284,7 +284,7 @@ public abstract class Mission
         }
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (_isCompleted || EventPending)
             return;

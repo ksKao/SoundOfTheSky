@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 public class DocumentationMission : Mission
@@ -85,16 +84,6 @@ public class DocumentationMission : Mission
         UpdateLabels();
     }
 
-    public override void Complete()
-    {
-        // refund remaining materials
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Resources, NumberOfResources);
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
-        GameManager.Instance.IncrementMaterialValue(MaterialType.Payments, NumberOfPayments);
-
-        base.Complete();
-    }
-
     public override void GenerateMissionCompleteUi()
     {
         base.GenerateMissionCompleteUi();
@@ -110,8 +99,16 @@ public class DocumentationMission : Mission
         if (!IsMilestoneReached(MilesPerInterval))
             return;
 
-        // reset miles remaining after each interval since there is no train moving
-        milesRemaining = initialMiles;
+        int milesTravelled = initialMiles - milesRemaining;
+
+        float secondsPassed = milesTravelled * GameManager.Instance.SecondsPerMile;
+
+        // max 5 minutes on documentation mission
+        if (secondsPassed >= 300)
+        {
+            Complete();
+            return;
+        }
 
         if (Route.end.Residents <= 0)
         {
@@ -121,7 +118,7 @@ public class DocumentationMission : Mission
 
         int materialsConsumed = (int)
             Math.Round(
-                weather.documentationMissionMaterialComsumptionMultiplier * Route.end.Residents
+                weather.documentationMissionMaterialComsumptionMultiplier * (initialMiles / 5)
             );
 
         if (
