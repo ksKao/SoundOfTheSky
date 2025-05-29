@@ -19,7 +19,8 @@ public class DocumentationMission : Mission
     private readonly Label _timeRemainingLabel = new("00:00");
     private int _initialCitizens = 0;
 
-    public override int MilesPerInterval => 10;
+    public override int MilesPerInterval =>
+        (int)Math.Round(base.MilesPerInterval / GameManager.Instance.SecondsPerMile); // 5 seconds per interval
     public float SecondsPassed { get; private set; } = 0;
     public override MissionType Type { get; } = MissionType.Documentation;
     public override Route Route { get; } = new(true);
