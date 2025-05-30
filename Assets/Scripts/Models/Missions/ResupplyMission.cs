@@ -39,6 +39,75 @@ public class ResupplyMission : Mission
         SetupUi();
     }
 
+    public ResupplyMission(DeployedResupplyMissionSerializable deployedResupplyMissionSerializable)
+        : base()
+    {
+        Route = new Route(
+            deployedResupplyMissionSerializable.routeStart,
+            deployedResupplyMissionSerializable.routeEnd
+        );
+
+        WeatherSO foundWeather = DataManager.Instance.AllWeathers.FirstOrDefault(w =>
+            w.name == deployedResupplyMissionSerializable.weather
+        );
+
+        if (foundWeather)
+            WeatherSO = foundWeather;
+
+        Train = CityModeManager.Instance.Trains.FirstOrDefault(t =>
+            t.trainSO.name == deployedResupplyMissionSerializable.trainName
+        );
+
+        SecondsRemainingUntilNextMile =
+            deployedResupplyMissionSerializable.secondsRemainingUntilNextMile;
+
+        foreach (string crewId in deployedResupplyMissionSerializable.crewIds)
+        {
+            Crew found = CityModeManager.Instance.crews.Find(c => c.id == crewId);
+
+            if (found is null)
+                continue;
+
+            found.deployedMission = this;
+        }
+
+        IsCompleted = deployedResupplyMissionSerializable.isCompleted;
+
+        NumberOfSupplies = deployedResupplyMissionSerializable.numberOfSupplies;
+
+        NumberOfResources = deployedResupplyMissionSerializable.numberOfResources;
+
+        NumberOfNewSupplies = deployedResupplyMissionSerializable.numberOfNewSupplies;
+
+        NumberOfPayments = deployedResupplyMissionSerializable.numberOfPayments;
+
+        SkippedLastInterval = deployedResupplyMissionSerializable.skippedLastInterval;
+
+        SetupUi();
+
+        DeployedMissionUi.trainImage.sprite = Train.trainSO.sprite;
+
+        MilesRemaining = deployedResupplyMissionSerializable.milesRemaining;
+
+        DeployedMissionUi.StyleIndex =
+            deployedResupplyMissionSerializable.deployedMissionStyleIndex;
+
+        MissionStatus = deployedResupplyMissionSerializable.status;
+
+        EventPending = deployedResupplyMissionSerializable.eventPending;
+
+        _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
+        _deployedMissionResourcesLabel.text = $"{NumberOfResources} resource(s)";
+
+        if (MissionStatus == MissionStatus.Arrived)
+            DeployedMissionUi.Arrive();
+        else if (MissionStatus == MissionStatus.Completed)
+        {
+            GenerateMissionCompleteUi();
+            DeployedMissionUi.Complete();
+        }
+    }
+
     public override bool Deploy()
     {
         if (Train is null)
@@ -241,6 +310,7 @@ public class ResupplyMission : Mission
             if (randomCrew is null)
             {
                 NumberOfResources -= Mathf.Min(5, NumberOfResources);
+                _deployedMissionResourcesLabel.text = $"{NumberOfResources} resource(s)";
 
                 // mission fail when run out of resources and crews
                 if (NumberOfResources == 0)

@@ -39,8 +39,10 @@ public partial class RescueMissionResolvePanel : VisualElement
     {
         style =
         {
-            height = 1,
-            width = UiUtils.GetLengthPercentage(100),
+            height = 2,
+            width = UiUtils.GetLengthPercentage(98),
+            marginLeft = UiUtils.GetLengthPercentage(1),
+            marginRight = UiUtils.GetLengthPercentage(1),
             backgroundColor = Color.black,
             marginTop = 16,
             marginBottom = 16,
@@ -86,6 +88,7 @@ public partial class RescueMissionResolvePanel : VisualElement
 
         ScrollView scrollView = new()
         {
+            mode = ScrollViewMode.Vertical,
             style =
             {
                 display = DisplayStyle.Flex,

@@ -293,11 +293,20 @@ public class CityModeManager : Singleton<CityModeManager>
 
         deployedMissions.Clear();
 
-        foreach (
-            DeployedRescueMissionSerializable deployedRescueMissionSerializable in savedData.deployedRescueMissions
-        )
+        int numberOfDeployedMissions =
+            savedData.deployedRescueMissions.Count + savedData.deployedResupplyMissions.Count;
+
+        for (int i = 0; i < numberOfDeployedMissions; i++)
         {
-            deployedMissions.Add(new RescueMission(deployedRescueMissionSerializable));
+            DeployedRescueMissionSerializable deployedRescueMissionSerializable =
+                savedData.deployedRescueMissions.FirstOrDefault(m => m.order == i);
+            DeployedResupplyMissionSerializable deployedResupplyMissionSerializable =
+                savedData.deployedResupplyMissions.FirstOrDefault(m => m.order == i);
+
+            if (deployedRescueMissionSerializable is not null)
+                deployedMissions.Add(new RescueMission(deployedRescueMissionSerializable));
+            else if (deployedResupplyMissionSerializable is not null)
+                deployedMissions.Add(new ResupplyMission(deployedResupplyMissionSerializable));
         }
 
         UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
@@ -376,7 +385,6 @@ public class CityModeManager : Singleton<CityModeManager>
                         routeStart = rescueMission.Route.start.locationSO.name,
                         routeEnd = rescueMission.Route.end.locationSO.name,
                         weather = rescueMission.WeatherSO.name,
-                        position = i,
                         passengers = rescueMission
                             .Passengers.Select(p => new PassengerSerializable()
                             {
@@ -384,6 +392,7 @@ public class CityModeManager : Singleton<CityModeManager>
                                 status = p.Status,
                             })
                             .ToList(),
+                        order = i,
                         trainName = rescueMission.Train.trainSO.name,
                         milesRemaining = rescueMission.MilesRemaining,
                         secondsRemainingUntilNextMile = rescueMission.SecondsRemainingUntilNextMile,
@@ -402,6 +411,32 @@ public class CityModeManager : Singleton<CityModeManager>
                         actionTakenDuringThisEvent = rescueMission.ActionTakenDuringThisEvent,
                         deployedMissionStyleIndex = rescueMission.DeployedMissionUi.StyleIndex,
                         status = rescueMission.MissionStatus,
+                    }
+                );
+            }
+            else if (mission is ResupplyMission resupplyMission)
+            {
+                cityModeState.deployedResupplyMissions.Add(
+                    new()
+                    {
+                        routeStart = resupplyMission.Route.start.locationSO.name,
+                        routeEnd = resupplyMission.Route.end.locationSO.name,
+                        weather = resupplyMission.WeatherSO.name,
+                        order = i,
+                        trainName = resupplyMission.Train.trainSO.name,
+                        milesRemaining = resupplyMission.MilesRemaining,
+                        secondsRemainingUntilNextMile =
+                            resupplyMission.SecondsRemainingUntilNextMile,
+                        crewIds = resupplyMission.Crews.Select(c => c.id).ToList(),
+                        eventPending = resupplyMission.EventPending,
+                        isCompleted = resupplyMission.IsCompleted,
+                        skippedLastInterval = resupplyMission.SkippedLastInterval,
+                        numberOfSupplies = resupplyMission.NumberOfSupplies,
+                        numberOfResources = resupplyMission.NumberOfResources,
+                        numberOfNewSupplies = resupplyMission.NumberOfNewSupplies,
+                        numberOfPayments = resupplyMission.NumberOfPayments,
+                        deployedMissionStyleIndex = resupplyMission.DeployedMissionUi.StyleIndex,
+                        status = resupplyMission.MissionStatus,
                     }
                 );
             }

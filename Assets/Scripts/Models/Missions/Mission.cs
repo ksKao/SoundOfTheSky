@@ -46,7 +46,7 @@ public abstract class Mission
     public virtual int MilesPerInterval => 5;
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
     public virtual Route Route { get; set; } = new();
-    public bool SkippedLastInterval { get; private set; } = false;
+    public bool SkippedLastInterval { get; protected set; } = false;
     public MissionStatus MissionStatus { get; set; } = MissionStatus.Pending;
     public float SecondsRemainingUntilNextMile { get; protected set; } = DEFAULT_SECONDS_PER_MILE;
     public Crew[] Crews =>

@@ -103,13 +103,20 @@ public class RescueMission : Mission
             .passengers.Select(p => new Passenger(p))
             .ToList();
 
-        MilesRemaining = deployedRescueMissionSerializable.milesRemaining; // use the field here to prevent calling the OnMileChange function
-
         SecondsRemainingUntilNextMile =
             deployedRescueMissionSerializable.secondsRemainingUntilNextMile;
 
-        CrewsOnCooldown.Clear();
+        foreach (string crewId in deployedRescueMissionSerializable.crewIds)
+        {
+            Crew found = CityModeManager.Instance.crews.Find(c => c.id == crewId);
 
+            if (found is null)
+                continue;
+
+            found.deployedMission = this;
+        }
+
+        CrewsOnCooldown.Clear();
         foreach (string crewId in deployedRescueMissionSerializable.crewIdsOnCooldown)
         {
             Crew found = CityModeManager.Instance.crews.Find(c => c.id == crewId);
@@ -132,6 +139,8 @@ public class RescueMission : Mission
 
         NumberOfNewResources = deployedRescueMissionSerializable.numberOfNewResources;
 
+        SkippedLastInterval = deployedRescueMissionSerializable.skippedLastInterval;
+
         SetupUi();
 
         DeployedMissionUi.trainImage.sprite = Train.trainSO.sprite;
@@ -152,7 +161,10 @@ public class RescueMission : Mission
         if (MissionStatus == MissionStatus.Arrived)
             DeployedMissionUi.Arrive();
         else if (MissionStatus == MissionStatus.Completed)
+        {
+            GenerateMissionCompleteUi();
             DeployedMissionUi.Complete();
+        }
     }
 
     public override bool Deploy()

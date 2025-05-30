@@ -13,6 +13,7 @@ public class CityModeState
     public List<PendingMissionSerializable> pendingRescueAndResupplyMissions = new();
     public PendingDocumentationMissionSerializable pendingDocumentationMission;
     public List<DeployedRescueMissionSerializable> deployedRescueMissions = new();
+    public List<DeployedResupplyMissionSerializable> deployedResupplyMissions = new();
 }
 
 [Serializable]
@@ -73,7 +74,7 @@ public class DeployedRescueMissionSerializable
     public string routeEnd;
     public string weather;
     public string trainName;
-    public int position; // used to re-order deployed missions, must be unique across deployed rescue, resupply, and documentation mission
+    public int order;
     public List<PassengerSerializable> passengers = new();
     public int milesRemaining;
     public float secondsRemainingUntilNextMile;
@@ -88,6 +89,28 @@ public class DeployedRescueMissionSerializable
     public int numberOfResidents;
     public int numberOfNewResources;
     public bool actionTakenDuringThisEvent;
+    public int deployedMissionStyleIndex;
+    public MissionStatus status;
+}
+
+[Serializable]
+public class DeployedResupplyMissionSerializable
+{
+    public string routeStart;
+    public string routeEnd;
+    public string weather;
+    public string trainName;
+    public int order;
+    public int milesRemaining;
+    public float secondsRemainingUntilNextMile;
+    public List<string> crewIds;
+    public bool eventPending;
+    public bool skippedLastInterval;
+    public bool isCompleted;
+    public int numberOfNewSupplies;
+    public int numberOfSupplies;
+    public int numberOfPayments;
+    public int numberOfResources;
     public int deployedMissionStyleIndex;
     public MissionStatus status;
 }
