@@ -30,3 +30,11 @@ public enum ConsoleOutputLevel
     Info,
     Success,
 }
+
+public enum MissionStatus
+{
+    Pending,
+    Deployed,
+    Arrived,
+    Completed,
+}

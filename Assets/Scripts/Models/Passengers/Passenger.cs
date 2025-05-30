@@ -84,6 +84,15 @@ public class Passenger
         ui.RegisterCallback<ClickEvent>(OnClick);
     }
 
+    public Passenger(PassengerSerializable passengerSerializable)
+        : this()
+    {
+        Name = passengerSerializable.name;
+        ChangeStatus((int)passengerSerializable.status);
+
+        RefreshLabels();
+    }
+
     public void MakeWorse()
     {
         ChangeStatus((int)Status + 1);

@@ -15,6 +15,7 @@ public partial class DeployedMissionUi : VisualElement
 
     private static readonly Sprite _arrivalsBadgeImage = UiUtils.LoadSprite("arrivals_badge");
 
+    private int _styleIndex = 0;
     private readonly VisualElement _arriveOverlay = new();
     private readonly VisualElement _container = new()
     {
@@ -37,6 +38,32 @@ public partial class DeployedMissionUi : VisualElement
             paddingLeft = UiUtils.GetLengthPercentage(3f),
             paddingRight = UiUtils.GetLengthPercentage(3f),
             flexDirection = FlexDirection.Row,
+        },
+    };
+    private readonly VisualElement _backgroundImage = new()
+    {
+        style =
+        {
+            position = Position.Absolute,
+            width = UiUtils.GetLengthPercentage(95),
+            height = UiUtils.GetLengthPercentage(65),
+            top = UiUtils.GetLengthPercentage(50),
+            left = UiUtils.GetLengthPercentage(50),
+            translate = new Translate(
+                UiUtils.GetLengthPercentage(-50),
+                UiUtils.GetLengthPercentage(-52)
+            ),
+        },
+    };
+    private readonly VisualElement _borderImage = new()
+    {
+        style =
+        {
+            position = Position.Absolute,
+            width = UiUtils.GetLengthPercentage(100),
+            height = UiUtils.GetLengthPercentage(100),
+            top = 0,
+            left = 0,
         },
     };
 
@@ -62,6 +89,16 @@ public partial class DeployedMissionUi : VisualElement
     public readonly Label routeLabel = new();
     public readonly Label weatherLabel = new();
 
+    public int StyleIndex
+    {
+        get => _styleIndex;
+        set
+        {
+            _styleIndex = value;
+            SetImageStyle(value);
+        }
+    }
+
     public DeployedMissionUi()
     {
         Debug.LogWarning($"Detected calling default constructor of {nameof(DeployedMissionUi)}.");
@@ -70,10 +107,6 @@ public partial class DeployedMissionUi : VisualElement
     public DeployedMissionUi(Mission mission)
     {
         this.mission = mission;
-        int backgroundNumber = Random.GetRandomIntInRange(
-            1,
-            NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS
-        );
 
         style.minHeight = UiUtils.GetLengthPercentage(100 / 6f);
         style.maxHeight = UiUtils.GetLengthPercentage(100 / 6f);
@@ -81,41 +114,12 @@ public partial class DeployedMissionUi : VisualElement
 
         Add(_container);
 
-        VisualElement backgroundImage = new()
-        {
-            style =
-            {
-                backgroundImage = UiUtils.LoadTexture(
-                    DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + backgroundNumber
-                ),
-                position = Position.Absolute,
-                width = UiUtils.GetLengthPercentage(95),
-                height = UiUtils.GetLengthPercentage(65),
-                top = UiUtils.GetLengthPercentage(50),
-                left = UiUtils.GetLengthPercentage(50),
-                translate = new Translate(
-                    UiUtils.GetLengthPercentage(-50),
-                    UiUtils.GetLengthPercentage(-52)
-                ),
-            },
-        };
-        _container.Add(backgroundImage);
-
-        VisualElement borderImage = new()
-        {
-            style =
-            {
-                backgroundImage = UiUtils.LoadTexture(
-                    DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX + backgroundNumber
-                ),
-                position = Position.Absolute,
-                width = UiUtils.GetLengthPercentage(100),
-                height = UiUtils.GetLengthPercentage(100),
-                top = 0,
-                left = 0,
-            },
-        };
-        _container.Add(borderImage);
+        StyleIndex = Random.GetRandomIntInRange(
+            1,
+            NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS
+        );
+        _container.Add(_backgroundImage);
+        _container.Add(_borderImage);
 
         _container.Add(_contentContainer);
 
@@ -182,9 +186,6 @@ public partial class DeployedMissionUi : VisualElement
         leftContainer.Add(milesRemainingLabel);
 
         UiUtils.ToggleBorder(checkHealthButton, false);
-        checkHealthButton.style.backgroundImage = UiUtils.LoadTexture(
-            DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber
-        );
         checkHealthButton.clicked += mission.OnCheckHealthButtonClicked;
         leftContainer.Add(checkHealthButton);
 
@@ -232,9 +233,6 @@ public partial class DeployedMissionUi : VisualElement
         resolveButton.text = "Resolve";
         resolveButton.visible = mission.EventPending;
         resolveButton.clicked += mission.OnResolveButtonClicked;
-        resolveButton.style.backgroundImage = UiUtils.LoadTexture(
-            DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX + backgroundNumber
-        );
         resolveButton.style.unityTextAlign = TextAnchor.MiddleCenter;
         resolveButton.style.color = Color.white;
         resolveButton.style.backgroundColor = Color.clear;
@@ -244,17 +242,40 @@ public partial class DeployedMissionUi : VisualElement
 
     public void Arrive()
     {
+        mission.GenerateMissionCompleteUi();
         _container.style.opacity = 0.7f;
         _arriveOverlay.style.display = DisplayStyle.Flex;
         _arriveOverlay.BringToFront();
         _arriveOverlay.RegisterCallback<ClickEvent>(
             (_) =>
             {
-                _contentContainer.Clear();
-                _container.style.opacity = 1;
-                _arriveOverlay.style.display = DisplayStyle.None;
-                _contentContainer.Add(mission.MissionCompleteUi);
+                mission.MissionStatus = MissionStatus.Completed;
+                Complete();
             }
+        );
+    }
+
+    public void Complete()
+    {
+        _contentContainer.Clear();
+        _container.style.opacity = 1;
+        _arriveOverlay.style.display = DisplayStyle.None;
+        _contentContainer.Add(mission.MissionCompleteUi);
+    }
+
+    public void SetImageStyle(int index)
+    {
+        _backgroundImage.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_BACKGROUND_IMAGE_PREFIX + index
+        );
+        _borderImage.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_BACKGROUND_BORDER_IMAGE_PREFIX + index
+        );
+        checkHealthButton.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_CHECK_HEALTH_BUTTON_BACKGROUND_IMAGE_PREFIX + index
+        );
+        resolveButton.style.backgroundImage = UiUtils.LoadTexture(
+            DEPLOYED_MISSION_RESOLVE_BUTTON_BACKGROUND_IMAGE_PREFIX + index
         );
     }
 }

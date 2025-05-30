@@ -16,9 +16,6 @@ public class RescueMission : Mission
 
     // state
     private bool _actionTakenDuringThisEvent = false;
-    private int _numberOfResidents = 0;
-    private int _numberOfNewResources = 0;
-    private int _numberOfDeaths = 0;
 
     public List<Crew> CrewsOnCooldown => _crewsOnCooldown;
     public override Route Route { get; set; } = new(false);
@@ -38,6 +35,9 @@ public class RescueMission : Mission
     }
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfResources { get; private set; } = 0;
+    public int NumberOfDeaths { get; private set; } = 0;
+    public int NumberOfResidents { get; private set; } = 0;
+    public int NumberOfNewResources { get; private set; } = 0;
     public bool ActionTakenDuringThisEvent
     {
         get => _actionTakenDuringThisEvent;
@@ -46,7 +46,11 @@ public class RescueMission : Mission
             _actionTakenDuringThisEvent = value;
 
             // cannot ignore event if already used supply/crew on passenger
-            _rescueMissionResolvePanel.ignoreButton.visible = !value;
+            if (
+                _rescueMissionResolvePanel is not null
+                && _rescueMissionResolvePanel.ignoreButton is not null
+            )
+                _rescueMissionResolvePanel.ignoreButton.visible = !value;
         }
     }
 
@@ -74,6 +78,81 @@ public class RescueMission : Mission
             WeatherSO = foundWeather;
 
         SetupUi();
+    }
+
+    public RescueMission(DeployedRescueMissionSerializable deployedRescueMissionSerializable)
+        : this()
+    {
+        Route = new Route(
+            deployedRescueMissionSerializable.routeStart,
+            deployedRescueMissionSerializable.routeEnd
+        );
+
+        WeatherSO foundWeather = DataManager.Instance.AllWeathers.FirstOrDefault(w =>
+            w.name == deployedRescueMissionSerializable.weather
+        );
+
+        if (foundWeather)
+            WeatherSO = foundWeather;
+
+        Train = CityModeManager.Instance.Trains.FirstOrDefault(t =>
+            t.trainSO.name == deployedRescueMissionSerializable.trainName
+        );
+
+        Passengers = deployedRescueMissionSerializable
+            .passengers.Select(p => new Passenger(p))
+            .ToList();
+
+        MilesRemaining = deployedRescueMissionSerializable.milesRemaining; // use the field here to prevent calling the OnMileChange function
+
+        SecondsRemainingUntilNextMile =
+            deployedRescueMissionSerializable.secondsRemainingUntilNextMile;
+
+        CrewsOnCooldown.Clear();
+
+        foreach (string crewId in deployedRescueMissionSerializable.crewIdsOnCooldown)
+        {
+            Crew found = CityModeManager.Instance.crews.Find(c => c.id == crewId);
+
+            if (found is null)
+                continue;
+
+            CrewsOnCooldown.Add(found);
+        }
+
+        IsCompleted = deployedRescueMissionSerializable.isCompleted;
+
+        NumberOfSupplies = deployedRescueMissionSerializable.numberOfSupplies;
+
+        NumberOfResources = deployedRescueMissionSerializable.numberOfResources;
+
+        NumberOfDeaths = deployedRescueMissionSerializable.numberOfDeaths;
+
+        NumberOfResidents = deployedRescueMissionSerializable.numberOfResidents;
+
+        NumberOfNewResources = deployedRescueMissionSerializable.numberOfNewResources;
+
+        SetupUi();
+
+        DeployedMissionUi.trainImage.sprite = Train.trainSO.sprite;
+
+        MilesRemaining = deployedRescueMissionSerializable.milesRemaining;
+
+        DeployedMissionUi.StyleIndex = deployedRescueMissionSerializable.deployedMissionStyleIndex;
+
+        MissionStatus = deployedRescueMissionSerializable.status;
+
+        ActionTakenDuringThisEvent = deployedRescueMissionSerializable.actionTakenDuringThisEvent;
+
+        _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
+        _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
+
+        EventPending = deployedRescueMissionSerializable.eventPending;
+
+        if (MissionStatus == MissionStatus.Arrived)
+            DeployedMissionUi.Arrive();
+        else if (MissionStatus == MissionStatus.Completed)
+            DeployedMissionUi.Complete();
     }
 
     public override bool Deploy()
@@ -125,6 +204,7 @@ public class RescueMission : Mission
         _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
 
+        MissionStatus = MissionStatus.Deployed;
         return true;
     }
 
@@ -278,31 +358,31 @@ public class RescueMission : Mission
     {
         base.GenerateMissionCompleteUi();
 
-        AddRewardLabel($"{_numberOfResidents} New Residents!", "reward_residents");
-        AddRewardLabel($"{_numberOfNewResources} Resources!", "reward_resources");
-        AddRewardLabel($"{_numberOfDeaths} Deaths!", "reward_deaths");
+        AddRewardLabel($"{NumberOfResidents} New Residents!", "reward_residents");
+        AddRewardLabel($"{NumberOfNewResources} Resources!", "reward_resources");
+        AddRewardLabel($"{NumberOfDeaths} Deaths!", "reward_deaths");
     }
 
     public override void Complete()
     {
         // calculate rewards
         double rewardMultiplier = 1 + WeatherSO.rewardMultiplier;
-        _numberOfResidents = (int)
+        NumberOfResidents = (int)
             Math.Round(
                 Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length
                     * rewardMultiplier
             );
-        _numberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
+        NumberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
 
         // include city documented citizens bonus
-        _numberOfNewResources += Route.end.Citizens * 5;
+        NumberOfNewResources += Route.end.Citizens * 5;
 
         CityModeManager.Instance.IncrementMaterialValue(
             MaterialType.Resources,
-            _numberOfNewResources
+            NumberOfNewResources
         );
         CityModeManager.Instance.IncrementMaterialValue(MaterialType.Supplies, NumberOfSupplies);
-        Route.end.Residents += _numberOfResidents;
+        Route.end.Residents += NumberOfResidents;
 
         foreach (Crew crew in Crews)
             crew.deployedMission = null;
@@ -365,7 +445,7 @@ public class RescueMission : Mission
         // remove all dead passengers and crews
         int numberOfPassengers = Passengers.Count;
         Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
-        _numberOfDeaths += numberOfPassengers - Passengers.Count;
+        NumberOfDeaths += numberOfPassengers - Passengers.Count;
 
         CityModeManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
 

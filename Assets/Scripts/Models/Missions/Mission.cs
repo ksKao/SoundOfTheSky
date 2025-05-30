@@ -21,12 +21,7 @@ public abstract class Mission
     private static readonly Texture2D _completeButtonBackground = UiUtils.LoadTexture(
         "complete_button"
     );
-
-    // state
-    private float _secondsRemainingUntilNextMile = DEFAULT_SECONDS_PER_MILE;
-    private bool _isCompleted = false;
     private bool _eventPending = false;
-    private bool _skippedLastInterval = false;
     private Train _train = null;
 
     public WeatherSO WeatherSO;
@@ -51,6 +46,9 @@ public abstract class Mission
     public virtual int MilesPerInterval => 5;
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
     public virtual Route Route { get; set; } = new();
+    public bool SkippedLastInterval { get; private set; } = false;
+    public MissionStatus MissionStatus { get; set; } = MissionStatus.Pending;
+    public float SecondsRemainingUntilNextMile { get; protected set; } = DEFAULT_SECONDS_PER_MILE;
     public Crew[] Crews =>
         CityModeManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
     public Train Train
@@ -61,12 +59,14 @@ public abstract class Mission
             _train = value;
             if (value is not null)
             {
-                DeployedMissionUi.trainImage.sprite = value.trainSO.sprite;
+                if (DeployedMissionUi is not null)
+                    DeployedMissionUi.trainImage.sprite = value.trainSO.sprite;
                 _trainNameLabel.text = value.trainSO.name;
             }
             else
             {
-                DeployedMissionUi.trainImage.sprite = null;
+                if (DeployedMissionUi is not null)
+                    DeployedMissionUi.trainImage.sprite = null;
                 _trainNameLabel.text = "Train";
             }
         }
@@ -84,7 +84,7 @@ public abstract class Mission
 
             // if set event pending to true and the value is different than the previous one, call event occur
             // need to check if value is different than previous one in case accidentally call multiple times
-            if (value && value != oldValue)
+            if (value && (value != oldValue))
                 EventOccur();
 
             UiManager.Instance.CityModeScreen.bottomNavigationBar.RefreshEventPendingMissionCount();
@@ -114,7 +114,7 @@ public abstract class Mission
             OnMileChange();
         }
     }
-    public bool IsCompleted => _isCompleted;
+    public bool IsCompleted { get; protected set; } = false;
     protected virtual Location[] EligibleDestinations =>
         CityModeManager.Instance.Locations.Where((l, i) => i != 0).ToArray();
 
@@ -252,9 +252,9 @@ public abstract class Mission
 
     public virtual void Complete()
     {
-        _isCompleted = true;
-        GenerateMissionCompleteUi();
+        IsCompleted = true;
         DeployedMissionUi.Arrive();
+        MissionStatus = MissionStatus.Arrived;
 
         // when a mission has been completed, there is a 25% chance for resting crews' status to go up by 1
         IEnumerable<Crew> restingCrews = CityModeManager.Instance.crews.Where(c => c.isResting);
@@ -271,15 +271,15 @@ public abstract class Mission
 
     public virtual void Update()
     {
-        if (_isCompleted || EventPending)
+        if (IsCompleted || EventPending)
             return;
 
-        _secondsRemainingUntilNextMile -= Time.deltaTime;
+        SecondsRemainingUntilNextMile -= Time.deltaTime;
 
-        if (_secondsRemainingUntilNextMile <= 0)
+        if (SecondsRemainingUntilNextMile <= 0)
         {
             // reset the timer
-            _secondsRemainingUntilNextMile = CityModeManager.Instance.SecondsPerMile;
+            SecondsRemainingUntilNextMile = CityModeManager.Instance.SecondsPerMile;
 
             MilesRemaining--;
         }
@@ -323,6 +323,9 @@ public abstract class Mission
         if (DeployedMissionUi is not null)
             DeployedMissionUi.milesRemainingLabel.text = milesRemaining + " miles";
 
+        if (MissionStatus != MissionStatus.Deployed)
+            return;
+
         if (MilesRemaining == 0)
             Complete();
         else if (IsMilestoneReached(MilesPerInterval))
@@ -334,21 +337,21 @@ public abstract class Mission
                 )
             )
             {
-                _skippedLastInterval = false;
+                SkippedLastInterval = false;
                 EventPending = true;
             }
             else if (
                 Train is not null
                 && Random.ShouldOccur(Train.SpeedLevelPercentage * 0.01)
-                && !_skippedLastInterval
+                && !SkippedLastInterval
             ) // when interval is skipped, there is a chance to skip second interval
             {
-                _skippedLastInterval = true;
+                SkippedLastInterval = true;
                 MilesRemaining = Math.Max(MilesRemaining - MilesPerInterval, 0);
             }
-            else if (_skippedLastInterval)
+            else if (SkippedLastInterval)
             {
-                _skippedLastInterval = false;
+                SkippedLastInterval = false;
             }
         }
     }

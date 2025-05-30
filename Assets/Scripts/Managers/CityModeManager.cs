@@ -290,6 +290,17 @@ public class CityModeManager : Singleton<CityModeManager>
         UiManager.Instance.CityModeScreen.RefreshMissionList(
             UiManager.Instance.CityModeScreen.missionTypeTab.ActiveTab
         );
+
+        deployedMissions.Clear();
+
+        foreach (
+            DeployedRescueMissionSerializable deployedRescueMissionSerializable in savedData.deployedRescueMissions
+        )
+        {
+            deployedMissions.Add(new RescueMission(deployedRescueMissionSerializable));
+        }
+
+        UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
     }
 
     private void SaveGame()
@@ -314,7 +325,6 @@ public class CityModeManager : Singleton<CityModeManager>
                     name = c.Name,
                     enduranceLevel = c.EnduranceLevel,
                     medicLevel = c.MedicLevel,
-                    missionIndex = deployedMissions.FindIndex(m => m == c.deployedMission),
                     status = c.Status,
                 })
                 .ToList(),
@@ -352,6 +362,48 @@ public class CityModeManager : Singleton<CityModeManager>
                     weatherProbabilities =
                         documentationMission.WeatherProbabilities.Values.ToArray(),
                 };
+            }
+        }
+
+        for (int i = 0; i < deployedMissions.Count; i++)
+        {
+            Mission mission = deployedMissions[i];
+            if (mission is RescueMission rescueMission)
+            {
+                cityModeState.deployedRescueMissions.Add(
+                    new()
+                    {
+                        routeStart = rescueMission.Route.start.locationSO.name,
+                        routeEnd = rescueMission.Route.end.locationSO.name,
+                        weather = rescueMission.WeatherSO.name,
+                        position = i,
+                        passengers = rescueMission
+                            .Passengers.Select(p => new PassengerSerializable()
+                            {
+                                name = p.Name,
+                                status = p.Status,
+                            })
+                            .ToList(),
+                        trainName = rescueMission.Train.trainSO.name,
+                        milesRemaining = rescueMission.MilesRemaining,
+                        secondsRemainingUntilNextMile = rescueMission.SecondsRemainingUntilNextMile,
+                        crewIds = rescueMission.Crews.Select(c => c.id).ToList(),
+                        crewIdsOnCooldown = rescueMission
+                            .CrewsOnCooldown.Select(c => c.id)
+                            .ToList(),
+                        eventPending = rescueMission.EventPending,
+                        isCompleted = rescueMission.IsCompleted,
+                        skippedLastInterval = rescueMission.SkippedLastInterval,
+                        numberOfSupplies = rescueMission.NumberOfSupplies,
+                        numberOfResources = rescueMission.NumberOfResources,
+                        numberOfDeaths = rescueMission.NumberOfDeaths,
+                        numberOfResidents = rescueMission.NumberOfResidents,
+                        numberOfNewResources = rescueMission.NumberOfNewResources,
+                        actionTakenDuringThisEvent = rescueMission.ActionTakenDuringThisEvent,
+                        deployedMissionStyleIndex = rescueMission.DeployedMissionUi.StyleIndex,
+                        status = rescueMission.MissionStatus,
+                    }
+                );
             }
         }
 

@@ -102,6 +102,7 @@ public class ResupplyMission : Mission
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
         _deployedMissionResourcesLabel.text = $"{NumberOfResources} resource(s)";
 
+        MissionStatus = MissionStatus.Deployed;
         return true;
     }
 

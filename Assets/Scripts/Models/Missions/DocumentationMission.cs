@@ -101,6 +101,8 @@ public class DocumentationMission : Mission
         RerollWeather();
         UpdateLabels();
 
+        MissionStatus = MissionStatus.Deployed;
+
         return true;
     }
 
