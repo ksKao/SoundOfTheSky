@@ -92,7 +92,7 @@ public partial class CrewUpgradePanel : VisualElement
                 height = 100,
             },
         };
-        backButton.clicked += UiManager.Instance.GameplayScreen.bottomNavigationBar.ShowCrewList;
+        backButton.clicked += UiManager.Instance.CityModeScreen.bottomNavigationBar.ShowCrewList;
         UiUtils.ToggleBorder(backButton, false);
 
         Add(upgradeInterfaceContainer);

@@ -48,7 +48,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
     {
         InputManager.Instance.InputAction.Main.Disable();
         InputManager.Instance.InputAction.Console.Enable();
-        UiManager.Instance.GameplayScreen.Add(_ui);
+        UiManager.Instance.CityModeScreen.Add(_ui);
         StartCoroutine(FocusTextField());
     }
 
@@ -56,7 +56,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
     {
         InputManager.Instance.InputAction.Main.Enable();
         InputManager.Instance.InputAction.Console.Disable();
-        UiManager.Instance.GameplayScreen.Remove(_ui);
+        UiManager.Instance.CityModeScreen.Remove(_ui);
     }
 
     private void SubmitCommand()

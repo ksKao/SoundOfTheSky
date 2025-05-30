@@ -5,7 +5,7 @@ using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
-public partial class GameplayScreen : VisualElement
+public partial class CityModeScreen : VisualElement
 {
     public readonly MaterialsBar materialBar = new();
     public readonly MissionTypeTab missionTypeTab = new();
@@ -20,7 +20,7 @@ public partial class GameplayScreen : VisualElement
 
     public VisualElement RightPanel => _right.Children().FirstOrDefault();
 
-    public GameplayScreen()
+    public CityModeScreen()
     {
         style.position = Position.Relative;
         style.display = DisplayStyle.Flex;

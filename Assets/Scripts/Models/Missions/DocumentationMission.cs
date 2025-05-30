@@ -23,7 +23,7 @@ public class DocumentationMission : Mission
         (int)Math.Round(base.MilesPerInterval / CityModeManager.Instance.SecondsPerMile); // 5 seconds per interval
     public float SecondsPassed { get; private set; } = 0;
     public override MissionType Type { get; } = MissionType.Documentation;
-    public override Route Route { get; } = new(true);
+    public override Route Route { get; set; } = new(true);
     public int NumberOfResources { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfPayments { get; private set; } = 0;
@@ -33,6 +33,26 @@ public class DocumentationMission : Mission
             .DistributeNumbers(WEATHER_DISTRIBUTION_SUM, DataManager.Instance.AllWeathers.Length)
             .Select((prob, i) => new { index = i, prob })
             .ToDictionary((el) => DataManager.Instance.AllWeathers[el.index], el => el.prob);
+
+    public DocumentationMission()
+        : base() { }
+
+    public DocumentationMission(
+        PendingDocumentationMissionSerializable pendingDocumentationMissionSerializable
+    )
+        : this()
+    {
+        Route = new Route(
+            DataManager.Instance.AllLocations[0].name,
+            pendingDocumentationMissionSerializable.routeEnd
+        );
+
+        WeatherProbabilities = pendingDocumentationMissionSerializable
+            .weatherProbabilities.Select((prob, i) => new { index = i, prob })
+            .ToDictionary(el => DataManager.Instance.AllWeathers[el.index], el => el.prob);
+
+        SetupUi();
+    }
 
     public override void Update()
     {
@@ -130,7 +150,7 @@ public class DocumentationMission : Mission
 
         int materialsConsumed = (int)
             Math.Round(
-                weather.documentationMissionMaterialComsumptionMultiplier * (initialMiles / 5)
+                WeatherSO.documentationMissionMaterialComsumptionMultiplier * (initialMiles / 5)
             );
 
         if (
@@ -195,14 +215,14 @@ public class DocumentationMission : Mission
         {
             if (randomNo - weatherProbability.Value <= 0)
             {
-                weather = weatherProbability.Key;
+                WeatherSO = weatherProbability.Key;
                 break;
             }
 
             randomNo -= weatherProbability.Value;
         }
 
-        DeployedMissionUi.weatherLabel.text = weather.name;
+        DeployedMissionUi.weatherLabel.text = WeatherSO.name;
     }
 
     private bool CheckMaterials(

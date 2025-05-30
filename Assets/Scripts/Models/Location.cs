@@ -11,8 +11,8 @@ public class Location
         set
         {
             _citizens = value;
-            UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
-            UiManager.Instance.GameplayScreen.map.Refresh();
+            UiManager.Instance.CityModeScreen.materialBar.RefreshAllMaterialAmountUi();
+            UiManager.Instance.CityModeScreen.map.Refresh();
         }
     }
     public int Residents
@@ -21,8 +21,8 @@ public class Location
         set
         {
             _residents = value;
-            UiManager.Instance.GameplayScreen.materialBar.RefreshAllMaterialAmountUi();
-            UiManager.Instance.GameplayScreen.map.Refresh();
+            UiManager.Instance.CityModeScreen.materialBar.RefreshAllMaterialAmountUi();
+            UiManager.Instance.CityModeScreen.map.Refresh();
         }
     }
 

@@ -30,14 +30,15 @@ public class Passenger
         },
     };
 
-    private readonly Label _statusLabel = new() { style = { color = _comfortableColor } };
+    public string Name { get; protected set; } = DataManager.Instance.GetRandomName();
+
     private readonly VisualElement _imageContainer = new() { style = { width = 100, height = 90 } };
+    private readonly Label _nameLabel = new();
 
     private bool _selected = false;
-    private Label _nameLabel = new(DataManager.Instance.GetRandomName());
     private PassengerStatus _status = PassengerStatus.Comfortable;
 
-    protected Label StatusLabel => _statusLabel;
+    protected Label StatusLabel { get; } = new() { style = { color = _comfortableColor } };
     protected virtual Texture2D BackgroundImage => _backgroundImage;
     protected virtual Texture2D BackgroundImageSelected => _backgroundImageSelected;
 
@@ -47,8 +48,8 @@ public class Passenger
         private set
         {
             _status = value;
-            _statusLabel.text = $"({value})";
-            _statusLabel.style.color = value switch
+            StatusLabel.text = $"({value})";
+            StatusLabel.style.color = value switch
             {
                 PassengerStatus.Comfortable => _comfortableColor,
                 PassengerStatus.Cold => _coldColor,
@@ -76,9 +77,9 @@ public class Passenger
         _imageContainer.style.backgroundImage = BackgroundImage;
         ui.Add(_imageContainer);
         ui.Add(_nameLabel);
-        ui.Add(_statusLabel);
+        ui.Add(StatusLabel);
 
-        _statusLabel.text = $"({_status})";
+        RefreshLabels();
 
         ui.RegisterCallback<ClickEvent>(OnClick);
     }
@@ -101,12 +102,18 @@ public class Passenger
         Selected = !Selected;
     }
 
-    private void ChangeStatus(int newStatus)
+    protected void ChangeStatus(int newStatus)
     {
         IEnumerable<int> values = Enum.GetValues(typeof(PassengerStatus)).Cast<int>();
         int min = values.Min();
         int max = values.Max();
 
         Status = (PassengerStatus)Math.Clamp(newStatus, min, max);
+    }
+
+    protected void RefreshLabels()
+    {
+        _nameLabel.text = Name;
+        StatusLabel.text = $"({_status})";
     }
 }

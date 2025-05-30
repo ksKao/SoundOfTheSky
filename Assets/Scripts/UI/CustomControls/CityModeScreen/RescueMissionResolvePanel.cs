@@ -151,7 +151,7 @@ public partial class RescueMissionResolvePanel : VisualElement
 
     private void OnAttach(AttachToPanelEvent e)
     {
-        UiManager.Instance.GameplayScreen.deployedMissionList.Remove(_mission.DeployedMissionUi);
+        UiManager.Instance.CityModeScreen.deployedMissionList.Remove(_mission.DeployedMissionUi);
         Add(_mission.DeployedMissionUi);
         _mission.DeployedMissionUi.SendToBack();
         _mission.DeployedMissionUi.resolveButton.visible = false;
@@ -194,7 +194,7 @@ public partial class RescueMissionResolvePanel : VisualElement
     {
         _mission.DeployedMissionUi.resolveButton.visible = _mission.EventPending;
         Remove(_mission.DeployedMissionUi);
-        UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+        UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
 
         foreach (Crew crew in _mission.Crews)
         {

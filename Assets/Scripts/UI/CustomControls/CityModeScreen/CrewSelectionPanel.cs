@@ -121,7 +121,7 @@ public partial class CrewSelectionPanel : VisualElement
             _cancelButton.style.display = DisplayStyle.None;
         }
 
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(this);
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(this);
 
         _additionalUi.Clear();
         if (additionalUi is not null)
@@ -142,7 +142,7 @@ public partial class CrewSelectionPanel : VisualElement
 
     private void OnSelect(Crew crew)
     {
-        if (UiManager.Instance.GameplayScreen.RightPanel == this)
+        if (UiManager.Instance.CityModeScreen.RightPanel == this)
             _onSelect?.Invoke(_crews);
     }
 }

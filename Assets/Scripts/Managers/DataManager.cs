@@ -24,7 +24,7 @@ public class DataManager : Singleton<DataManager>
 
         TextAsset textAsset = Resources.Load<TextAsset>("Text/name_list");
 
-        NameList = textAsset.text.Split('\n').ToArray();
+        NameList = textAsset.text.Replace("\r\n", "\n").Split('\n').ToArray();
     }
 
     public WeatherSO GetRandomWeather()

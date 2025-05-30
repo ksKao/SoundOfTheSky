@@ -59,8 +59,8 @@ public class CheckHealthPanel : VisualElement
         };
         UiUtils.ToggleBorder(backButton, false);
         backButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.deployedMissionList
+            UiManager.Instance.CityModeScreen.ChangeRightPanel(
+                UiManager.Instance.CityModeScreen.deployedMissionList
             );
 
         buttonContainer.Add(backButton);

@@ -79,7 +79,7 @@ public partial class TrainList : VisualElement
             _noTrainText.style.display = DisplayStyle.None;
         }
 
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(this);
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(this);
     }
 
     public void Refresh()

@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 public class UiManager : Singleton<UiManager>
 {
-    public GameplayScreen GameplayScreen { get; private set; }
+    public CityModeScreen CityModeScreen { get; private set; }
     public MainMenuScreen MainMenuScreen { get; private set; }
 
     protected override void Awake()
@@ -18,7 +18,7 @@ public class UiManager : Singleton<UiManager>
         }
         else
         {
-            GameplayScreen = uiDocument.rootVisualElement.Q<GameplayScreen>();
+            CityModeScreen = uiDocument.rootVisualElement.Q<CityModeScreen>();
             MainMenuScreen = uiDocument.rootVisualElement.Q<MainMenuScreen>();
         }
     }

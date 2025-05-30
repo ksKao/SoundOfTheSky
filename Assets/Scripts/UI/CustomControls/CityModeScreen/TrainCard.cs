@@ -100,7 +100,7 @@ public partial class TrainCard : VisualElement
 
         if (_selectMode)
         {
-            _button.visible = UiManager.Instance.GameplayScreen.trainList.activeTrain != _train; // only want to hide button in select mode
+            _button.visible = UiManager.Instance.CityModeScreen.trainList.activeTrain != _train; // only want to hide button in select mode
             _overlay.visible = false;
             _priceLabel.text = "";
             _button.text = "SELECT";
@@ -118,7 +118,7 @@ public partial class TrainCard : VisualElement
                 _button.text = "UPGRADE";
                 _button.clicked += () =>
                 {
-                    UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                    UiManager.Instance.CityModeScreen.ChangeRightPanel(
                         new TrainUpgradePanel(_train)
                     );
                 };

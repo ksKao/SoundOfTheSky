@@ -15,6 +15,7 @@ public class Crew : Passenger
 
     public static event Action<Crew> OnSelect;
 
+    public readonly string id = Guid.NewGuid().ToString(); // need id just for data saving because crews can have duplicate names
     public bool isResting = false;
     public readonly Label bracketLabel = new();
 
@@ -43,6 +44,18 @@ public class Crew : Passenger
         : base()
     {
         ui.Add(bracketLabel);
+    }
+
+    public Crew(CrewSerializable crewSerializable)
+        : this()
+    {
+        id = crewSerializable.id;
+        Name = crewSerializable.name;
+        MedicLevel = crewSerializable.medicLevel;
+        EnduranceLevel = crewSerializable.enduranceLevel;
+        ChangeStatus((int)crewSerializable.status);
+
+        RefreshLabels();
     }
 
     protected override void OnClick(ClickEvent _)

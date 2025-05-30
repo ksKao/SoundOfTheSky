@@ -10,15 +10,15 @@ public partial class DeployedMissionList : VisualElement
 
     public void Refresh()
     {
-        // need this otherwise will have error since GameManager.Awake is called much later than the constructor.
+        // need this otherwise will have error since CityModeManager.Awake is called much later than the constructor.
         if (CityModeManager.Instance == null)
             return;
 
         Clear();
 
         if (CityModeManager.Instance.deployedMissions.Count == 0)
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.map
+            UiManager.Instance.CityModeScreen.ChangeRightPanel(
+                UiManager.Instance.CityModeScreen.map
             );
 
         foreach (Mission mission in CityModeManager.Instance.deployedMissions)

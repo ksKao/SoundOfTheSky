@@ -124,7 +124,7 @@ public partial class TrainUpgradePanel : VisualElement
         };
         UiUtils.ToggleBorder(backButton, false);
         backButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.trainList.Show(CityModeManager.Instance.Trains);
+            UiManager.Instance.CityModeScreen.trainList.Show(CityModeManager.Instance.Trains);
 
         Add(backButton);
     }

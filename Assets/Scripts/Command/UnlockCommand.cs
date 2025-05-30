@@ -63,6 +63,6 @@ public class UnlockCommand : Command
             );
         }
 
-        UiManager.Instance.GameplayScreen.trainList.Refresh();
+        UiManager.Instance.CityModeScreen.trainList.Refresh();
     }
 }

@@ -21,7 +21,7 @@ public class RescueMission : Mission
     private int _numberOfDeaths = 0;
 
     public List<Crew> CrewsOnCooldown => _crewsOnCooldown;
-    public override Route Route { get; } = new(false);
+    public override Route Route { get; set; } = new(false);
     public override MissionType Type { get; } = MissionType.Rescue;
     public List<Passenger> Passengers { get; } = new();
     public override Passenger[] CrewsAndPassengers
@@ -53,9 +53,27 @@ public class RescueMission : Mission
     public RescueMission()
         : base()
     {
-        int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
+        int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, WeatherSO);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
         _rescueMissionResolvePanel = new(this);
+    }
+
+    public RescueMission(PendingMissionSerializable pendingMissionSerializable)
+        : this()
+    {
+        Route = new Route(
+            pendingMissionSerializable.routeStart,
+            pendingMissionSerializable.routeEnd
+        );
+
+        WeatherSO foundWeather = DataManager.Instance.AllWeathers.FirstOrDefault(w =>
+            w.name == pendingMissionSerializable.weather
+        );
+
+        if (foundWeather)
+            WeatherSO = foundWeather;
+
+        SetupUi();
     }
 
     public override bool Deploy()
@@ -192,7 +210,7 @@ public class RescueMission : Mission
             }
 
             // the chance of passenger's health decreasing is same as the weather event occur probability
-            if (!Random.ShouldOccur(weather.decisionMakingProbability))
+            if (!Random.ShouldOccur(WeatherSO.decisionMakingProbability))
             {
                 selectedPassenger.MakeBetter();
 
@@ -228,8 +246,8 @@ public class RescueMission : Mission
             passenger.Selected = false;
 
         ActionTakenDuringThisEvent = false;
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(
-            UiManager.Instance.GameplayScreen.deployedMissionList
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(
+            UiManager.Instance.CityModeScreen.deployedMissionList
         );
     }
 
@@ -243,8 +261,8 @@ public class RescueMission : Mission
         }
 
         ActionTakenDuringThisEvent = false;
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(
-            UiManager.Instance.GameplayScreen.deployedMissionList
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(
+            UiManager.Instance.CityModeScreen.deployedMissionList
         );
 
         EventPending = false;
@@ -253,7 +271,7 @@ public class RescueMission : Mission
     public override void OnResolveButtonClicked()
     {
         // cannot call base here since need to wait until player make a decision before continuing
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(_rescueMissionResolvePanel);
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(_rescueMissionResolvePanel);
     }
 
     public override void GenerateMissionCompleteUi()
@@ -268,7 +286,7 @@ public class RescueMission : Mission
     public override void Complete()
     {
         // calculate rewards
-        double rewardMultiplier = 1 + weather.rewardMultiplier;
+        double rewardMultiplier = 1 + WeatherSO.rewardMultiplier;
         _numberOfResidents = (int)
             Math.Round(
                 Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length

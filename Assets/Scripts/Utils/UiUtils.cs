@@ -80,9 +80,9 @@ public static class UiUtils
 
     public static void ShowError(string message)
     {
-        if (UiManager.Instance == null || UiManager.Instance.GameplayScreen == null)
+        if (UiManager.Instance == null || UiManager.Instance.CityModeScreen == null)
             return;
 
-        UiManager.Instance.GameplayScreen.AddError(message);
+        UiManager.Instance.CityModeScreen.AddError(message);
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -30,10 +29,10 @@ public abstract class Mission
     private bool _skippedLastInterval = false;
     private Train _train = null;
 
-    protected WeatherSO weather;
+    public WeatherSO WeatherSO;
     protected readonly Label _trainNameLabel = new("Train");
     protected VisualElement weatherUiInPendingMission = new();
-    protected readonly int initialMiles = 0;
+    protected int initialMiles = 0;
     protected int milesRemaining = 0;
     protected CheckHealthPanel checkHealthPanel;
     protected VisualElement rewardsContainer = new()
@@ -51,10 +50,9 @@ public abstract class Mission
     public abstract MissionType Type { get; }
     public virtual int MilesPerInterval => 5;
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
-    public virtual Route Route { get; } = new();
+    public virtual Route Route { get; set; } = new();
     public Crew[] Crews =>
         CityModeManager.Instance.crews.Where(c => c.deployedMission == this).ToArray();
-    public WeatherSO WeatherSO => weather;
     public Train Train
     {
         get => _train;
@@ -89,7 +87,7 @@ public abstract class Mission
             if (value && value != oldValue)
                 EventOccur();
 
-            UiManager.Instance.GameplayScreen.bottomNavigationBar.RefreshEventPendingMissionCount();
+            UiManager.Instance.CityModeScreen.bottomNavigationBar.RefreshEventPendingMissionCount();
         }
     }
     public VisualElement PendingMissionUi { get; } = new();
@@ -181,39 +179,21 @@ public abstract class Mission
             }
 
             if (
-                UiManager.Instance.GameplayScreen.RightPanel
-                    == UiManager.Instance.GameplayScreen.crewSelectionPanel
-                || UiManager.Instance.GameplayScreen.RightPanel
-                    == UiManager.Instance.GameplayScreen.trainList
+                UiManager.Instance.CityModeScreen.RightPanel
+                    == UiManager.Instance.CityModeScreen.crewSelectionPanel
+                || UiManager.Instance.CityModeScreen.RightPanel
+                    == UiManager.Instance.CityModeScreen.trainList
             )
-                UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
+                UiManager.Instance.CityModeScreen.ChangeRightPanel(null);
         };
     }
 
     public Mission()
     {
-        weather = DataManager.Instance.GetRandomWeather();
-        checkHealthPanel = new(this);
+        if (WeatherSO == null)
+            WeatherSO = DataManager.Instance.GetRandomWeather();
 
-        // each tier of the weather will increase the chance by 5%
-        int currentWeatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weather);
-
-        initialMiles = Route.distance;
-        MilesRemaining = initialMiles;
-
-        GeneratePendingMissionUi();
-
-        ApplyCommonPendingMissionUiStyle();
-
-        GenerateDeployedMissionUi();
-
-        // after finish generating UI, make sure the elements are evenly spaced
-        foreach (VisualElement child in PendingMissionUi.Children())
-        {
-            child.style.flexGrow = 1;
-        }
-
-        PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
+        SetupUi();
     }
 
     /// <summary>
@@ -262,7 +242,7 @@ public abstract class Mission
         completeButton.clicked += () =>
         {
             CityModeManager.Instance.deployedMissions.Remove(this);
-            UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+            UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
         };
         MissionCompleteUi.Add(baseContainer);
 
@@ -312,7 +292,7 @@ public abstract class Mission
 
     public virtual void OnCheckHealthButtonClicked()
     {
-        UiManager.Instance.GameplayScreen.ChangeRightPanel(checkHealthPanel);
+        UiManager.Instance.CityModeScreen.ChangeRightPanel(checkHealthPanel);
     }
 
     public void ApplyCommonPendingMissionUiStyleSingle(VisualElement element, int index)
@@ -350,7 +330,7 @@ public abstract class Mission
             if (
                 Train is not null
                 && Random.ShouldOccur(
-                    weather.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
+                    WeatherSO.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
                 )
             )
             {
@@ -388,6 +368,8 @@ public abstract class Mission
 
     protected virtual void GeneratePendingMissionUi()
     {
+        PendingMissionUi.Clear();
+
         // Each pending mission UI is 20% height because need to fit 5 of them into the list
         PendingMissionUi.style.height = UiUtils.GetLengthPercentage(20);
         PendingMissionUi.style.display = DisplayStyle.Flex;
@@ -409,9 +391,10 @@ public abstract class Mission
 
         PendingMissionUi.Add(routeElement);
 
-        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weather.name)));
+        weatherUiInPendingMission = new();
+        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(WeatherSO.name)));
         weatherUiInPendingMission.Add(
-            UiUtils.WrapLabel(new Label(weather.decisionMakingProbability * 100 + "%"))
+            UiUtils.WrapLabel(new Label(WeatherSO.decisionMakingProbability * 100 + "%"))
         );
 
         PendingMissionUi.Add(weatherUiInPendingMission);
@@ -425,7 +408,7 @@ public abstract class Mission
 
     protected virtual void ShowTrainList()
     {
-        UiManager.Instance.GameplayScreen.trainList.Show(
+        UiManager.Instance.CityModeScreen.trainList.Show(
             CityModeManager
                 .Instance.Trains.Where(t =>
                 {
@@ -451,8 +434,8 @@ public abstract class Mission
             {
                 Train = train;
                 DeployedMissionUi.trainImage.sprite = train.trainSO.sprite;
-                UiManager.Instance.GameplayScreen.trainList.activeTrain = train;
-                UiManager.Instance.GameplayScreen.trainList.Refresh();
+                UiManager.Instance.CityModeScreen.trainList.activeTrain = train;
+                UiManager.Instance.CityModeScreen.trainList.Refresh();
             },
             Train
         );
@@ -481,6 +464,28 @@ public abstract class Mission
         );
 
         rewardsContainer.Add(container);
+    }
+
+    protected void SetupUi()
+    {
+        checkHealthPanel = new(this);
+
+        initialMiles = Route.distance;
+        MilesRemaining = initialMiles;
+
+        GeneratePendingMissionUi();
+
+        ApplyCommonPendingMissionUiStyle();
+
+        GenerateDeployedMissionUi();
+
+        // after finish generating UI, make sure the elements are evenly spaced
+        foreach (VisualElement child in PendingMissionUi.Children())
+        {
+            child.style.flexGrow = 1;
+        }
+
+        PendingMissionUi.RegisterCallback<ClickEvent>(OnSelectMissionPendingUi);
     }
 
     private void OnSelectMissionPendingUi(ClickEvent evt)

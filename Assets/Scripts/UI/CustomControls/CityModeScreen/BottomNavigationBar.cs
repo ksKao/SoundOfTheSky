@@ -65,7 +65,7 @@ public partial class BottomNavigationBar : VisualElement
         crewButton.clicked += ShowCrewList;
 
         trainButton.clicked += () =>
-            UiManager.Instance.GameplayScreen.trainList.Show(CityModeManager.Instance.Trains);
+            UiManager.Instance.CityModeScreen.trainList.Show(CityModeManager.Instance.Trains);
 
         deployButton.visible = false;
 
@@ -92,9 +92,9 @@ public partial class BottomNavigationBar : VisualElement
         {
             VisualElement element =
                 CityModeManager.Instance.deployedMissions.Count > 0
-                    ? UiManager.Instance.GameplayScreen.deployedMissionList
-                    : UiManager.Instance.GameplayScreen.map;
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(element);
+                    ? UiManager.Instance.CityModeScreen.deployedMissionList
+                    : UiManager.Instance.CityModeScreen.map;
+            UiManager.Instance.CityModeScreen.ChangeRightPanel(element);
         };
         deployedMissionListButtonContainer.Add(deployedMissionListButton);
 
@@ -169,7 +169,7 @@ public partial class BottomNavigationBar : VisualElement
             };
             container.Add(applyRestButton);
 
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+            UiManager.Instance.CityModeScreen.crewSelectionPanel.Show(
                 CityModeManager
                     .Instance.crews.Where(c =>
                         !c.isResting
@@ -244,7 +244,7 @@ public partial class BottomNavigationBar : VisualElement
             };
             container.Add(applyCureButton);
 
-            UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+            UiManager.Instance.CityModeScreen.crewSelectionPanel.Show(
                 CityModeManager
                     .Instance.crews.Where(c =>
                         !c.isResting
@@ -314,10 +314,10 @@ public partial class BottomNavigationBar : VisualElement
         if (CityModeManager.Instance.crews.Count < CityModeManager.MAX_CREW_COUNT)
             buttonContainer.Add(newCrewButton);
 
-        UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+        UiManager.Instance.CityModeScreen.crewSelectionPanel.Show(
             CityModeManager.Instance.crews.ToArray(),
             (crews) =>
-                UiManager.Instance.GameplayScreen.ChangeRightPanel(
+                UiManager.Instance.CityModeScreen.ChangeRightPanel(
                     new CrewUpgradePanel(crews.First(c => c.Selected))
                 ),
             GetBracketText,

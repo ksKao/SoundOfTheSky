@@ -12,11 +12,32 @@ public class ResupplyMission : Mission
 
     public override MissionType Type { get; } = MissionType.Resupply;
     public override Passenger[] CrewsAndPassengers => Crews;
-    public override Route Route { get; } = new(false);
+    public override Route Route { get; set; } = new(false);
     public int NumberOfNewSupplies { get; private set; } = 0;
     public int NumberOfSupplies { get; private set; } = 0;
     public int NumberOfPayments { get; private set; } = 0;
     public int NumberOfResources { get; private set; } = 0;
+
+    public ResupplyMission()
+        : base() { }
+
+    public ResupplyMission(PendingMissionSerializable pendingMissionSerializable)
+        : this()
+    {
+        Route = new Route(
+            pendingMissionSerializable.routeStart,
+            pendingMissionSerializable.routeEnd
+        );
+
+        WeatherSO foundWeather = DataManager.Instance.AllWeathers.FirstOrDefault(w =>
+            w.name == pendingMissionSerializable.weather
+        );
+
+        if (foundWeather)
+            WeatherSO = foundWeather;
+
+        SetupUi();
+    }
 
     public override bool Deploy()
     {
@@ -86,7 +107,7 @@ public class ResupplyMission : Mission
 
     public override void Complete()
     {
-        double rewardMultiplier = 1 + weather.rewardMultiplier;
+        double rewardMultiplier = 1 + WeatherSO.rewardMultiplier;
         NumberOfNewSupplies = (int)Mathf.Round((float)rewardMultiplier * NumberOfNewSupplies);
         NumberOfPayments = (int)Mathf.Round((float)rewardMultiplier * NumberOfPayments);
 
@@ -140,8 +161,8 @@ public class ResupplyMission : Mission
         ignoreOrFinishButton.clicked += () =>
         {
             EventPending = false;
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.deployedMissionList
+            UiManager.Instance.CityModeScreen.ChangeRightPanel(
+                UiManager.Instance.CityModeScreen.deployedMissionList
             );
         };
 
@@ -181,7 +202,7 @@ public class ResupplyMission : Mission
         buttonContainer.Add(useSupplyButton);
         buttonContainer.Add(ignoreOrFinishButton);
 
-        UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+        UiManager.Instance.CityModeScreen.crewSelectionPanel.Show(
             Crews,
             (crews) =>
             {
@@ -225,7 +246,7 @@ public class ResupplyMission : Mission
                 {
                     UiUtils.ShowError("Resupply mission failed");
                     CityModeManager.Instance.deployedMissions.Remove(this);
-                    UiManager.Instance.GameplayScreen.deployedMissionList.Refresh();
+                    UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
                 }
             }
             else

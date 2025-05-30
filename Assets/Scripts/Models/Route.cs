@@ -77,9 +77,45 @@ public readonly struct Route
 
         startIndex = Array.IndexOf(CityModeManager.Instance.Locations, start);
 
+        distance = CalculateDistance();
+    }
+
+    public Route(string startName, string endName)
+    {
+        distance = 0;
+
+        start = CityModeManager.Instance.Locations.FirstOrDefault(l =>
+            l.locationSO.name == startName
+        );
+        end = CityModeManager.Instance.Locations.FirstOrDefault(l => l.locationSO.name == endName);
+
+        if (start is null)
+        {
+            Debug.LogError($"Could not find start location with name {startName}");
+            start = CityModeManager.Instance.Locations[0];
+        }
+
+        if (end is null)
+        {
+            Debug.Log($"Could not find end location with name {endName}");
+            end = CityModeManager.Instance.Locations[1];
+        }
+
+        startIndex = Array.IndexOf(CityModeManager.Instance.Locations, start);
+        endIndex = Array.IndexOf(CityModeManager.Instance.Locations, end);
+
+        distance = CalculateDistance();
+    }
+
+    private int CalculateDistance()
+    {
+        int calculatedDistance = 0;
+
         for (int i = startIndex; i < endIndex; i++)
         {
-            distance += DataManager.Instance.AllLocations[i].milesToNextStop;
+            calculatedDistance += DataManager.Instance.AllLocations[i].milesToNextStop;
         }
+
+        return calculatedDistance;
     }
 }

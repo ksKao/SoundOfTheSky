@@ -15,7 +15,7 @@ public partial class CrewSelectionPanelButton : VisualElement
         RegisterCallback<ClickEvent>(
             (_) =>
             {
-                UiManager.Instance.GameplayScreen.crewSelectionPanel.Show(
+                UiManager.Instance.CityModeScreen.crewSelectionPanel.Show(
                     CityModeManager.Instance.crews.Where(c => !c.isResting).ToArray(),
                     (crews) =>
                     {
@@ -28,7 +28,7 @@ public partial class CrewSelectionPanelButton : VisualElement
                     {
                         _selectedCrews.Clear();
                         crewNumberLabel.text = "0";
-                        UiManager.Instance.GameplayScreen.ChangeRightPanel(null);
+                        UiManager.Instance.CityModeScreen.ChangeRightPanel(null);
                     }
                 );
 

@@ -76,7 +76,7 @@ public partial class MissionTypeTab : VisualElement
             tab.clicked += () =>
             {
                 _activeTab = missionType;
-                UiManager.Instance.GameplayScreen.RefreshMissionList(missionType);
+                UiManager.Instance.CityModeScreen.RefreshMissionList(missionType);
                 RefreshTabHighlight();
             };
 
@@ -169,8 +169,8 @@ public partial class MissionTypeTab : VisualElement
 
         _citiesButton.clicked += () =>
         {
-            UiManager.Instance.GameplayScreen.ChangeRightPanel(
-                UiManager.Instance.GameplayScreen.map
+            UiManager.Instance.CityModeScreen.ChangeRightPanel(
+                UiManager.Instance.CityModeScreen.map
             );
         };
 
