@@ -294,7 +294,9 @@ public class CityModeManager : Singleton<CityModeManager>
         deployedMissions.Clear();
 
         int numberOfDeployedMissions =
-            savedData.deployedRescueMissions.Count + savedData.deployedResupplyMissions.Count;
+            savedData.deployedRescueMissions.Count
+            + savedData.deployedResupplyMissions.Count
+            + savedData.deployedDocumentationMissions.Count;
 
         for (int i = 0; i < numberOfDeployedMissions; i++)
         {
@@ -302,13 +304,20 @@ public class CityModeManager : Singleton<CityModeManager>
                 savedData.deployedRescueMissions.FirstOrDefault(m => m.order == i);
             DeployedResupplyMissionSerializable deployedResupplyMissionSerializable =
                 savedData.deployedResupplyMissions.FirstOrDefault(m => m.order == i);
+            DeployedDocumentationMissionSerializable deployedDocumentationMissionSerializable =
+                savedData.deployedDocumentationMissions.FirstOrDefault(m => m.order == i);
 
             if (deployedRescueMissionSerializable is not null)
                 deployedMissions.Add(new RescueMission(deployedRescueMissionSerializable));
             else if (deployedResupplyMissionSerializable is not null)
                 deployedMissions.Add(new ResupplyMission(deployedResupplyMissionSerializable));
+            if (deployedDocumentationMissionSerializable is not null)
+                deployedMissions.Add(
+                    new DocumentationMission(deployedDocumentationMissionSerializable)
+                );
         }
 
+        UiManager.Instance.CityModeScreen.bottomNavigationBar.RefreshEventPendingMissionCount();
         UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
     }
 
@@ -437,6 +446,34 @@ public class CityModeManager : Singleton<CityModeManager>
                         numberOfPayments = resupplyMission.NumberOfPayments,
                         deployedMissionStyleIndex = resupplyMission.DeployedMissionUi.StyleIndex,
                         status = resupplyMission.MissionStatus,
+                    }
+                );
+            }
+            else if (mission is DocumentationMission documentationMission)
+            {
+                cityModeState.deployedDocumentationMissions.Add(
+                    new()
+                    {
+                        routeEnd = documentationMission.Route.end.locationSO.name,
+                        weather = documentationMission.WeatherSO.name,
+                        weatherProbabilities =
+                            documentationMission.WeatherProbabilities.Values.ToList(),
+                        order = i,
+                        milesRemaining = documentationMission.MilesRemaining,
+                        secondsRemainingUntilNextMile =
+                            documentationMission.SecondsRemainingUntilNextMile,
+                        eventPending = documentationMission.EventPending,
+                        skippedLastInterval = documentationMission.SkippedLastInterval,
+                        isCompleted = documentationMission.IsCompleted,
+                        secondsPassed = documentationMission.SecondsPassed,
+                        numberOfSupplies = documentationMission.NumberOfSupplies,
+                        numberOfResources = documentationMission.NumberOfResources,
+                        numberOfPayments = documentationMission.NumberOfPayments,
+                        initialCitizens = documentationMission.InitialCitizens,
+                        deployedMissionStyleIndex = documentationMission
+                            .DeployedMissionUi
+                            .StyleIndex,
+                        status = documentationMission.MissionStatus,
                     }
                 );
             }

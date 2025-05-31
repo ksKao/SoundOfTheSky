@@ -14,6 +14,7 @@ public class CityModeState
     public PendingDocumentationMissionSerializable pendingDocumentationMission;
     public List<DeployedRescueMissionSerializable> deployedRescueMissions = new();
     public List<DeployedResupplyMissionSerializable> deployedResupplyMissions = new();
+    public List<DeployedDocumentationMissionSerializable> deployedDocumentationMissions = new();
 }
 
 [Serializable]
@@ -111,6 +112,27 @@ public class DeployedResupplyMissionSerializable
     public int numberOfSupplies;
     public int numberOfPayments;
     public int numberOfResources;
+    public int deployedMissionStyleIndex;
+    public MissionStatus status;
+}
+
+[Serializable]
+public class DeployedDocumentationMissionSerializable
+{
+    public string routeEnd;
+    public string weather;
+    public List<int> weatherProbabilities;
+    public int order;
+    public int milesRemaining;
+    public float secondsRemainingUntilNextMile;
+    public bool eventPending;
+    public bool skippedLastInterval;
+    public bool isCompleted;
+    public float secondsPassed;
+    public int numberOfSupplies;
+    public int numberOfResources;
+    public int numberOfPayments;
+    public int initialCitizens;
     public int deployedMissionStyleIndex;
     public MissionStatus status;
 }
