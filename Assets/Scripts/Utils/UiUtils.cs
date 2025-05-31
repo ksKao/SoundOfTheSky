@@ -1,10 +1,10 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public static class UiUtils
 {
     public static readonly Color darkBlueTextColor = HexToRgb("#2c3064");
+    public static readonly Color semiTransparentBlackColor = new(0, 0, 0, 0.9f);
 
     public static Length GetLengthPercentage(float percentage)
     {

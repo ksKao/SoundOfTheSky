@@ -15,6 +15,7 @@ public partial class CityModeScreen : VisualElement
     public readonly CrewSelectionPanel crewSelectionPanel = new();
     public readonly TrainList trainList = new();
     public readonly Map map = new();
+    public readonly CityModeMenu cityModeMenu = new();
 
     private readonly VisualElement _right = new();
 

@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 public class CityModeManager : Singleton<CityModeManager>
 {
@@ -23,7 +22,15 @@ public class CityModeManager : Singleton<CityModeManager>
     public readonly List<Mission> deployedMissions = new();
     public List<Crew> crews = new(INITIAL_NUMBER_OF_CREWS);
 
-    public string cityModeSaveFilePath = "";
+    public static string SaveFilePath
+    {
+        get
+        {
+            int index = PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, -1);
+            return Path.Combine(Application.persistentDataPath, $"city_mode_{index}");
+        }
+    }
+
     public Location[] Locations { get; private set; } = { };
     public Train[] Trains { get; private set; } = { };
     public List<Mission> PendingMissions { get; private set; } = new();
@@ -51,10 +58,12 @@ public class CityModeManager : Singleton<CityModeManager>
     protected override void Awake()
     {
         base.Awake();
-        cityModeSaveFilePath = Path.Combine(Application.persistentDataPath, "city_mode.json");
         Locations = DataManager.Instance.AllLocations.Select(l => new Location(l)).ToArray();
         Trains = DataManager.Instance.AllTrains.Select(t => new Train(t)).ToArray();
         Application.runInBackground = true;
+
+        InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
+            UiManager.Instance.ShowModal(UiManager.Instance.CityModeScreen.cityModeMenu);
     }
 
     private void OnEnable()
@@ -212,7 +221,7 @@ public class CityModeManager : Singleton<CityModeManager>
 
     private void LoadGame()
     {
-        if (!File.Exists(cityModeSaveFilePath))
+        if (!File.Exists(SaveFilePath))
             return;
 
         CityModeState savedData = null;
@@ -220,7 +229,7 @@ public class CityModeManager : Singleton<CityModeManager>
         {
             string serialized = "";
 
-            using (FileStream stream = new(cityModeSaveFilePath, FileMode.Open))
+            using (FileStream stream = new(SaveFilePath, FileMode.Open))
             {
                 using (StreamReader reader = new(stream))
                 {
@@ -482,11 +491,11 @@ public class CityModeManager : Singleton<CityModeManager>
         try
         {
             // create directory if it doesnt exist
-            Directory.CreateDirectory(Path.GetDirectoryName(cityModeSaveFilePath));
+            Directory.CreateDirectory(SaveFilePath);
 
             string serialized = JsonUtility.ToJson(cityModeState, true);
 
-            using (FileStream stream = new(cityModeSaveFilePath, FileMode.Create))
+            using (FileStream stream = new(SaveFilePath, FileMode.Create))
             {
                 using (StreamWriter writer = new(stream))
                 {

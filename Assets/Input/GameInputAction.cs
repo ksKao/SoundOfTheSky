@@ -24,13 +24,22 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     ""name"": ""GameInputAction"",
     ""maps"": [
         {
-            ""name"": ""Main"",
+            ""name"": ""City Mode"",
             ""id"": ""80355399-78bb-4b03-ace9-b71a2893c09c"",
             ""actions"": [
                 {
                     ""name"": ""Open Console"",
                     ""type"": ""Button"",
                     ""id"": ""8a6e27ce-4338-425c-afe6-ba974d5d4fb6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Open Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""0e361c9d-649a-43fb-bec4-48fbd590a969"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -46,6 +55,17 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Open Console"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f2d25d1-ccc2-4f65-b015-3d3c5c122f02"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -149,25 +169,58 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""City Mode Menu"",
+            ""id"": ""fa3f3b64-c717-4010-853d-bcffb76189d0"",
+            ""actions"": [
+                {
+                    ""name"": ""Close Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""f200243a-0508-4313-997c-34acbb19bbd4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""30703df3-fa91-45d3-949b-6baa5b1894d9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Close Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // Main
-        m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
-        m_Main_OpenConsole = m_Main.FindAction("Open Console", throwIfNotFound: true);
+        // City Mode
+        m_CityMode = asset.FindActionMap("City Mode", throwIfNotFound: true);
+        m_CityMode_OpenConsole = m_CityMode.FindAction("Open Console", throwIfNotFound: true);
+        m_CityMode_OpenMenu = m_CityMode.FindAction("Open Menu", throwIfNotFound: true);
         // Console
         m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
         m_Console_Close = m_Console.FindAction("Close", throwIfNotFound: true);
         m_Console_Submit = m_Console.FindAction("Submit", throwIfNotFound: true);
         m_Console_PreviousCommand = m_Console.FindAction("PreviousCommand", throwIfNotFound: true);
         m_Console_NextCommand = m_Console.FindAction("NextCommand", throwIfNotFound: true);
+        // City Mode Menu
+        m_CityModeMenu = asset.FindActionMap("City Mode Menu", throwIfNotFound: true);
+        m_CityModeMenu_CloseMenu = m_CityModeMenu.FindAction("Close Menu", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
     {
-        UnityEngine.Debug.Assert(!m_Main.enabled, "This will cause a leak and performance issues, GameInputAction.Main.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CityMode.enabled, "This will cause a leak and performance issues, GameInputAction.CityMode.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameInputAction.Console.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CityModeMenu.enabled, "This will cause a leak and performance issues, GameInputAction.CityModeMenu.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -226,51 +279,59 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Main
-    private readonly InputActionMap m_Main;
-    private List<IMainActions> m_MainActionsCallbackInterfaces = new List<IMainActions>();
-    private readonly InputAction m_Main_OpenConsole;
-    public struct MainActions
+    // City Mode
+    private readonly InputActionMap m_CityMode;
+    private List<ICityModeActions> m_CityModeActionsCallbackInterfaces = new List<ICityModeActions>();
+    private readonly InputAction m_CityMode_OpenConsole;
+    private readonly InputAction m_CityMode_OpenMenu;
+    public struct CityModeActions
     {
         private @GameInputAction m_Wrapper;
-        public MainActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @OpenConsole => m_Wrapper.m_Main_OpenConsole;
-        public InputActionMap Get() { return m_Wrapper.m_Main; }
+        public CityModeActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OpenConsole => m_Wrapper.m_CityMode_OpenConsole;
+        public InputAction @OpenMenu => m_Wrapper.m_CityMode_OpenMenu;
+        public InputActionMap Get() { return m_Wrapper.m_CityMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MainActions set) { return set.Get(); }
-        public void AddCallbacks(IMainActions instance)
+        public static implicit operator InputActionMap(CityModeActions set) { return set.Get(); }
+        public void AddCallbacks(ICityModeActions instance)
         {
-            if (instance == null || m_Wrapper.m_MainActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_MainActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_CityModeActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CityModeActionsCallbackInterfaces.Add(instance);
             @OpenConsole.started += instance.OnOpenConsole;
             @OpenConsole.performed += instance.OnOpenConsole;
             @OpenConsole.canceled += instance.OnOpenConsole;
+            @OpenMenu.started += instance.OnOpenMenu;
+            @OpenMenu.performed += instance.OnOpenMenu;
+            @OpenMenu.canceled += instance.OnOpenMenu;
         }
 
-        private void UnregisterCallbacks(IMainActions instance)
+        private void UnregisterCallbacks(ICityModeActions instance)
         {
             @OpenConsole.started -= instance.OnOpenConsole;
             @OpenConsole.performed -= instance.OnOpenConsole;
             @OpenConsole.canceled -= instance.OnOpenConsole;
+            @OpenMenu.started -= instance.OnOpenMenu;
+            @OpenMenu.performed -= instance.OnOpenMenu;
+            @OpenMenu.canceled -= instance.OnOpenMenu;
         }
 
-        public void RemoveCallbacks(IMainActions instance)
+        public void RemoveCallbacks(ICityModeActions instance)
         {
-            if (m_Wrapper.m_MainActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_CityModeActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IMainActions instance)
+        public void SetCallbacks(ICityModeActions instance)
         {
-            foreach (var item in m_Wrapper.m_MainActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_CityModeActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_MainActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_CityModeActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public MainActions @Main => new MainActions(this);
+    public CityModeActions @CityMode => new CityModeActions(this);
 
     // Console
     private readonly InputActionMap m_Console;
@@ -341,9 +402,56 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         }
     }
     public ConsoleActions @Console => new ConsoleActions(this);
-    public interface IMainActions
+
+    // City Mode Menu
+    private readonly InputActionMap m_CityModeMenu;
+    private List<ICityModeMenuActions> m_CityModeMenuActionsCallbackInterfaces = new List<ICityModeMenuActions>();
+    private readonly InputAction m_CityModeMenu_CloseMenu;
+    public struct CityModeMenuActions
+    {
+        private @GameInputAction m_Wrapper;
+        public CityModeMenuActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CloseMenu => m_Wrapper.m_CityModeMenu_CloseMenu;
+        public InputActionMap Get() { return m_Wrapper.m_CityModeMenu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CityModeMenuActions set) { return set.Get(); }
+        public void AddCallbacks(ICityModeMenuActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Add(instance);
+            @CloseMenu.started += instance.OnCloseMenu;
+            @CloseMenu.performed += instance.OnCloseMenu;
+            @CloseMenu.canceled += instance.OnCloseMenu;
+        }
+
+        private void UnregisterCallbacks(ICityModeMenuActions instance)
+        {
+            @CloseMenu.started -= instance.OnCloseMenu;
+            @CloseMenu.performed -= instance.OnCloseMenu;
+            @CloseMenu.canceled -= instance.OnCloseMenu;
+        }
+
+        public void RemoveCallbacks(ICityModeMenuActions instance)
+        {
+            if (m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICityModeMenuActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CityModeMenuActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CityModeMenuActions @CityModeMenu => new CityModeMenuActions(this);
+    public interface ICityModeActions
     {
         void OnOpenConsole(InputAction.CallbackContext context);
+        void OnOpenMenu(InputAction.CallbackContext context);
     }
     public interface IConsoleActions
     {
@@ -351,5 +459,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnSubmit(InputAction.CallbackContext context);
         void OnPreviousCommand(InputAction.CallbackContext context);
         void OnNextCommand(InputAction.CallbackContext context);
+    }
+    public interface ICityModeMenuActions
+    {
+        void OnCloseMenu(InputAction.CallbackContext context);
     }
 }

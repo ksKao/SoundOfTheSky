@@ -27,7 +27,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
             new QuitCommand(),
         };
 
-        InputManager.Instance.InputAction.Main.OpenConsole.performed += ctx => OpenConsole();
+        InputManager.Instance.InputAction.CityMode.OpenConsole.performed += ctx => OpenConsole();
         InputManager.Instance.InputAction.Console.Close.performed += ctx => CloseConsole();
         InputManager.Instance.InputAction.Console.Submit.performed += ctx => SubmitCommand();
         InputManager.Instance.InputAction.Console.PreviousCommand.performed += ctx =>
@@ -46,7 +46,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
 
     private void OpenConsole()
     {
-        InputManager.Instance.InputAction.Main.Disable();
+        InputManager.Instance.InputAction.CityMode.Disable();
         InputManager.Instance.InputAction.Console.Enable();
         UiManager.Instance.CityModeScreen.Add(_ui);
         StartCoroutine(FocusTextField());
@@ -54,7 +54,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
 
     private void CloseConsole()
     {
-        InputManager.Instance.InputAction.Main.Enable();
+        InputManager.Instance.InputAction.CityMode.Enable();
         InputManager.Instance.InputAction.Console.Disable();
         UiManager.Instance.CityModeScreen.Remove(_ui);
     }

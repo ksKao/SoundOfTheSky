@@ -9,15 +9,16 @@ public class InputManager : Singleton<InputManager>
         base.Awake();
 
         _inputAction = new();
+        _inputAction.Disable();
     }
 
     protected void OnEnable()
     {
-        _inputAction.Main.Enable();
+        _inputAction.CityMode.Enable();
     }
 
     protected void OnDisable()
     {
-        _inputAction.Main.Disable();
+        _inputAction.CityMode.Disable();
     }
 }

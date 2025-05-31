@@ -2,13 +2,22 @@
     "name": "GameInputAction",
     "maps": [
         {
-            "name": "Main",
+            "name": "City Mode",
             "id": "80355399-78bb-4b03-ace9-b71a2893c09c",
             "actions": [
                 {
                     "name": "Open Console",
                     "type": "Button",
                     "id": "8a6e27ce-4338-425c-afe6-ba974d5d4fb6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Open Menu",
+                    "type": "Button",
+                    "id": "0e361c9d-649a-43fb-bec4-48fbd590a969",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -24,6 +33,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Open Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f2d25d1-ccc2-4f65-b015-3d3c5c122f02",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -123,6 +143,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "NextCommand",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "City Mode Menu",
+            "id": "fa3f3b64-c717-4010-853d-bcffb76189d0",
+            "actions": [
+                {
+                    "name": "Close Menu",
+                    "type": "Button",
+                    "id": "f200243a-0508-4313-997c-34acbb19bbd4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "30703df3-fa91-45d3-949b-6baa5b1894d9",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Close Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

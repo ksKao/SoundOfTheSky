@@ -1,5 +1,6 @@
 using UnityEngine; // This is needed here for Application.Quit, otherwise the build will fail
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -11,13 +12,24 @@ public partial class MainMenuScreen : VisualElement
         style.width = UiUtils.GetLengthPercentage(100);
         style.height = UiUtils.GetLengthPercentage(100);
         style.display = DisplayStyle.Flex;
-        style.flexDirection = FlexDirection.Column;
-        style.alignItems = Align.Center;
-        style.justifyContent = Justify.Center;
+        style.justifyContent = Justify.FlexEnd;
+        style.unityFont = Resources.Load<Font>("Fonts/ronix");
+        style.unityFontDefinition = new StyleFontDefinition(
+            Resources.Load<FontAsset>("Fonts/ronix")
+        );
+        style.backgroundColor = Color.blue;
 
-        Button quitButton = new() { text = "Quit" };
+        Button campaignButton = new() { text = "Campaign " };
+        ApplyCommonButtonStyle(campaignButton);
 
         Button cityModeButton = new() { text = "City Mode" };
+        ApplyCommonButtonStyle(cityModeButton);
+
+        Button settingsButton = new() { text = "Settings" };
+        ApplyCommonButtonStyle(settingsButton);
+
+        Button quitButton = new() { text = "Quit" };
+        ApplyCommonButtonStyle(quitButton);
 
         quitButton.clicked += () =>
         {
@@ -30,10 +42,45 @@ public partial class MainMenuScreen : VisualElement
 
         cityModeButton.clicked += () =>
         {
-            SceneManager.LoadScene(1);
+            UiManager.Instance.ShowModal(
+                new SaveMenu("City Mode", () => SceneManager.LoadScene(1))
+            );
         };
 
-        Add(cityModeButton);
-        Add(quitButton);
+        VisualElement buttonsContainer = new()
+        {
+            style =
+            {
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                width = UiUtils.GetLengthPercentage(20),
+                marginLeft = 36,
+                marginBottom = 36,
+            },
+        };
+
+        Add(buttonsContainer);
+
+        buttonsContainer.Add(campaignButton);
+        buttonsContainer.Add(cityModeButton);
+        buttonsContainer.Add(settingsButton);
+        buttonsContainer.Add(quitButton);
+    }
+
+    private void ApplyCommonButtonStyle(Button button)
+    {
+        button.style.backgroundColor = UiUtils.semiTransparentBlackColor;
+        button.style.color = Color.white;
+        button.style.borderTopLeftRadius = 4;
+        button.style.borderTopRightRadius = 4;
+        button.style.borderBottomLeftRadius = 4;
+        button.style.borderBottomRightRadius = 4;
+        button.style.borderTopWidth = 0;
+        button.style.borderBottomWidth = 0;
+        button.style.borderLeftWidth = 0;
+        button.style.borderRightWidth = 0;
+        button.style.paddingTop = 16;
+        button.style.paddingBottom = 16;
+        button.style.marginBottom = 8;
     }
 }
