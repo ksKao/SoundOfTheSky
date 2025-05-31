@@ -11,11 +11,26 @@ public partial class SaveMenu : VisualElement
     public const string PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY = "saveFileToLoad";
 
     private int _selectedIndex = -1;
+    private readonly Action _onLoad = null;
+    private readonly Action _onSave = null;
     private readonly Label _titleLabel = new();
     private readonly List<Label> _saveFileLabels = new(5);
     private readonly Button _loadButton = new()
     {
         text = "LOAD",
+        style =
+        {
+            backgroundColor = Color.clear,
+            borderTopWidth = 0,
+            borderBottomWidth = 0,
+            borderLeftWidth = 0,
+            borderRightWidth = 0,
+            display = DisplayStyle.None,
+        },
+    };
+    private readonly Button _saveButton = new()
+    {
+        text = "SAVE",
         style =
         {
             backgroundColor = Color.clear,
@@ -55,11 +70,13 @@ public partial class SaveMenu : VisualElement
             if (value < 0 || value > 4)
             {
                 _loadButton.style.display = DisplayStyle.None;
+                _saveButton.style.display = DisplayStyle.None;
                 _deleteButton.style.display = DisplayStyle.None;
             }
             else
             {
-                _loadButton.style.display = DisplayStyle.Flex;
+                _loadButton.style.display = _onLoad is null ? DisplayStyle.None : DisplayStyle.Flex;
+                _saveButton.style.display = _onSave is null ? DisplayStyle.None : DisplayStyle.Flex;
                 _deleteButton.style.display = DisplayStyle.Flex;
             }
         }
@@ -70,8 +87,17 @@ public partial class SaveMenu : VisualElement
         Debug.LogWarning($"Detected calling default constructor of {nameof(SaveMenu)}");
     }
 
-    public SaveMenu(string title, Action onNewSaveFileButtonPressed = null)
+    public SaveMenu(
+        string title,
+        Action onCancel = null,
+        Action onNew = null,
+        Action onLoad = null,
+        Action onSave = null
+    )
     {
+        _onLoad = onLoad;
+        _onSave = onSave;
+
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
         style.justifyContent = Justify.SpaceAround;
@@ -106,7 +132,30 @@ public partial class SaveMenu : VisualElement
         _titleLabel.text = title.ToUpper();
         topContainer.Add(_titleLabel);
 
-        if (onNewSaveFileButtonPressed is not null)
+        if (onCancel is not null)
+        {
+            Button cancelButton = new()
+            {
+                text = "Cancel",
+                style =
+                {
+                    backgroundColor = Color.clear,
+                    borderTopWidth = 0,
+                    borderBottomWidth = 0,
+                    borderLeftWidth = 0,
+                    borderRightWidth = 0,
+                },
+            };
+
+            cancelButton.clicked += () =>
+            {
+                onCancel();
+            };
+
+            topContainer.Add(cancelButton);
+        }
+
+        if (onNew is not null)
         {
             Button newSaveFileButton = new()
             {
@@ -125,7 +174,7 @@ public partial class SaveMenu : VisualElement
             {
                 PlayerPrefs.SetInt(PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, -1);
                 PlayerPrefs.Save();
-                onNewSaveFileButtonPressed();
+                onNew();
             };
 
             topContainer.Add(newSaveFileButton);
@@ -137,16 +186,31 @@ public partial class SaveMenu : VisualElement
                 "Are you sure you want to delete this save file? This action cannot be reverted.",
                 () =>
                 {
-                    UiManager.Instance.ShowModal(new SaveMenu(title, onNewSaveFileButtonPressed));
+                    UiManager.Instance.ShowModal(new SaveMenu(title, onCancel, onNew));
                 },
                 () =>
                 {
-                    UiManager.Instance.ShowModal(new SaveMenu(title, onNewSaveFileButtonPressed));
+                    UiManager.Instance.ShowModal(new SaveMenu(title, onCancel, onNew));
                 }
             );
         };
 
+        if (_onLoad is not null)
+            _loadButton.clicked += () =>
+            {
+                PlayerPrefs.SetInt(PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, SelectedIndex);
+                _onLoad?.Invoke();
+            };
+
+        if (_onSave is not null)
+            _saveButton.clicked += () =>
+            {
+                PlayerPrefs.SetInt(PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, SelectedIndex);
+                _onSave?.Invoke();
+            };
+
         topContainer.Add(_loadButton);
+        topContainer.Add(_saveButton);
         topContainer.Add(_deleteButton);
 
         VisualElement bottomContainer = new()
@@ -175,7 +239,10 @@ public partial class SaveMenu : VisualElement
                     borderRightWidth = 0,
                 },
             };
-            saveFileButton.SetEnabled(File.Exists(CityModeManager.SaveFilePath));
+            saveFileButton.SetEnabled(
+                (File.Exists(CityModeManager.GetSaveFilePath(i)) && _onLoad is not null)
+                    || _onSave is not null
+            );
             Label saveFileButtonLabel = new($"SAVE {i + 1}");
             saveFileButton.Add(saveFileButtonLabel);
             int thisButtonIndex = i;

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -6,15 +8,70 @@ public partial class CityModeMenu : VisualElement
 {
     public CityModeMenu()
     {
-        style.width = 800;
-        style.height = 400;
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
         style.justifyContent = Justify.Center;
+        style.width = UiUtils.GetLengthPercentage(20);
         style.alignItems = Align.Center;
-        style.backgroundColor = Color.gray;
+        style.unityFont = Resources.Load<Font>("Fonts/ronix");
+        style.unityFontDefinition = new StyleFontDefinition(
+            Resources.Load<FontAsset>("Fonts/ronix")
+        );
 
-        Add(new Label("Hello World"));
+        Button mainMenuButton = new()
+        {
+            text = "MAIN MENU",
+            style = { width = UiUtils.GetLengthPercentage(100) },
+        };
+        UiUtils.ApplyCommonMenuButtonStyle(mainMenuButton);
+
+        mainMenuButton.clicked += () =>
+        {
+            SceneManager.LoadScene(0);
+        };
+
+        Button saveGameButton = new()
+        {
+            text = "SAVE GAME",
+            style = { width = UiUtils.GetLengthPercentage(100) },
+        };
+        UiUtils.ApplyCommonMenuButtonStyle(saveGameButton);
+
+        saveGameButton.clicked += () =>
+        {
+            UiManager.Instance.ShowModal(
+                new SaveMenu(
+                    "SAVE GAME",
+                    () =>
+                        UiManager.Instance.ShowModal(
+                            UiManager.Instance.CityModeScreen.cityModeMenu
+                        ),
+                    null,
+                    null,
+                    () =>
+                    {
+                        bool success = CityModeManager.Instance.SaveGame();
+
+                        if (!success)
+                            UiUtils.ShowError(
+                                "Something went wrong while trying to save this game."
+                            );
+                        else
+                        {
+                            UiUtils.ShowError(
+                                $"Game saved to file {PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY) + 1}."
+                            );
+                            UiManager.Instance.ShowModal(
+                                UiManager.Instance.CityModeScreen.cityModeMenu
+                            );
+                        }
+                    }
+                )
+            );
+        };
+
+        Add(mainMenuButton);
+        Add(saveGameButton);
 
         RegisterCallback<AttachToPanelEvent>(
             (e) =>

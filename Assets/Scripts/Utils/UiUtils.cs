@@ -85,4 +85,19 @@ public static class UiUtils
 
         UiManager.Instance.CityModeScreen.AddError(message);
     }
+
+    public static void ApplyCommonMenuButtonStyle(Button button)
+    {
+        button.style.backgroundColor = semiTransparentBlackColor;
+        button.style.color = Color.white;
+        button.style.borderTopLeftRadius = 4;
+        button.style.borderTopRightRadius = 4;
+        button.style.borderBottomLeftRadius = 4;
+        button.style.borderBottomRightRadius = 4;
+        button.style.paddingTop = 16;
+        button.style.paddingBottom = 16;
+        button.style.marginBottom = 8;
+
+        ToggleBorder(button, false);
+    }
 }

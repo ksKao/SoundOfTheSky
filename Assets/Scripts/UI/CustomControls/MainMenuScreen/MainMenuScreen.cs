@@ -20,16 +20,16 @@ public partial class MainMenuScreen : VisualElement
         style.backgroundColor = Color.blue;
 
         Button campaignButton = new() { text = "Campaign " };
-        ApplyCommonButtonStyle(campaignButton);
+        UiUtils.ApplyCommonMenuButtonStyle(campaignButton);
 
         Button cityModeButton = new() { text = "City Mode" };
-        ApplyCommonButtonStyle(cityModeButton);
+        UiUtils.ApplyCommonMenuButtonStyle(cityModeButton);
 
         Button settingsButton = new() { text = "Settings" };
-        ApplyCommonButtonStyle(settingsButton);
+        UiUtils.ApplyCommonMenuButtonStyle(settingsButton);
 
         Button quitButton = new() { text = "Quit" };
-        ApplyCommonButtonStyle(quitButton);
+        UiUtils.ApplyCommonMenuButtonStyle(quitButton);
 
         quitButton.clicked += () =>
         {
@@ -43,7 +43,12 @@ public partial class MainMenuScreen : VisualElement
         cityModeButton.clicked += () =>
         {
             UiManager.Instance.ShowModal(
-                new SaveMenu("City Mode", () => SceneManager.LoadScene(1))
+                new SaveMenu(
+                    "City Mode",
+                    () => UiManager.Instance.CloseModal(),
+                    () => SceneManager.LoadScene(1),
+                    () => SceneManager.LoadScene(1)
+                )
             );
         };
 
@@ -65,22 +70,5 @@ public partial class MainMenuScreen : VisualElement
         buttonsContainer.Add(cityModeButton);
         buttonsContainer.Add(settingsButton);
         buttonsContainer.Add(quitButton);
-    }
-
-    private void ApplyCommonButtonStyle(Button button)
-    {
-        button.style.backgroundColor = UiUtils.semiTransparentBlackColor;
-        button.style.color = Color.white;
-        button.style.borderTopLeftRadius = 4;
-        button.style.borderTopRightRadius = 4;
-        button.style.borderBottomLeftRadius = 4;
-        button.style.borderBottomRightRadius = 4;
-        button.style.borderTopWidth = 0;
-        button.style.borderBottomWidth = 0;
-        button.style.borderLeftWidth = 0;
-        button.style.borderRightWidth = 0;
-        button.style.paddingTop = 16;
-        button.style.paddingBottom = 16;
-        button.style.marginBottom = 8;
     }
 }

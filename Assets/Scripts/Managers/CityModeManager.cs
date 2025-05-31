@@ -27,7 +27,7 @@ public class CityModeManager : Singleton<CityModeManager>
         get
         {
             int index = PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, -1);
-            return Path.Combine(Application.persistentDataPath, $"city_mode_{index}");
+            return GetSaveFilePath(index);
         }
     }
 
@@ -96,9 +96,9 @@ public class CityModeManager : Singleton<CityModeManager>
             DeploySelectedMission;
     }
 
-    private void OnDestroy()
+    public static string GetSaveFilePath(int index)
     {
-        SaveGame();
+        return Path.Combine(Application.persistentDataPath, $"city_mode_{index}.json");
     }
 
     public void RefreshAllMissions()
@@ -330,7 +330,7 @@ public class CityModeManager : Singleton<CityModeManager>
         UiManager.Instance.CityModeScreen.deployedMissionList.Refresh();
     }
 
-    private void SaveGame()
+    public bool SaveGame()
     {
         CityModeState cityModeState = new()
         {
@@ -490,9 +490,6 @@ public class CityModeManager : Singleton<CityModeManager>
 
         try
         {
-            // create directory if it doesnt exist
-            Directory.CreateDirectory(SaveFilePath);
-
             string serialized = JsonUtility.ToJson(cityModeState, true);
 
             using (FileStream stream = new(SaveFilePath, FileMode.Create))
@@ -502,10 +499,13 @@ public class CityModeManager : Singleton<CityModeManager>
                     writer.Write(serialized);
                 }
             }
+
+            return true;
         }
         catch (Exception e)
         {
             Debug.LogError("Error while saving data: " + e);
+            return false;
         }
     }
 }
