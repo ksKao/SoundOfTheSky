@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +14,11 @@ public class UiManager : Singleton<UiManager>
     private VisualElement _backdrop = null;
     private VisualElement ModalParent =>
         CityModeScreen is not null ? CityModeScreen : MainMenuScreen;
+    private VisualElement _prevFocusedElement = null;
+
+    // focus
+    private readonly Dictionary<Direction, VisualElement> _highlightOverlay = new();
+    private readonly float _highlightOverlayPadding = 16;
 
     protected override void Awake()
     {
@@ -46,6 +53,22 @@ public class UiManager : Singleton<UiManager>
                 CloseModal();
             }
         );
+
+        foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+        {
+            _highlightOverlay.Add(
+                direction,
+                new VisualElement()
+                {
+                    style =
+                    {
+                        position = Position.Absolute,
+                        backgroundColor = Color.black,
+                        opacity = 0.98f,
+                    },
+                }
+            );
+        }
     }
 
     public void ShowModal(VisualElement content)
@@ -153,5 +176,70 @@ public class UiManager : Singleton<UiManager>
     {
         ModalParent.Remove(_backdrop);
         ModalParent.Remove(_modalContent);
+    }
+
+    public void FocusElement(VisualElement element)
+    {
+        UnfocusElement(_prevFocusedElement);
+
+        _prevFocusedElement = element;
+
+        ModalParent.style.position = Position.Relative;
+        foreach (VisualElement overlayBlock in _highlightOverlay.Values)
+        {
+            ModalParent.Add(overlayBlock);
+        }
+
+        _prevFocusedElement.RegisterCallback<GeometryChangedEvent>(GeometryChangedEventCallback);
+    }
+
+    private void GeometryChangedEventCallback(GeometryChangedEvent e)
+    {
+        VisualElement target = e.target as VisualElement;
+
+        float containerWidth = ModalParent.resolvedStyle.width;
+        float containerHeight = ModalParent.resolvedStyle.height;
+        float x = target.worldBound.position.x - ModalParent.worldBound.position.x;
+        float y = target.worldBound.position.y - ModalParent.worldBound.position.y;
+        float width = target.resolvedStyle.width;
+        float height = target.resolvedStyle.height;
+
+        _highlightOverlay[Direction.Up].style.top = 0;
+        _highlightOverlay[Direction.Up].style.left = 0;
+        _highlightOverlay[Direction.Up].style.width = UiUtils.GetLengthPercentage(100);
+        _highlightOverlay[Direction.Up].style.height = y - _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Down].style.top = y + height + _highlightOverlayPadding;
+        _highlightOverlay[Direction.Down].style.left = x - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Down].style.width = width + _highlightOverlayPadding * 2;
+        _highlightOverlay[Direction.Down].style.height =
+            containerHeight - y - height - _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Left].style.top = y - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Left].style.left = 0;
+        _highlightOverlay[Direction.Left].style.width = x - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Left].style.height =
+            containerHeight - y + _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Right].style.top = y - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.left = x + width + _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.width =
+            containerWidth - x - width - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.height =
+            containerHeight - y + _highlightOverlayPadding;
+    }
+
+    public void UnfocusElement(VisualElement element)
+    {
+        _prevFocusedElement?.UnregisterCallback<GeometryChangedEvent>(GeometryChangedEventCallback);
+        _prevFocusedElement = null;
+
+        element?.UnregisterCallback<GeometryChangedEvent>(GeometryChangedEventCallback);
+
+        foreach (VisualElement overlayBlock in _highlightOverlay.Values)
+        {
+            if (overlayBlock.parent == ModalParent)
+                ModalParent.Remove(overlayBlock);
+        }
     }
 }

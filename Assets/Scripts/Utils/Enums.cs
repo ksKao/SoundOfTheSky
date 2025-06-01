@@ -38,3 +38,11 @@ public enum MissionStatus
     Arrived,
     Completed,
 }
+
+public enum Direction
+{
+    Up,
+    Down,
+    Left,
+    Right,
+}
