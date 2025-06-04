@@ -42,10 +42,10 @@ public partial class MainMenuScreen : VisualElement
 
         cityModeButton.clicked += () =>
         {
-            UiManager.Instance.ShowModal(
+            UiManager.Instance.Modal.Show(
                 new SaveMenu(
                     "City Mode",
-                    () => UiManager.Instance.CloseModal(),
+                    () => UiManager.Instance.Modal.Close(),
                     () => SceneManager.LoadScene(1),
                     () => SceneManager.LoadScene(1)
                 )

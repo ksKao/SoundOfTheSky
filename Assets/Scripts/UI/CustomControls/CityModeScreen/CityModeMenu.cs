@@ -39,11 +39,11 @@ public partial class CityModeMenu : VisualElement
 
         saveGameButton.clicked += () =>
         {
-            UiManager.Instance.ShowModal(
+            UiManager.Instance.Modal.Show(
                 new SaveMenu(
                     "SAVE GAME",
                     () =>
-                        UiManager.Instance.ShowModal(
+                        UiManager.Instance.Modal.Show(
                             UiManager.Instance.CityModeScreen.cityModeMenu
                         ),
                     null,
@@ -61,7 +61,7 @@ public partial class CityModeMenu : VisualElement
                             UiUtils.ShowError(
                                 $"Game saved to file {PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY) + 1}."
                             );
-                            UiManager.Instance.ShowModal(
+                            UiManager.Instance.Modal.Show(
                                 UiManager.Instance.CityModeScreen.cityModeMenu
                             );
                         }
@@ -94,6 +94,6 @@ public partial class CityModeMenu : VisualElement
 
     private void OnClose(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        UiManager.Instance.CloseModal();
+        UiManager.Instance.Modal.Close();
     }
 }

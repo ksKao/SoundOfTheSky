@@ -182,15 +182,15 @@ public partial class SaveMenu : VisualElement
 
         _deleteButton.clicked += () =>
         {
-            UiManager.Instance.ShowConfirmationModal(
+            UiManager.Instance.Modal.ShowConfirmation(
                 "Are you sure you want to delete this save file? This action cannot be reverted.",
                 () =>
                 {
-                    UiManager.Instance.ShowModal(new SaveMenu(title, onCancel, onNew));
+                    UiManager.Instance.Modal.Show(new SaveMenu(title, onCancel, onNew));
                 },
                 () =>
                 {
-                    UiManager.Instance.ShowModal(new SaveMenu(title, onCancel, onNew));
+                    UiManager.Instance.Modal.Show(new SaveMenu(title, onCancel, onNew));
                 }
             );
         };

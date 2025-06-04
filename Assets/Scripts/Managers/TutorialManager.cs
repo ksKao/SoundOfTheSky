@@ -103,6 +103,11 @@ public class TutorialManager : Singleton<TutorialManager>
             _stepIndex
         ];
 
-        UiManager.Instance.FocusElement(getEl(), msg, onClick ?? IncrementIndex, clickable);
+        UiManager.Instance.CityModeScreen.tutorialOverlay.FocusElement(
+            getEl(),
+            msg,
+            onClick ?? IncrementIndex,
+            clickable
+        );
     }
 }

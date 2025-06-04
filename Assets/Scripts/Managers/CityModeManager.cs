@@ -64,7 +64,7 @@ public class CityModeManager : Singleton<CityModeManager>
 
         if (InputManager.Instance != null)
             InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
-                UiManager.Instance.ShowModal(UiManager.Instance.CityModeScreen.cityModeMenu);
+                UiManager.Instance.Modal.Show(UiManager.Instance.CityModeScreen.cityModeMenu);
     }
 
     private void OnEnable()
