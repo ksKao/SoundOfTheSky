@@ -4,9 +4,32 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class AspectRatio : VisualElement
 {
+    private float _widthRatio = 16;
+    private float _heightRatio = 9;
+
+    public bool modifyParentStyle = true;
+
+    public float WidthRatio
+    {
+        get => _widthRatio;
+        set
+        {
+            _widthRatio = value;
+            OnGeometryChanged(new GeometryChangedEvent());
+        }
+    }
+    public float HeightRatio
+    {
+        get => _heightRatio;
+        set
+        {
+            _heightRatio = value;
+            OnGeometryChanged(new GeometryChangedEvent());
+        }
+    }
+
     public AspectRatio()
     {
-        // Initialize the aspect ratio and child container
         style.flexGrow = 1;
         style.backgroundColor = Color.black;
 
@@ -19,31 +42,40 @@ public partial class AspectRatio : VisualElement
             return;
 
         // Get the current size of the container
-        float containerWidth = parent.resolvedStyle.width;
-        float containerHeight = parent.resolvedStyle.height;
+        float containerWidth =
+            parent.resolvedStyle.width
+            - parent.resolvedStyle.paddingLeft
+            - parent.resolvedStyle.paddingRight;
+        float containerHeight =
+            parent.resolvedStyle.height
+            - parent.resolvedStyle.paddingTop
+            - parent.resolvedStyle.paddingBottom;
 
         if (containerWidth > 0 && containerHeight > 0)
         {
             float targetWidth = containerWidth;
-            float targetHeight = targetWidth / 16f * 9f;
+            float targetHeight = targetWidth / _widthRatio * _heightRatio;
 
             if (targetHeight > containerHeight)
             {
                 // Height is the limiting factor
                 targetHeight = containerHeight;
-                targetWidth = targetHeight / 9f * 16f;
+                targetWidth = targetHeight / _heightRatio * _widthRatio;
             }
 
             style.width = targetWidth;
             style.maxWidth = targetWidth;
-            style.maxHeight = targetHeight;
             style.height = targetHeight;
+            style.maxHeight = targetHeight;
         }
 
-        parent.style.display = DisplayStyle.Flex;
-        parent.style.flexDirection = FlexDirection.Row;
-        parent.style.backgroundColor = Color.black;
-        parent.style.justifyContent = Justify.Center;
-        parent.style.alignItems = Align.Center;
+        if (modifyParentStyle)
+        {
+            parent.style.display = DisplayStyle.Flex;
+            parent.style.flexDirection = FlexDirection.Row;
+            parent.style.backgroundColor = Color.black;
+            parent.style.justifyContent = Justify.Center;
+            parent.style.alignItems = Align.Center;
+        }
     }
 }

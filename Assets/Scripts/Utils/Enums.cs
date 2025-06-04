@@ -47,3 +47,9 @@ public enum Direction
     Right,
     Center,
 }
+
+public enum GameplayMode
+{
+    CityMode,
+    CampaignMode,
+}
