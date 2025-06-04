@@ -24,7 +24,7 @@ public abstract class Mission
     private bool _eventPending = false;
     private Train _train = null;
 
-    public WeatherSO WeatherSO;
+    public WeatherSO weatherSO;
     protected readonly Label _trainNameLabel = new("Train");
     protected VisualElement weatherUiInPendingMission = new();
     protected int initialMiles = 0;
@@ -46,6 +46,7 @@ public abstract class Mission
     public virtual int MilesPerInterval => 5;
     public virtual Passenger[] CrewsAndPassengers => new Passenger[0];
     public virtual Route Route { get; set; } = new();
+    public bool IsTutorial { get; protected set; } = false;
     public bool SkippedLastInterval { get; protected set; } = false;
     public MissionStatus MissionStatus { get; set; } = MissionStatus.Pending;
     public float SecondsRemainingUntilNextMile { get; protected set; } = DEFAULT_SECONDS_PER_MILE;
@@ -190,8 +191,8 @@ public abstract class Mission
 
     public Mission()
     {
-        if (WeatherSO == null)
-            WeatherSO = DataManager.Instance.GetRandomWeather();
+        if (weatherSO == null)
+            weatherSO = DataManager.Instance.GetRandomWeather();
 
         SetupUi();
     }
@@ -333,7 +334,7 @@ public abstract class Mission
             if (
                 Train is not null
                 && Random.ShouldOccur(
-                    WeatherSO.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
+                    weatherSO.decisionMakingProbability - Train.WarmthLevelPercentage * 0.01
                 )
             )
             {
@@ -395,9 +396,9 @@ public abstract class Mission
         PendingMissionUi.Add(routeElement);
 
         weatherUiInPendingMission = new();
-        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(WeatherSO.name)));
+        weatherUiInPendingMission.Add(UiUtils.WrapLabel(new Label(weatherSO.name)));
         weatherUiInPendingMission.Add(
-            UiUtils.WrapLabel(new Label(WeatherSO.decisionMakingProbability * 100 + "%"))
+            UiUtils.WrapLabel(new Label(weatherSO.decisionMakingProbability * 100 + "%"))
         );
 
         PendingMissionUi.Add(weatherUiInPendingMission);

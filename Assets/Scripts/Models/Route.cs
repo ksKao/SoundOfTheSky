@@ -97,7 +97,7 @@ public readonly struct Route
 
         if (end is null)
         {
-            Debug.Log($"Could not find end location with name {endName}");
+            Debug.LogWarning($"Could not find end location with name {endName}");
             end = CityModeManager.Instance.Locations[1];
         }
 

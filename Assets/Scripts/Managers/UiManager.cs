@@ -1,7 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,9 +16,15 @@ public class UiManager : Singleton<UiManager>
         CityModeScreen is not null ? CityModeScreen : MainMenuScreen;
     private VisualElement _prevFocusedElement = null;
 
+    // tutorial textbox
+    private VisualElement _tutorialTextboxContainer = null;
+    private Label _tutorialTextboxLabel = null;
+    private Button _tutorialTextboxButton = null;
+    private Action _onNext = null;
+
     // focus
     private readonly Dictionary<Direction, VisualElement> _highlightOverlay = new();
-    private readonly float _highlightOverlayPadding = 16;
+    private float _highlightOverlayPadding = 16;
 
     protected override void Awake()
     {
@@ -63,12 +69,53 @@ public class UiManager : Singleton<UiManager>
                     style =
                     {
                         position = Position.Absolute,
-                        backgroundColor = Color.black,
-                        opacity = 0.98f,
+                        backgroundColor = direction == Direction.Center ? Color.clear : Color.black,
+                        opacity = direction == Direction.Center ? 1f : 0.98f,
                     },
                 }
             );
         }
+
+        _tutorialTextboxContainer = new()
+        {
+            style =
+            {
+                position = Position.Absolute,
+                backgroundColor = Color.white,
+                color = Color.black,
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column,
+                alignItems = Align.FlexEnd,
+                width = UiUtils.GetLengthPercentage(98),
+                height = UiUtils.GetLengthPercentage(25),
+                marginLeft = UiUtils.GetLengthPercentage(1),
+                marginRight = UiUtils.GetLengthPercentage(1),
+                paddingLeft = 24,
+                paddingRight = 24,
+                paddingTop = 24,
+                paddingBottom = 24,
+                fontSize = 24,
+            },
+        };
+
+        UiUtils.ToggleBorder(_tutorialTextboxContainer, true);
+
+        _tutorialTextboxLabel = new()
+        {
+            style =
+            {
+                flexGrow = 1,
+                width = UiUtils.GetLengthPercentage(100),
+                whiteSpace = WhiteSpace.Normal,
+            },
+        };
+
+        _tutorialTextboxButton = new() { text = "Next" };
+
+        _tutorialTextboxButton.clicked += () => _onNext?.Invoke();
+
+        _tutorialTextboxContainer.Add(_tutorialTextboxLabel);
+        _tutorialTextboxContainer.Add(_tutorialTextboxButton);
     }
 
     public void ShowModal(VisualElement content)
@@ -178,7 +225,13 @@ public class UiManager : Singleton<UiManager>
         ModalParent.Remove(_modalContent);
     }
 
-    public void FocusElement(VisualElement element)
+    public void FocusElement(
+        VisualElement element,
+        string message,
+        Action onNext,
+        bool clickable = false,
+        int padding = 8
+    )
     {
         UnfocusElement(_prevFocusedElement);
 
@@ -187,49 +240,47 @@ public class UiManager : Singleton<UiManager>
         ModalParent.style.position = Position.Relative;
         foreach (VisualElement overlayBlock in _highlightOverlay.Values)
         {
-            ModalParent.Add(overlayBlock);
+            if (overlayBlock.parent != ModalParent)
+                ModalParent.Add(overlayBlock);
         }
 
         _prevFocusedElement.RegisterCallback<GeometryChangedEvent>(GeometryChangedEventCallback);
+
+        if (_tutorialTextboxContainer.parent != ModalParent)
+            ModalParent.Add(_tutorialTextboxContainer);
+
+        _tutorialTextboxButton.style.display = clickable ? DisplayStyle.None : DisplayStyle.Flex;
+
+        _tutorialTextboxLabel.text = message;
+        _onNext = onNext;
+        _highlightOverlayPadding = padding;
+
+        _highlightOverlay[Direction.Center].UnregisterCallback<ClickEvent>(OnElementClick);
+
+        if (clickable)
+            _highlightOverlay[Direction.Center].RegisterCallback<ClickEvent>(OnElementClick);
+
+        Button button = new();
+
+        Refocus(_prevFocusedElement);
     }
 
-    private void GeometryChangedEventCallback(GeometryChangedEvent e)
+    private void OnElementClick(ClickEvent e)
     {
-        VisualElement target = e.target as VisualElement;
-
-        float containerWidth = ModalParent.resolvedStyle.width;
-        float containerHeight = ModalParent.resolvedStyle.height;
-        float x = target.worldBound.position.x - ModalParent.worldBound.position.x;
-        float y = target.worldBound.position.y - ModalParent.worldBound.position.y;
-        float width = target.resolvedStyle.width;
-        float height = target.resolvedStyle.height;
-
-        _highlightOverlay[Direction.Up].style.top = 0;
-        _highlightOverlay[Direction.Up].style.left = 0;
-        _highlightOverlay[Direction.Up].style.width = UiUtils.GetLengthPercentage(100);
-        _highlightOverlay[Direction.Up].style.height = y - _highlightOverlayPadding;
-
-        _highlightOverlay[Direction.Down].style.top = y + height + _highlightOverlayPadding;
-        _highlightOverlay[Direction.Down].style.left = x - _highlightOverlayPadding;
-        _highlightOverlay[Direction.Down].style.width = width + _highlightOverlayPadding * 2;
-        _highlightOverlay[Direction.Down].style.height =
-            containerHeight - y - height - _highlightOverlayPadding;
-
-        _highlightOverlay[Direction.Left].style.top = y - _highlightOverlayPadding;
-        _highlightOverlay[Direction.Left].style.left = 0;
-        _highlightOverlay[Direction.Left].style.width = x - _highlightOverlayPadding;
-        _highlightOverlay[Direction.Left].style.height =
-            containerHeight - y + _highlightOverlayPadding;
-
-        _highlightOverlay[Direction.Right].style.top = y - _highlightOverlayPadding;
-        _highlightOverlay[Direction.Right].style.left = x + width + _highlightOverlayPadding;
-        _highlightOverlay[Direction.Right].style.width =
-            containerWidth - x - width - _highlightOverlayPadding;
-        _highlightOverlay[Direction.Right].style.height =
-            containerHeight - y + _highlightOverlayPadding;
+        using (var newEvent = new NavigationSubmitEvent() { target = _prevFocusedElement })
+        {
+            _prevFocusedElement.SendEvent(newEvent);
+            StartCoroutine(OnNext());
+        }
     }
 
-    public void UnfocusElement(VisualElement element)
+    private IEnumerator OnNext()
+    {
+        yield return null; // wait for one frame before calling the on next function in order for the navigation submit event to be triggered first
+        _onNext?.Invoke();
+    }
+
+    public void UnfocusElement(VisualElement element = null)
     {
         _prevFocusedElement?.UnregisterCallback<GeometryChangedEvent>(GeometryChangedEventCallback);
         _prevFocusedElement = null;
@@ -241,5 +292,68 @@ public class UiManager : Singleton<UiManager>
             if (overlayBlock.parent == ModalParent)
                 ModalParent.Remove(overlayBlock);
         }
+
+        if (_tutorialTextboxContainer.parent == ModalParent)
+            ModalParent.Remove(_tutorialTextboxContainer);
+
+        _tutorialTextboxLabel.text = "";
+        _onNext = null;
+    }
+
+    private void GeometryChangedEventCallback(GeometryChangedEvent e)
+    {
+        Refocus(e.target as VisualElement);
+    }
+
+    private void Refocus(VisualElement e)
+    {
+        float screenWidth = ModalParent.resolvedStyle.width; // technically is not screen width, because its bound as aspect ratio
+        float screenHeight = ModalParent.resolvedStyle.height;
+        float x = e.worldBound.position.x - ModalParent.worldBound.position.x;
+        float y = e.worldBound.position.y - ModalParent.worldBound.position.y;
+        float width = e.resolvedStyle.width;
+        float height = e.resolvedStyle.height;
+
+        _highlightOverlay[Direction.Up].style.top = 0;
+        _highlightOverlay[Direction.Up].style.left = 0;
+        _highlightOverlay[Direction.Up].style.width = UiUtils.GetLengthPercentage(100);
+        _highlightOverlay[Direction.Up].style.height = y - _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Down].style.top = y + height + _highlightOverlayPadding;
+        _highlightOverlay[Direction.Down].style.left = x - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Down].style.width = width + _highlightOverlayPadding * 2;
+        _highlightOverlay[Direction.Down].style.height =
+            screenHeight - y - height - _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Left].style.top = y - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Left].style.left = 0;
+        _highlightOverlay[Direction.Left].style.width = x - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Left].style.height =
+            screenHeight - y + _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Right].style.top = y - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.left = x + width + _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.width =
+            screenWidth - x - width - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Right].style.height =
+            screenHeight - y + _highlightOverlayPadding;
+
+        _highlightOverlay[Direction.Center].style.top = y - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Center].style.left = x - _highlightOverlayPadding;
+        _highlightOverlay[Direction.Center].style.width = width + _highlightOverlayPadding * 2;
+        _highlightOverlay[Direction.Center].style.height = height + _highlightOverlayPadding * 2;
+
+        // check if textbox will cover highlighted element, only need to check y axis since the width is 100% anyways
+        // also check if top will be overlapped as well, meaning that if positioning the textbox at either top or bottom will both overlap, then prefer to position it at the bottom
+        // this can happen if the highlighted element is very tall
+        bool topOverlaps = y < _tutorialTextboxContainer.resolvedStyle.height + 16;
+        bool bottomOverlaps = (
+            y + height >= screenHeight - _tutorialTextboxContainer.resolvedStyle.height - 16
+        );
+        if (topOverlaps || (topOverlaps && bottomOverlaps))
+            _tutorialTextboxContainer.style.top =
+                screenHeight - _tutorialTextboxContainer.resolvedStyle.height - 16;
+        else
+            _tutorialTextboxContainer.style.top = 16;
     }
 }

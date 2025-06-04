@@ -34,7 +34,7 @@ public class ResupplyMission : Mission
         );
 
         if (foundWeather)
-            WeatherSO = foundWeather;
+            weatherSO = foundWeather;
 
         SetupUi();
     }
@@ -52,7 +52,7 @@ public class ResupplyMission : Mission
         );
 
         if (foundWeather)
-            WeatherSO = foundWeather;
+            weatherSO = foundWeather;
 
         Train = CityModeManager.Instance.Trains.FirstOrDefault(t =>
             t.trainSO.name == deployedResupplyMissionSerializable.trainName
@@ -177,7 +177,7 @@ public class ResupplyMission : Mission
 
     public override void Complete()
     {
-        double rewardMultiplier = 1 + WeatherSO.rewardMultiplier;
+        double rewardMultiplier = 1 + weatherSO.rewardMultiplier;
         NumberOfNewSupplies = (int)Mathf.Round((float)rewardMultiplier * NumberOfNewSupplies);
         NumberOfPayments = (int)Mathf.Round((float)rewardMultiplier * NumberOfPayments);
 

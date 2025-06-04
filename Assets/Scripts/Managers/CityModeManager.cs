@@ -62,8 +62,9 @@ public class CityModeManager : Singleton<CityModeManager>
         Trains = DataManager.Instance.AllTrains.Select(t => new Train(t)).ToArray();
         Application.runInBackground = true;
 
-        InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
-            UiManager.Instance.ShowModal(UiManager.Instance.CityModeScreen.cityModeMenu);
+        if (InputManager.Instance != null)
+            InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
+                UiManager.Instance.ShowModal(UiManager.Instance.CityModeScreen.cityModeMenu);
     }
 
     private void OnEnable()
@@ -377,7 +378,7 @@ public class CityModeManager : Singleton<CityModeManager>
                         routeStart = mission.Route.start.locationSO.name,
                         routeEnd = mission.Route.end.locationSO.name,
                         type = mission.Type,
-                        weather = mission.WeatherSO.name,
+                        weather = mission.weatherSO.name,
                     }
                 );
             }
@@ -402,7 +403,7 @@ public class CityModeManager : Singleton<CityModeManager>
                     {
                         routeStart = rescueMission.Route.start.locationSO.name,
                         routeEnd = rescueMission.Route.end.locationSO.name,
-                        weather = rescueMission.WeatherSO.name,
+                        weather = rescueMission.weatherSO.name,
                         passengers = rescueMission
                             .Passengers.Select(p => new PassengerSerializable()
                             {
@@ -439,7 +440,7 @@ public class CityModeManager : Singleton<CityModeManager>
                     {
                         routeStart = resupplyMission.Route.start.locationSO.name,
                         routeEnd = resupplyMission.Route.end.locationSO.name,
-                        weather = resupplyMission.WeatherSO.name,
+                        weather = resupplyMission.weatherSO.name,
                         order = i,
                         trainName = resupplyMission.Train.trainSO.name,
                         milesRemaining = resupplyMission.MilesRemaining,
@@ -464,7 +465,7 @@ public class CityModeManager : Singleton<CityModeManager>
                     new()
                     {
                         routeEnd = documentationMission.Route.end.locationSO.name,
-                        weather = documentationMission.WeatherSO.name,
+                        weather = documentationMission.weatherSO.name,
                         weatherProbabilities =
                             documentationMission.WeatherProbabilities.Values.ToList(),
                         order = i,

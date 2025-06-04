@@ -59,7 +59,6 @@ public class DocumentationMission : Mission
     )
         : this()
     {
-        UnityEngine.Debug.Log("Calling ctor");
         Route = new Route(
             DataManager.Instance.AllLocations[0].name,
             deployedDocumentationMissionSerializable.routeEnd
@@ -70,7 +69,7 @@ public class DocumentationMission : Mission
         );
 
         if (foundWeather)
-            WeatherSO = foundWeather;
+            weatherSO = foundWeather;
 
         WeatherProbabilities = deployedDocumentationMissionSerializable
             .weatherProbabilities.Select((prob, i) => new { index = i, prob })
@@ -210,7 +209,7 @@ public class DocumentationMission : Mission
 
         int materialsConsumed = (int)
             Math.Round(
-                WeatherSO.documentationMissionMaterialComsumptionMultiplier * (initialMiles / 5)
+                weatherSO.documentationMissionMaterialComsumptionMultiplier * (initialMiles / 5)
             );
 
         if (
@@ -275,14 +274,14 @@ public class DocumentationMission : Mission
         {
             if (randomNo - weatherProbability.Value <= 0)
             {
-                WeatherSO = weatherProbability.Key;
+                weatherSO = weatherProbability.Key;
                 break;
             }
 
             randomNo -= weatherProbability.Value;
         }
 
-        DeployedMissionUi.weatherLabel.text = WeatherSO.name;
+        DeployedMissionUi.weatherLabel.text = weatherSO.name;
     }
 
     private bool CheckMaterials(

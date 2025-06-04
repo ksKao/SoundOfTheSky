@@ -57,7 +57,7 @@ public class RescueMission : Mission
     public RescueMission()
         : base()
     {
-        int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, WeatherSO);
+        int weatherIndex = Array.IndexOf(DataManager.Instance.AllWeathers, weatherSO);
         _passengerIncreaseProbability += weatherIndex * 0.05; // each weather difficulty will additionally increase the probability to get a passenger by 5%
         _rescueMissionResolvePanel = new(this);
     }
@@ -75,7 +75,22 @@ public class RescueMission : Mission
         );
 
         if (foundWeather)
-            WeatherSO = foundWeather;
+            weatherSO = foundWeather;
+
+        SetupUi();
+    }
+
+    public RescueMission(bool isTutorial)
+        : this()
+    {
+        IsTutorial = isTutorial;
+
+        if (!IsTutorial)
+            return;
+
+        Route = new Route("Whittier", "Spencer"); // only 10 miles
+
+        weatherSO = DataManager.Instance.AllWeathers.FirstOrDefault();
 
         SetupUi();
     }
@@ -93,7 +108,7 @@ public class RescueMission : Mission
         );
 
         if (foundWeather)
-            WeatherSO = foundWeather;
+            weatherSO = foundWeather;
 
         Train = CityModeManager.Instance.Trains.FirstOrDefault(t =>
             t.trainSO.name == deployedRescueMissionSerializable.trainName
@@ -302,7 +317,7 @@ public class RescueMission : Mission
             }
 
             // the chance of passenger's health decreasing is same as the weather event occur probability
-            if (!Random.ShouldOccur(WeatherSO.decisionMakingProbability))
+            if (!Random.ShouldOccur(weatherSO.decisionMakingProbability))
             {
                 selectedPassenger.MakeBetter();
 
@@ -378,7 +393,7 @@ public class RescueMission : Mission
     public override void Complete()
     {
         // calculate rewards
-        double rewardMultiplier = 1 + WeatherSO.rewardMultiplier;
+        double rewardMultiplier = 1 + weatherSO.rewardMultiplier;
         NumberOfResidents = (int)
             Math.Round(
                 Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length

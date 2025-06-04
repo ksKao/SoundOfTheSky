@@ -22,6 +22,8 @@ public partial class TrainList : VisualElement
     };
     private Action<Train> _previousOnSelect = null;
 
+    public List<TrainCard> TrainCards => _trainCards;
+
     public TrainList()
     {
         style.height = UiUtils.GetLengthPercentage(100);

@@ -189,7 +189,7 @@ public partial class DeployedMissionUi : VisualElement
         checkHealthButton.clicked += mission.OnCheckHealthButtonClicked;
         leftContainer.Add(checkHealthButton);
 
-        weatherLabel.text = mission.WeatherSO.name;
+        weatherLabel.text = mission.weatherSO.name;
         leftContainer.Add(weatherLabel);
 
         materialLabelsContainer.style.display = DisplayStyle.Flex;
