@@ -5,6 +5,7 @@ public class UiManager : Singleton<UiManager>
 {
     public CityModeScreen CityModeScreen { get; private set; }
     public MainMenuScreen MainMenuScreen { get; private set; }
+    public CampaignModeScreen CampaignModeScreen { get; private set; }
     public Modal Modal { get; private set; }
 
     public VisualElement ModalParent =>
@@ -24,6 +25,7 @@ public class UiManager : Singleton<UiManager>
         {
             CityModeScreen = uiDocument.rootVisualElement.Q<CityModeScreen>();
             MainMenuScreen = uiDocument.rootVisualElement.Q<MainMenuScreen>();
+            CampaignModeScreen = uiDocument.rootVisualElement.Q<CampaignModeScreen>();
         }
 
         Modal = new();

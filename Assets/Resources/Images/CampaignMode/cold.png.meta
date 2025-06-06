@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: facdba53c323d0718bf7b460efb21842
+guid: ebdc0f366c304da808031f14e61f94c5
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7583998205985477613
-    second: passenger_background_0
+      213: 6060175823729801698
+    second: cold_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: passenger_background_0
+      name: cold_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 442
-        height: 267
+        width: 63
+        height: 69
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31c290b30d930c690800000000000000
-      internalID: -7583998205985477613
+      spriteID: 2e933d1bdc11a1450800000000000000
+      internalID: 6060175823729801698
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      passenger_background_0: -7583998205985477613
+      cold_0: 6060175823729801698
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

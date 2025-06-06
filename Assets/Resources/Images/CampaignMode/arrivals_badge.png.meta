@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: facdba53c323d0718bf7b460efb21842
+guid: 125418936bfc12d9085bea26bfb8d8a6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7583998205985477613
-    second: passenger_background_0
+      213: 9075697331170013688
+    second: arrivals_badge_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -84,7 +84,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Win64
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -110,20 +110,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Linux64
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Standalone
+    buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -139,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: passenger_background_0
+      name: arrivals_badge_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 442
-        height: 267
+        width: 760
+        height: 173
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31c290b30d930c690800000000000000
-      internalID: -7583998205985477613
+      spriteID: 8f1795933aa53fd70800000000000000
+      internalID: 9075697331170013688
       vertices: []
       indices: 
       edges: []
@@ -174,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      passenger_background_0: -7583998205985477613
+      arrivals_badge_0: 9075697331170013688
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

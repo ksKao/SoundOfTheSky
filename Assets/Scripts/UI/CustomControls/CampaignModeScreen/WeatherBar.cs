@@ -31,6 +31,7 @@ public partial class WeatherBar : VisualElement
             marginRight = 0,
         },
     };
+    public readonly WeatherBarIcons weatherBarIcons = new();
 
     public WeatherBar()
     {
@@ -46,10 +47,10 @@ public partial class WeatherBar : VisualElement
         style.borderBottomRightRadius = 12;
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
-        style.paddingTop = 8;
-        style.paddingBottom = 8;
-        style.paddingLeft = 8;
-        style.paddingRight = 8;
+        style.paddingTop = 16;
+        style.paddingBottom = 16;
+        style.paddingLeft = 16;
+        style.paddingRight = 16;
 
         AspectRatio leftContainer = new()
         {
@@ -72,6 +73,7 @@ public partial class WeatherBar : VisualElement
                 unityFontDefinition = new StyleFontDefinition(
                     Resources.Load<FontAsset>("Fonts/ronix")
                 ),
+                marginRight = 24,
             },
         };
 
@@ -84,13 +86,28 @@ public partial class WeatherBar : VisualElement
         {
             style =
             {
-                height = UiUtils.GetLengthPercentage(100),
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row,
+                position = Position.Relative,
                 flexGrow = 1,
+                overflow = Overflow.Hidden,
             },
         };
 
+        AspectRatio heidiIconContainer = new()
+        {
+            modifyParentStyle = false,
+            WidthRatio = 1,
+            HeightRatio = 1,
+        };
+
+        heidiIconContainer.Add(
+            new Image()
+            {
+                sprite = UiUtils.LoadSprite("heidi_icon_square", GameplayMode.CampaignMode),
+            }
+        );
+
+        centerContainer.Add(weatherBarIcons);
+        centerContainer.Add(heidiIconContainer);
         Add(centerContainer);
 
         VisualElement rightContainer = new()
@@ -100,8 +117,39 @@ public partial class WeatherBar : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
+                maxWidth = UiUtils.GetLengthPercentage(15),
+                justifyContent = Justify.SpaceEvenly,
+                marginLeft = 24,
             },
         };
+
+        rightContainer.Add(
+            new Image() { sprite = UiUtils.LoadSprite("arrivals_badge", GameplayMode.CampaignMode) }
+        );
+
+        rightContainer.Add(
+            new Label()
+            {
+                text = $"{CampaignModeManager.MAX_DAYS} Days",
+                style =
+                {
+                    color = new Color(0, 0.44f, 0.74f),
+                    unityFontStyleAndWeight = FontStyle.Bold,
+                    backgroundColor = Color.white,
+                    borderTopLeftRadius = 4,
+                    borderTopRightRadius = 4,
+                    borderBottomLeftRadius = 4,
+                    borderBottomRightRadius = 4,
+                    fontSize = 20,
+                    paddingTop = 8,
+                    paddingBottom = 8,
+                    paddingLeft = 16,
+                    paddingRight = 16,
+                    marginLeft = 0,
+                    marginRight = 0,
+                },
+            }
+        );
 
         Add(rightContainer);
     }
