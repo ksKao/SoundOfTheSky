@@ -7,6 +7,7 @@ public partial class CampaignModeScreen : VisualElement
 {
     public readonly WeatherBar weatherBar = new();
     public readonly MainChoicesContainer mainChoicesContainer = new();
+    public readonly CampaignModeCrewContainer campaignModeCrewContainer = new();
 
     public CampaignModeScreen()
     {
@@ -54,5 +55,6 @@ public partial class CampaignModeScreen : VisualElement
             }
         );
         bottomContainer.Add(mainChoicesContainer);
+        bottomContainer.Add(campaignModeCrewContainer);
     }
 }
