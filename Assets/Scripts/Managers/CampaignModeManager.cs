@@ -6,6 +6,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private void Start()
     {
-        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
+        // UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
+        UiManager.Instance.CampaignModeScreen.mainChoicesContainer.RefreshTab();
     }
+
+    public void ApplyAction(ActionSO action) { }
 }

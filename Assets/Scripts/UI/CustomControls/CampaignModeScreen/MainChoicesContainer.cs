@@ -4,6 +4,33 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class MainChoicesContainer : VisualElement
 {
+    public static readonly Color redColor = UiUtils.HexToRgb("#c1272c");
+
+    private readonly VisualElement _choicesContainer = new()
+    {
+        style =
+        {
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Column,
+            justifyContent = Justify.SpaceBetween,
+            width = UiUtils.GetLengthPercentage(60),
+            flexGrow = 1,
+            paddingTop = 16,
+            paddingBottom = 8,
+        },
+    };
+    private ActionType _actionType = ActionType.Warming;
+
+    public ActionType SelectedTab
+    {
+        get => _actionType;
+        set
+        {
+            _actionType = value;
+            RefreshTab();
+        }
+    }
+
     public readonly Label topText = new()
     {
         style =
@@ -63,13 +90,15 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomLeftRadius = 8,
                 borderBottomRightRadius = 8,
                 fontSize = 20,
-                backgroundColor = UiUtils.HexToRgb("#c1272c"),
+                backgroundColor = redColor,
                 color = Color.white,
                 width = UiUtils.GetLengthPercentage(40),
             },
         };
 
         UiUtils.ToggleBorder(warmingTab, false);
+
+        warmingTab.clicked += () => SelectedTab = ActionType.Warming;
 
         Button medicalTab = new()
         {
@@ -82,16 +111,36 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomRightRadius = 8,
                 fontSize = 20,
                 backgroundColor = Color.white,
-                color = UiUtils.HexToRgb("#c1272c"),
+                color = redColor,
                 width = UiUtils.GetLengthPercentage(40),
             },
         };
 
         UiUtils.ToggleBorder(medicalTab, false);
 
+        medicalTab.clicked += () => SelectedTab = ActionType.Medical;
+
         tabsContainer.Add(warmingTab);
         tabsContainer.Add(medicalTab);
 
         Add(tabsContainer);
+
+        Add(_choicesContainer);
+    }
+
+    public void RefreshTab()
+    {
+        if (DataManager.Instance == null)
+            return;
+
+        _choicesContainer.Clear();
+
+        foreach (ActionSO action in DataManager.Instance.AllActions)
+        {
+            if (action.type != SelectedTab)
+                continue;
+
+            _choicesContainer.Add(new ChoiceButton(action));
+        }
     }
 }
