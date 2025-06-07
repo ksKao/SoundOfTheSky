@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f97ff4f73ac8318833791f16a96e1b, type: 3}
+  m_Name: Snowstorm
+  m_EditorClassIdentifier: 
+  name: Snowstorm
+  sprite: {fileID: 21300000, guid: c8bb9a6f6759191bdbe2181812018093, type: 3}
+  changeOfWarming: 0.08
+  eventChance: 0.6
+  temperatureIncrease: 5
+  temperatureDecrease: 15

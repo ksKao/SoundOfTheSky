@@ -12,9 +12,13 @@ public class DataManager : Singleton<DataManager>
     [SerializeField]
     private LocationSO[] _allLocations;
 
+    [SerializeField]
+    private CampaignModeWeatherSO[] _allCampaignModeWeathers;
+
     public LocationSO[] AllLocations => _allLocations;
     public WeatherSO[] AllWeathers => _allWeathers;
     public TrainSO[] AllTrains => _allTrains;
+    public CampaignModeWeatherSO[] AllCampaignModeWeathers => _allCampaignModeWeathers;
 
     private string[] NameList { get; set; }
 

@@ -37,10 +37,10 @@ public partial class WeatherBar : VisualElement
     {
         style.backgroundColor = new Color(0.29f, 0.36f, 0.38f, 0.7f);
         style.width = UiUtils.GetLengthPercentage(80);
-        style.height = UiUtils.GetLengthPercentage(18);
+        style.height = UiUtils.GetLengthPercentage(60);
         style.position = Position.Absolute;
-        style.top = UiUtils.GetLengthPercentage(8);
-        style.right = UiUtils.GetLengthPercentage(3);
+        style.top = 60;
+        style.right = 30;
         style.borderTopLeftRadius = 12;
         style.borderTopRightRadius = 12;
         style.borderBottomLeftRadius = 12;
@@ -140,9 +140,9 @@ public partial class WeatherBar : VisualElement
                     borderTopRightRadius = 4,
                     borderBottomLeftRadius = 4,
                     borderBottomRightRadius = 4,
-                    fontSize = 20,
-                    paddingTop = 8,
-                    paddingBottom = 8,
+                    fontSize = 24,
+                    paddingTop = 10,
+                    paddingBottom = 10,
                     paddingLeft = 16,
                     paddingRight = 16,
                     marginLeft = 0,

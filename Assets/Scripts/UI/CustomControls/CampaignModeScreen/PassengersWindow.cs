@@ -11,8 +11,8 @@ public partial class PassengersWindow : VisualElement
         );
         style.position = Position.Absolute;
         style.width = UiUtils.GetLengthPercentage(20);
-        style.height = UiUtils.GetLengthPercentage(25);
-        style.top = UiUtils.GetLengthPercentage(4);
-        style.left = UiUtils.GetLengthPercentage(2);
+        style.height = UiUtils.GetLengthPercentage(80);
+        style.top = 32;
+        style.left = 32;
     }
 }

@@ -71,3 +71,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: af0d139aa1896fc438a9f685c193ccc8, type: 2}
   - {fileID: 11400000, guid: be591cb49699e4e41b5f36969427d02f, type: 2}
   - {fileID: 11400000, guid: 258279432fa01e24bb07c44bfdb70bee, type: 2}
+  _allCampaignModeWeathers:
+  - {fileID: 11400000, guid: aa874a109ece51d858c27d640876e9f6, type: 2}
+  - {fileID: 11400000, guid: 6aae354263ce8ff96b319d35dc1dadd4, type: 2}
+  - {fileID: 11400000, guid: c566aa403649e48ddaca1da9b76a432c, type: 2}
+  - {fileID: 11400000, guid: 96b606a60cf82b1f3beb3ec8b7b05f8e, type: 2}
+  - {fileID: 11400000, guid: 0ae921c2255f4ab978e3be85581f7add, type: 2}
