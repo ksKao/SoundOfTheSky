@@ -53,3 +53,9 @@ public enum GameplayMode
     CityMode,
     CampaignMode,
 }
+
+public enum ActionType
+{
+    Medical,
+    Warming,
+}
