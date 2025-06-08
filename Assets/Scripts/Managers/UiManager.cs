@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 using UnityEngine.UIElements;
 
 public class UiManager : Singleton<UiManager>
@@ -9,8 +10,20 @@ public class UiManager : Singleton<UiManager>
     public CampaignModeScreen CampaignModeScreen { get; private set; }
     public Modal Modal { get; private set; }
 
-    public VisualElement ModalParent =>
-        CityModeScreen is not null ? CityModeScreen : MainMenuScreen;
+    public VisualElement ModalParent
+    {
+        get
+        {
+            if (CityModeScreen != null)
+                return CityModeScreen;
+            else if (MainMenuScreen != null)
+                return MainMenuScreen;
+            else if (CampaignModeScreen != null)
+                return CampaignModeScreen;
+            else
+                return null;
+        }
+    }
 
     protected override void Awake()
     {
