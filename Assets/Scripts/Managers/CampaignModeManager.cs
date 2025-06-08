@@ -10,6 +10,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     public const int DAY_TRANSITION_DURATION = 5;
     public const int NUMBER_OF_FUTURE_WEATHER = 6;
     public const int NUMBER_OF_CREWS = 5;
+    public const int NUMBER_OF_PASSENGERS = 20;
 
     private int _day = 1;
 
@@ -23,6 +24,8 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         }
     }
     public List<CampaignModeWeatherSO> FutureWeathers { get; } = new(NUMBER_OF_FUTURE_WEATHER);
+    public (string name, PassengerStatus status)[] Passengers { get; } =
+        new (string, PassengerStatus)[NUMBER_OF_PASSENGERS];
     public int[] CrewCooldowns { get; } = new int[NUMBER_OF_CREWS] { 0, 0, 0, 0, 0 };
 
     private void Start()
@@ -80,6 +83,23 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     private void StartGame()
     {
         Day = 1;
+
+        string[] names =
+        {
+            "Mark Stousey",
+            "Tom Homan",
+            "Barret Fore",
+            "Kyle Ritten",
+            "Bobby Cannon",
+        };
+
+        // populate passengers
+        for (int i = 0; i < Passengers.Length; i++)
+        {
+            Passengers[i] = (names[i % names.Length], PassengerStatus.Comfortable);
+        }
+
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
 
         for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
         {

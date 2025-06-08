@@ -49,15 +49,7 @@ public class Passenger
         {
             _status = value;
             StatusLabel.text = $"({value})";
-            StatusLabel.style.color = value switch
-            {
-                PassengerStatus.Comfortable => _comfortableColor,
-                PassengerStatus.Cold => _coldColor,
-                PassengerStatus.Sick => _sickColor,
-                PassengerStatus.Terminal => _terminalColor,
-                PassengerStatus.Critical => _criticalColor,
-                _ => _deathColor,
-            };
+            StatusLabel.style.color = StatusToColor(value);
         }
     }
     public bool Selected
@@ -91,6 +83,19 @@ public class Passenger
         ChangeStatus((int)passengerSerializable.status);
 
         RefreshLabels();
+    }
+
+    public static Color StatusToColor(PassengerStatus status)
+    {
+        return status switch
+        {
+            PassengerStatus.Comfortable => _comfortableColor,
+            PassengerStatus.Cold => _coldColor,
+            PassengerStatus.Sick => _sickColor,
+            PassengerStatus.Terminal => _terminalColor,
+            PassengerStatus.Critical => _criticalColor,
+            _ => _deathColor,
+        };
     }
 
     public void MakeWorse()

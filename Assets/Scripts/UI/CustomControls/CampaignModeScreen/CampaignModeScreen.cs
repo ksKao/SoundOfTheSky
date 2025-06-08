@@ -9,6 +9,7 @@ public partial class CampaignModeScreen : VisualElement
     public readonly WeatherBar weatherBar = new();
     public readonly MainChoicesContainer mainChoicesContainer = new();
     public readonly CampaignModeCrewContainer campaignModeCrewContainer = new();
+    public readonly PassengersWindow passengersWindow = new();
 
     private readonly VisualElement _bottomContainer = new()
     {
@@ -45,7 +46,7 @@ public partial class CampaignModeScreen : VisualElement
         Add(topContainer);
         Add(_bottomContainer);
 
-        topContainer.Add(new PassengersWindow());
+        topContainer.Add(passengersWindow);
         topContainer.Add(weatherBar);
 
         _bottomContainer.Add(

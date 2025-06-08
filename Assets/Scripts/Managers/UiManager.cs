@@ -1,6 +1,5 @@
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 using UnityEngine.UIElements;
 
 public class UiManager : Singleton<UiManager>
