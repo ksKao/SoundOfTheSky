@@ -92,7 +92,7 @@ public partial class MainChoicesContainer : VisualElement
                 fontSize = 20,
                 backgroundColor = redColor,
                 color = Color.white,
-                width = UiUtils.GetLengthPercentage(40),
+                width = UiUtils.GetLengthPercentage(38),
             },
         };
 
@@ -112,7 +112,7 @@ public partial class MainChoicesContainer : VisualElement
                 fontSize = 20,
                 backgroundColor = Color.white,
                 color = redColor,
-                width = UiUtils.GetLengthPercentage(40),
+                width = UiUtils.GetLengthPercentage(38),
             },
         };
 
@@ -120,8 +120,26 @@ public partial class MainChoicesContainer : VisualElement
 
         medicalTab.clicked += () => SelectedTab = ActionType.Medical;
 
+        Button skipButton = new()
+        {
+            text = "Skip",
+            style =
+            {
+                backgroundColor = Color.clear,
+                borderTopLeftRadius = 8,
+                borderTopRightRadius = 8,
+                borderBottomLeftRadius = 8,
+                borderBottomRightRadius = 8,
+                fontSize = 20,
+                color = Color.white,
+            },
+        };
+
         tabsContainer.Add(warmingTab);
         tabsContainer.Add(medicalTab);
+        tabsContainer.Add(skipButton);
+
+        skipButton.clicked += () => CampaignModeManager.Instance.ApplyAction(null);
 
         Add(tabsContainer);
 

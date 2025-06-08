@@ -48,44 +48,77 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     public void ApplyAction(ActionSO action)
     {
-        // check if have enough crews
-        int numberOfCrewsAvailable = CrewCooldowns.Where(c => c == 0).Count();
-
-        if (numberOfCrewsAvailable < action.crewsNeeded)
+        if (action != null)
         {
-            UiUtils.ShowError("You do not have enough crews to perform this action");
-            return;
-        }
+            // check if have enough crews
+            int numberOfCrewsAvailable = CrewCooldowns.Where(c => c == 0).Count();
 
-        if (action.type == ActionType.Medical)
-        {
-            for (int i = 0; i < Passengers.Length; i++)
+            if (numberOfCrewsAvailable < action.crewsNeeded)
             {
-                for (int j = 0; j < action.valueIncrease; j++)
-                    ChangePassengerHealth(i, true);
+                UiUtils.ShowError("You do not have enough crews to perform this action");
+                return;
             }
-        }
-        else
-        {
-            Temperature += action.valueIncrease;
-        }
 
-        int cooldownsApplied = 0;
-        for (int i = 0; i < CrewCooldowns.Length && cooldownsApplied < action.crewsNeeded; i++)
-        {
-            if (CrewCooldowns[i] != 0)
-                continue;
+            if (action.type == ActionType.Medical)
+            {
+                for (int i = 0; i < Passengers.Length; i++)
+                {
+                    for (int j = 0; j < action.valueIncrease; j++)
+                        ChangePassengerHealth(i, true);
+                }
+            }
+            else
+            {
+                Temperature += action.valueIncrease;
+            }
 
-            CrewCooldowns[i] = Random.GetRandomIntInRangeInclusive(
-                action.cooldownMin,
-                action.cooldownMax
-            );
+            int cooldownsApplied = 0;
+            for (int i = 0; i < CrewCooldowns.Length && cooldownsApplied < action.crewsNeeded; i++)
+            {
+                if (CrewCooldowns[i] != 0)
+                    continue;
 
-            cooldownsApplied++;
+                CrewCooldowns[i] = Random.GetRandomIntInRangeInclusive(
+                    action.cooldownMin,
+                    action.cooldownMax
+                );
+
+                cooldownsApplied++;
+            }
+
+            UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
         }
-        UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
 
         StartCoroutine(TransitionDay());
+    }
+
+    private void StartGame()
+    {
+        Day = 1;
+
+        string[] names =
+        {
+            "Mark Stousey",
+            "Tom Homan",
+            "Barret Fore",
+            "Kyle Ritten",
+            "Bobby Cannon",
+        };
+
+        // populate passengers
+        for (int i = 0; i < Passengers.Length; i++)
+        {
+            Passengers[i] = (names[i % names.Length], PassengerStatus.Comfortable);
+        }
+
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+
+        for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
+        {
+            FutureWeathers.Add(Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers));
+        }
+
+        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
     }
 
     private IEnumerator TransitionDay()
@@ -129,35 +162,6 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
 
         UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
-    }
-
-    private void StartGame()
-    {
-        Day = 1;
-
-        string[] names =
-        {
-            "Mark Stousey",
-            "Tom Homan",
-            "Barret Fore",
-            "Kyle Ritten",
-            "Bobby Cannon",
-        };
-
-        // populate passengers
-        for (int i = 0; i < Passengers.Length; i++)
-        {
-            Passengers[i] = (names[i % names.Length], PassengerStatus.Comfortable);
-        }
-
-        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
-
-        for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
-        {
-            FutureWeathers.Add(Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers));
-        }
-
-        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
     }
 
     private void RerollWeather()
