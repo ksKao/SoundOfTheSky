@@ -8,7 +8,7 @@ public class CampaignModeWeatherSO : ScriptableObject
 {
     public new string name;
     public Sprite sprite;
-    public double changeOfWarming;
+    public double chanceOfWarming;
     public double eventChance;
     public int temperatureIncrease;
     public int temperatureDecrease;
