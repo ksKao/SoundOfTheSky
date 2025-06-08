@@ -37,7 +37,13 @@ public static class Random
         return result;
     }
 
-    public static int GetRandomIntInRange(int lower, int upper)
+    /// <summary>
+    /// Get a random number within a range (inclusive). E.g. if lower is 1 and upper is 5, it could return 1, 2, 3, 4, or 5
+    /// </summary>
+    /// <param name="lower">lower bound of random value</param>
+    /// <param name="upper">upper bound of random value</param>
+    /// <returns>a random value between lower and upper inclusive</returns>
+    public static int GetRandomIntInRangeInclusive(int lower, int upper)
     {
         return new System.Random().Next(lower, upper + 1);
     }

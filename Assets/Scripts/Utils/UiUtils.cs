@@ -86,10 +86,10 @@ public static class UiUtils
 
     public static void ShowError(string message)
     {
-        if (UiManager.Instance == null || UiManager.Instance.CityModeScreen == null)
+        if (UiManager.Instance == null)
             return;
 
-        UiManager.Instance.CityModeScreen.AddError(message);
+        UiManager.Instance.AddError(message);
     }
 
     public static void ApplyCommonMenuButtonStyle(Button button)

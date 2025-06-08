@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
@@ -8,6 +9,17 @@ public partial class CampaignModeScreen : VisualElement
     public readonly WeatherBar weatherBar = new();
     public readonly MainChoicesContainer mainChoicesContainer = new();
     public readonly CampaignModeCrewContainer campaignModeCrewContainer = new();
+
+    private readonly VisualElement _bottomContainer = new()
+    {
+        style =
+        {
+            width = UiUtils.GetLengthPercentage(100),
+            flexGrow = 1,
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+        },
+    };
 
     public CampaignModeScreen()
     {
@@ -30,31 +42,44 @@ public partial class CampaignModeScreen : VisualElement
             },
         };
 
-        VisualElement bottomContainer = new()
-        {
-            style =
-            {
-                width = UiUtils.GetLengthPercentage(100),
-                flexGrow = 1,
-                display = DisplayStyle.Flex,
-                flexDirection = FlexDirection.Row,
-            },
-        };
-
         Add(topContainer);
-        Add(bottomContainer);
+        Add(_bottomContainer);
 
         topContainer.Add(new PassengersWindow());
         topContainer.Add(weatherBar);
 
-        bottomContainer.Add(
+        _bottomContainer.Add(
             new Image()
             {
                 sprite = UiUtils.LoadSprite("heidi_portrait", GameplayMode.CampaignMode),
                 style = { height = UiUtils.GetLengthPercentage(95), alignSelf = Align.FlexEnd },
             }
         );
-        bottomContainer.Add(mainChoicesContainer);
-        bottomContainer.Add(campaignModeCrewContainer);
+        _bottomContainer.Add(mainChoicesContainer);
+        _bottomContainer.Add(campaignModeCrewContainer);
+    }
+
+    public void ShowBottomContainer()
+    {
+        DOTween
+            .To(
+                () => 100,
+                x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
+                0,
+                0.5f
+            )
+            .SetEase(Ease.InBounce);
+    }
+
+    public void HideBottomContainer()
+    {
+        DOTween
+            .To(
+                () => 0,
+                x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
+                100,
+                0.5f
+            )
+            .SetEase(Ease.OutBounce);
     }
 }

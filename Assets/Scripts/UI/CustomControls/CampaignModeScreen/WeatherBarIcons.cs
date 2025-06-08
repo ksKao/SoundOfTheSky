@@ -1,34 +1,11 @@
 using System.Linq;
 using DG.Tweening;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
 public partial class WeatherBarIcons : VisualElement
 {
-    private string[] _icons = new string[CampaignModeManager.NUMBER_OF_FUTURE_WEATHER_SHOWED + 1]
-    {
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-    };
-
-    public string[] Icons
-    {
-        get => _icons;
-        set
-        {
-            string[] prevIcons = _icons;
-
-            _icons = value;
-
-            if (!prevIcons.All(i => string.IsNullOrEmpty(i)))
-                Transition();
-        }
-    }
-
     public WeatherBarIcons()
     {
         style.position = Position.Absolute;
@@ -37,7 +14,7 @@ public partial class WeatherBarIcons : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
         style.left = UiUtils.GetLengthPercentage(
-            100 / (CampaignModeManager.NUMBER_OF_FUTURE_WEATHER_SHOWED + 1)
+            100 / (float)CampaignModeManager.NUMBER_OF_FUTURE_WEATHER
         );
     }
 
@@ -45,7 +22,7 @@ public partial class WeatherBarIcons : VisualElement
     {
         DOTween
             .To(
-                () => 100 / (float)(CampaignModeManager.NUMBER_OF_FUTURE_WEATHER_SHOWED + 1),
+                () => 100 / (float)CampaignModeManager.NUMBER_OF_FUTURE_WEATHER,
                 x => style.left = UiUtils.GetLengthPercentage(x),
                 0f,
                 CampaignModeManager.DAY_TRANSITION_DURATION
@@ -54,24 +31,24 @@ public partial class WeatherBarIcons : VisualElement
             .OnComplete(() =>
             {
                 style.left = UiUtils.GetLengthPercentage(
-                    100 / (float)(CampaignModeManager.NUMBER_OF_FUTURE_WEATHER_SHOWED + 1)
+                    100 / (float)CampaignModeManager.NUMBER_OF_FUTURE_WEATHER
                 );
                 RepopulateIcons();
             });
     }
 
-    private void RepopulateIcons()
+    public void RepopulateIcons()
     {
         Clear();
 
-        foreach (string icon in _icons)
+        foreach (CampaignModeWeatherSO weatherSO in CampaignModeManager.Instance.FutureWeathers)
         {
             VisualElement container = new()
             {
                 style =
                 {
                     width = UiUtils.GetLengthPercentage(
-                        100 / (float)(CampaignModeManager.NUMBER_OF_FUTURE_WEATHER_SHOWED + 1)
+                        100 / (float)CampaignModeManager.NUMBER_OF_FUTURE_WEATHER
                     ),
                     height = UiUtils.GetLengthPercentage(100),
                     display = DisplayStyle.Flex,
@@ -84,7 +61,7 @@ public partial class WeatherBarIcons : VisualElement
             container.Add(
                 new Image()
                 {
-                    sprite = UiUtils.LoadSprite(icon, GameplayMode.CampaignMode),
+                    sprite = weatherSO.sprite,
                     style =
                     {
                         width = UiUtils.GetLengthPercentage(50),

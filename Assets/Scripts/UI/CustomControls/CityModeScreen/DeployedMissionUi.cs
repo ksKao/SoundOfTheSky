@@ -114,7 +114,7 @@ public partial class DeployedMissionUi : VisualElement
 
         Add(_container);
 
-        StyleIndex = Random.GetRandomIntInRange(
+        StyleIndex = Random.GetRandomIntInRangeInclusive(
             1,
             NUMBER_OF_DEPLOYED_MISSION_BACKGROUND_VARIATIONS
         );

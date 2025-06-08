@@ -2,28 +2,29 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
-public partial class CooldownContainer : VisualElement
+public partial class CrewCooldownIndicator : VisualElement
 {
-    private readonly Label _numberLabel = new()
-    {
-        text = "0",
-        style =
+    public Label NumberLabel { get; } =
+        new()
         {
-            fontSize = 64,
-            unityFontStyleAndWeight = FontStyle.Bold,
-            paddingLeft = 0,
-            paddingRight = 0,
-            paddingBottom = 0,
-            paddingTop = 0,
-            marginLeft = 0,
-            marginRight = 0,
-            marginTop = 0,
-            marginBottom = 0,
-            unityTextAlign = TextAnchor.MiddleCenter,
-        },
-    };
+            text = "0",
+            style =
+            {
+                fontSize = 64,
+                paddingLeft = 0,
+                paddingRight = 0,
+                paddingBottom = 0,
+                paddingTop = 10,
+                marginLeft = 0,
+                marginRight = 0,
+                marginTop = 0,
+                marginBottom = 0,
+                height = 64,
+                unityTextAlign = TextAnchor.MiddleCenter,
+            },
+        };
 
-    public CooldownContainer()
+    public CrewCooldownIndicator()
     {
         style.position = Position.Absolute;
         style.display = DisplayStyle.Flex;
@@ -48,6 +49,6 @@ public partial class CooldownContainer : VisualElement
         UiUtils.ToggleBorder(this, true, Color.white);
         UiUtils.SetBorderWidth(this, 1);
 
-        Add(_numberLabel);
+        Add(NumberLabel);
     }
 }

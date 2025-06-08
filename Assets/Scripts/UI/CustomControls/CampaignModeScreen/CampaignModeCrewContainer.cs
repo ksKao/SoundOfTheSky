@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public partial class CampaignModeCrewContainer : VisualElement
 {
     public static readonly Color backgroundColor = UiUtils.HexToRgb("#384246");
-    public List<CooldownContainer> cooldownContainers = new();
+    public List<CrewCooldownIndicator> cooldownIndicators = new();
 
     public CampaignModeCrewContainer()
     {
@@ -52,12 +52,22 @@ public partial class CampaignModeCrewContainer : VisualElement
                 }
             );
 
-            CooldownContainer cooldownContainer = new();
+            CrewCooldownIndicator cooldownContainer = new();
             imageContainer.Add(cooldownContainer);
 
-            cooldownContainers.Add(cooldownContainer);
+            cooldownIndicators.Add(cooldownContainer);
 
             Add(imageContainer);
+        }
+    }
+
+    public void RefreshCooldown()
+    {
+        for (int i = 0; i < CampaignModeManager.Instance.CrewCooldowns.Length; i++)
+        {
+            cooldownIndicators[i].NumberLabel.text = CampaignModeManager
+                .Instance.CrewCooldowns[i]
+                .ToString();
         }
     }
 }
