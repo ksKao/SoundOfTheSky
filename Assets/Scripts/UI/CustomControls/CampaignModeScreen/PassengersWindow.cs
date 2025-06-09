@@ -163,13 +163,63 @@ public partial class PassengersWindow : VisualElement
                 },
             };
 
-            container.Add(
-                new Image()
+            VisualElement aspectRatioContainer = new()
+            {
+                style =
                 {
-                    sprite = UiUtils.LoadSprite("passenger_icon", GameplayMode.CampaignMode),
-                    style = { marginBottom = 8 },
+                    flexGrow = 1,
+                    marginBottom = 8,
+                    width = UiUtils.GetLengthPercentage(100),
+                    display = DisplayStyle.Flex,
+                    flexDirection = FlexDirection.Row,
+                    justifyContent = Justify.Center,
+                    alignItems = Align.Center,
+                },
+            };
+
+            AspectRatio aspectRatio = new()
+            {
+                WidthRatio = 1,
+                HeightRatio = 1,
+                modifyParentStyle = false,
+                style = { position = Position.Relative },
+            };
+
+            aspectRatio.Add(
+                new VisualElement()
+                {
+                    style =
+                    {
+                        backgroundImage = UiUtils.LoadTexture(
+                            "passenger_icon",
+                            GameplayMode.CampaignMode
+                        ),
+                        width = UiUtils.GetLengthPercentage(100),
+                        height = UiUtils.GetLengthPercentage(100),
+                    },
                 }
             );
+
+            if (status == PassengerStatus.Death)
+                aspectRatio.Add(
+                    new()
+                    {
+                        style =
+                        {
+                            position = Position.Absolute,
+                            backgroundColor = Color.black,
+                            opacity = 0.85f,
+                            top = 0,
+                            left = 0,
+                            width = UiUtils.GetLengthPercentage(100),
+                            height = UiUtils.GetLengthPercentage(100),
+                        },
+                    }
+                );
+
+            aspectRatioContainer.Add(aspectRatio);
+
+            container.Add(aspectRatioContainer);
 
             container.Add(
                 new Label()
@@ -190,25 +240,27 @@ public partial class PassengersWindow : VisualElement
                 }
             );
 
-            if (status != PassengerStatus.Death)
-                container.Add(
-                    new Label()
-                    {
-                        text = status.ToString(),
-                        style =
-                        {
-                            color = Passenger.StatusToColor(status),
-                            paddingTop = 0,
-                            paddingBottom = 0,
-                            paddingLeft = 0,
-                            paddingRight = 0,
-                            marginTop = 0,
-                            marginBottom = 16,
-                            marginLeft = 0,
-                            marginRight = 0,
-                        },
-                    }
-                );
+            Label statusLabel = new()
+            {
+                text = status.ToString(),
+                style =
+                {
+                    color = Passenger.StatusToColor(status),
+                    paddingTop = 0,
+                    paddingBottom = 0,
+                    paddingLeft = 0,
+                    paddingRight = 0,
+                    marginTop = 0,
+                    marginBottom = 16,
+                    marginLeft = 0,
+                    marginRight = 0,
+                },
+            };
+
+            container.Add(statusLabel);
+
+            if (status == PassengerStatus.Death)
+                statusLabel.visible = false;
 
             _passengersContainer.Add(container);
         }
