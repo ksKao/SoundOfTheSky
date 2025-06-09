@@ -139,7 +139,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
             if (
                 Random.ShouldOccur(sickChance)
-                && (!_skippedToday || Passengers[i].status >= (PassengerStatus.Death - 1))
+                && (!_skippedToday || Passengers[i].status < (PassengerStatus.Death - 1))
             ) // passengers cannot die when today is skipped
                 ChangePassengerHealth(i, false);
             if (Random.ShouldOccur(recoverChance) && Passengers[i].status != PassengerStatus.Death) // cannot revive dead passengers
@@ -206,13 +206,13 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         if (!Random.ShouldOccur(TodaysWeather.eventChance))
         {
-            ApplyAction(null);
             _skippedToday = true;
+            ApplyAction(null);
         }
         else
         {
-            UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
             _skippedToday = false;
+            UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
         }
     }
 }
