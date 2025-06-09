@@ -64,7 +64,7 @@ public partial class CampaignModeScreen : VisualElement
     {
         DOTween
             .To(
-                () => 100,
+                () => _bottomContainer.style.marginTop.value.value,
                 x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
                 0,
                 0.5f
@@ -76,7 +76,7 @@ public partial class CampaignModeScreen : VisualElement
     {
         DOTween
             .To(
-                () => 0,
+                () => _bottomContainer.style.marginTop.value.value,
                 x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
                 100,
                 0.5f

@@ -14,6 +14,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private int _day = 1;
     private int _temperature = 0;
+    private bool _skippedToday = false;
 
     public int Day
     {
@@ -136,9 +137,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 _ => (0.75f, 0),
             };
 
-            if (Random.ShouldOccur(sickChance))
+            if (
+                Random.ShouldOccur(sickChance)
+                && (!_skippedToday || Passengers[i].status >= (PassengerStatus.Death - 1))
+            ) // passengers cannot die when today is skipped
                 ChangePassengerHealth(i, false);
-            if (Random.ShouldOccur(recoverChance))
+            if (Random.ShouldOccur(recoverChance) && Passengers[i].status != PassengerStatus.Death) // cannot revive dead passengers
                 ChangePassengerHealth(i, true);
         }
 
@@ -147,21 +151,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         yield return new WaitForSeconds(DAY_TRANSITION_DURATION);
 
-        Day++;
-
-        if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))
-            Temperature += TodaysWeather.temperatureIncrease;
-        else
-            Temperature -= TodaysWeather.temperatureDecrease;
-
-        for (int i = 0; i < CrewCooldowns.Length; i++)
-        {
-            CrewCooldowns[i] = Math.Max(CrewCooldowns[i] - 1, 0);
-        }
-
-        UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
-
-        UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
+        StartNewDay();
     }
 
     private void RerollWeather()
@@ -196,5 +186,33 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         Passengers[index].status = (PassengerStatus)Math.Clamp(newStatusInt, min, max);
 
         UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+    }
+
+    private void StartNewDay()
+    {
+        Day++;
+
+        if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))
+            Temperature += TodaysWeather.temperatureIncrease;
+        else
+            Temperature -= TodaysWeather.temperatureDecrease;
+
+        for (int i = 0; i < CrewCooldowns.Length; i++)
+        {
+            CrewCooldowns[i] = Math.Max(CrewCooldowns[i] - 1, 0);
+        }
+
+        UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
+
+        if (!Random.ShouldOccur(TodaysWeather.eventChance))
+        {
+            ApplyAction(null);
+            _skippedToday = true;
+        }
+        else
+        {
+            UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
+            _skippedToday = false;
+        }
     }
 }
