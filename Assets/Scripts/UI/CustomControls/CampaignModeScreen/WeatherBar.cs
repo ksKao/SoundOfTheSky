@@ -16,15 +16,16 @@ public partial class WeatherBar : VisualElement
             paddingRight = 0,
             marginLeft = 0,
             marginRight = 0,
-            fontSize = 24,
+            fontSize = 28,
         },
     };
     public readonly Label dayLabel = new()
     {
-        text = $"DAY 0",
+        text = $"DAY 1",
         style =
         {
             unityTextAlign = TextAnchor.MiddleCenter,
+            fontSize = 18,
             paddingLeft = 0,
             paddingRight = 0,
             marginLeft = 0,
@@ -145,11 +146,11 @@ public partial class WeatherBar : VisualElement
                     borderTopRightRadius = 4,
                     borderBottomLeftRadius = 4,
                     borderBottomRightRadius = 4,
-                    fontSize = 24,
-                    paddingTop = 10,
-                    paddingBottom = 10,
-                    paddingLeft = 16,
-                    paddingRight = 16,
+                    fontSize = 28,
+                    paddingTop = 16,
+                    paddingBottom = 16,
+                    paddingLeft = 24,
+                    paddingRight = 24,
                     marginLeft = 0,
                     marginRight = 0,
                 },

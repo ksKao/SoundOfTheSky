@@ -17,7 +17,7 @@ public partial class MainMenuScreen : VisualElement
         style.unityFontDefinition = new StyleFontDefinition(
             Resources.Load<FontAsset>("Fonts/ronix")
         );
-        style.backgroundColor = Color.blue;
+        style.backgroundImage = UiUtils.LoadTexture("background", Scene.MainMenu);
 
         Button campaignButton = new() { text = "Campaign " };
         UiUtils.ApplyCommonMenuButtonStyle(campaignButton);
