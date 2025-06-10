@@ -72,15 +72,22 @@ public partial class CampaignModeScreen : VisualElement
             .SetEase(Ease.InBounce);
     }
 
-    public void HideBottomContainer()
+    public void HideBottomContainer(bool transition = true)
     {
-        DOTween
-            .To(
-                () => _bottomContainer.style.marginTop.value.value,
-                x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
-                100,
-                0.5f
-            )
-            .SetEase(Ease.OutBounce);
+        if (transition)
+        {
+            DOTween
+                .To(
+                    () => _bottomContainer.style.marginTop.value.value,
+                    x => _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(x),
+                    100,
+                    0.5f
+                )
+                .SetEase(Ease.OutBounce);
+        }
+        else
+        {
+            _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(100);
+        }
     }
 }

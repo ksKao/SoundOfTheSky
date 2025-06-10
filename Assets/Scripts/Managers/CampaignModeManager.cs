@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     private int _day = 1;
     private int _temperature = 0;
     private bool _skippedToday = false;
+    private bool _transitioning = false;
 
     public int Day
     {
@@ -43,11 +45,32 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     public (string name, PassengerStatus status)[] Passengers { get; } =
         new (string, PassengerStatus)[NUMBER_OF_PASSENGERS];
     public int[] CrewCooldowns { get; } = new int[NUMBER_OF_CREWS] { 0, 0, 0, 0, 0 };
+    public static string SaveFilePath
+    {
+        get
+        {
+            int index = PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, -1);
+            return GetSaveFilePath(index);
+        }
+    }
 
     private void Start()
     {
         UiManager.Instance.CampaignModeScreen.mainChoicesContainer.RefreshTab();
         StartGame();
+
+        LoadGame();
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefs.SetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, 0); // TODO: Delete later, current for testing only
+        SaveGame();
+    }
+
+    public static string GetSaveFilePath(int index)
+    {
+        return Path.Combine(Application.persistentDataPath, $"campaign_mode_{index}.json");
     }
 
     public void ApplyAction(ActionSO action)
@@ -96,6 +119,46 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         StartCoroutine(TransitionDay());
     }
 
+    public bool SaveGame()
+    {
+        CampaignModeState campaignModeState = new()
+        {
+            day = Day,
+            temperature = Temperature,
+            skippedToday = _skippedToday,
+            transitioning = _transitioning,
+            futureWeathers = FutureWeathers
+                .Select(w => new CampaignModeWeatherSerializable()
+                {
+                    name = w.weather.name,
+                    hidden = w.hidden,
+                })
+                .ToArray(),
+            statuses = Passengers.Select(p => p.status).ToArray(),
+            crewCooldowns = CrewCooldowns,
+        };
+
+        try
+        {
+            string serialized = JsonUtility.ToJson(campaignModeState, true);
+
+            using (FileStream stream = new(SaveFilePath, FileMode.Create))
+            {
+                using (StreamWriter writer = new(stream))
+                {
+                    writer.Write(serialized);
+                }
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error while saving data: " + e);
+            return false;
+        }
+    }
+
     private void StartGame()
     {
         Day = 1;
@@ -133,31 +196,43 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     private IEnumerator TransitionDay()
     {
         // apply health updates based on temperature
-        for (int i = 0; i < Passengers.Length; i++)
+        if (!_transitioning)
         {
-            (float sickChance, float recoverChance) = Temperature switch
+            for (int i = 0; i < Passengers.Length; i++)
             {
-                >= 0 => (0, 0.2f),
-                < 0 and > -10 => (0.1f, 0.15f),
-                <= -10 and > -20 => (0.2f, 0.1f),
-                <= -20 and > -30 => (0.3f, 0.05f),
-                <= -30 and > -40 => (0.5f, 0.02f),
-                _ => (0.75f, 0),
-            };
+                (float sickChance, float recoverChance) = Temperature switch
+                {
+                    >= 0 => (0, 0.2f),
+                    < 0 and > -10 => (0.1f, 0.15f),
+                    <= -10 and > -20 => (0.2f, 0.1f),
+                    <= -20 and > -30 => (0.3f, 0.05f),
+                    <= -30 and > -40 => (0.5f, 0.02f),
+                    _ => (0.75f, 0),
+                };
 
-            if (
-                Random.ShouldOccur(sickChance)
-                && (!_skippedToday || Passengers[i].status < (PassengerStatus.Death - 1))
-            ) // passengers cannot die when today is skipped
-                ChangePassengerHealth(i, false);
-            if (Random.ShouldOccur(recoverChance) && Passengers[i].status != PassengerStatus.Death) // cannot revive dead passengers
-                ChangePassengerHealth(i, true);
+                if (
+                    Random.ShouldOccur(sickChance)
+                    && (!_skippedToday || Passengers[i].status < (PassengerStatus.Death - 1))
+                ) // passengers cannot die when today is skipped
+                    ChangePassengerHealth(i, false);
+                if (
+                    Random.ShouldOccur(recoverChance)
+                    && Passengers[i].status != PassengerStatus.Death
+                ) // cannot revive dead passengers
+                    ChangePassengerHealth(i, true);
+            }
+
+            RerollWeather();
+            UiManager.Instance.CampaignModeScreen.HideBottomContainer();
+            _transitioning = true;
+        }
+        else
+        {
+            UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
         }
 
-        RerollWeather();
-        UiManager.Instance.CampaignModeScreen.HideBottomContainer();
-
         yield return new WaitForSeconds(DAY_TRANSITION_DURATION);
+        _transitioning = false;
 
         StartNewDay();
     }
@@ -241,5 +316,78 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     private void Lose()
     {
         SceneManager.LoadScene((int)Scene.MainMenu);
+    }
+
+    private void LoadGame()
+    {
+        if (!File.Exists(SaveFilePath))
+            return;
+
+        CampaignModeState savedData = null;
+
+        try
+        {
+            string serialized = "";
+
+            using (FileStream stream = new(SaveFilePath, FileMode.Open))
+            {
+                using (StreamReader reader = new(stream))
+                {
+                    serialized = reader.ReadToEnd();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(serialized))
+                return;
+
+            savedData = JsonUtility.FromJson<CampaignModeState>(serialized);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Error while reading saved data: " + e);
+        }
+
+        if (savedData is null)
+            return;
+
+        Day = savedData.day;
+        Temperature = savedData.temperature;
+        _skippedToday = savedData.skippedToday;
+        _transitioning = savedData.transitioning;
+
+        FutureWeathers.Clear();
+
+        foreach (
+            CampaignModeWeatherSerializable campaignModeWeatherSerializable in savedData.futureWeathers
+        )
+        {
+            FutureWeathers.Add(
+                (
+                    DataManager.Instance.AllCampaignModeWeathers.First(w =>
+                        w.name == campaignModeWeatherSerializable.name
+                    ),
+                    campaignModeWeatherSerializable.hidden
+                )
+            );
+        }
+
+        for (int i = 0; i < savedData.statuses.Length; i++)
+        {
+            Passengers[i].status = savedData.statuses[i];
+        }
+
+        for (int i = 0; i < savedData.crewCooldowns.Length; i++)
+        {
+            CrewCooldowns[i] = savedData.crewCooldowns[i];
+        }
+
+        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+
+        if (_transitioning)
+        {
+            UiManager.Instance.CampaignModeScreen.HideBottomContainer(false);
+            ApplyAction(null);
+        }
     }
 }

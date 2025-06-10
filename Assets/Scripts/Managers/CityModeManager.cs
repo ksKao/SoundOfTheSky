@@ -226,6 +226,7 @@ public class CityModeManager : Singleton<CityModeManager>
             return;
 
         CityModeState savedData = null;
+
         try
         {
             string serialized = "";
