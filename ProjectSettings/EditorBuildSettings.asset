@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/City Mode.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Campaign Mode.unity
+    guid: c03f8805a8dc5311d9364e5af5d1ee68
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 934d5e5b6368c054487d36481c3649af
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3605bf155841b35109cebc32f7637f56, type: 3}
   m_UseUCBPForAssetBundles: 0
