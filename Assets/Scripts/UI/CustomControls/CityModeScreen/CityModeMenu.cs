@@ -42,6 +42,7 @@ public partial class CityModeMenu : VisualElement
             UiManager.Instance.Modal.Show(
                 new SaveMenu(
                     "SAVE GAME",
+                    CityModeManager.GetSaveFilePath,
                     () =>
                         UiManager.Instance.Modal.Show(
                             UiManager.Instance.CityModeScreen.cityModeMenu

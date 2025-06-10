@@ -21,6 +21,7 @@ public partial class CampaignModeScreen : VisualElement
             flexDirection = FlexDirection.Row,
         },
     };
+    private readonly CampaignModeMenuButton _campaignModeMenuButton = new();
 
     public CampaignModeScreen()
     {
@@ -45,6 +46,7 @@ public partial class CampaignModeScreen : VisualElement
 
         Add(topContainer);
         Add(_bottomContainer);
+        Add(_campaignModeMenuButton);
 
         topContainer.Add(passengersWindow);
         topContainer.Add(weatherBar);
@@ -53,7 +55,12 @@ public partial class CampaignModeScreen : VisualElement
             new Image()
             {
                 sprite = UiUtils.LoadSprite("heidi_portrait", Scene.CampaignMode),
-                style = { height = UiUtils.GetLengthPercentage(95), alignSelf = Align.FlexEnd },
+                style =
+                {
+                    height = UiUtils.GetLengthPercentage(95),
+                    alignSelf = Align.FlexEnd,
+                    width = UiUtils.GetLengthPercentage(25),
+                },
             }
         );
         _bottomContainer.Add(mainChoicesContainer);

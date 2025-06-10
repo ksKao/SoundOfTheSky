@@ -89,6 +89,7 @@ public partial class SaveMenu : VisualElement
 
     public SaveMenu(
         string title,
+        Func<int, string> getSaveFilePath,
         Action onCancel = null,
         Action onNew = null,
         Action onLoad = null,
@@ -186,11 +187,16 @@ public partial class SaveMenu : VisualElement
                 "Are you sure you want to delete this save file? This action cannot be reverted.",
                 () =>
                 {
-                    UiManager.Instance.Modal.Show(new SaveMenu(title, onCancel, onNew));
+                    File.Delete(getSaveFilePath(SelectedIndex));
+                    UiManager.Instance.Modal.Show(
+                        new SaveMenu(title, getSaveFilePath, onCancel, onNew, onLoad, onSave)
+                    );
                 },
                 () =>
                 {
-                    UiManager.Instance.Modal.Show(new SaveMenu(title, onCancel, onNew));
+                    UiManager.Instance.Modal.Show(
+                        new SaveMenu(title, getSaveFilePath, onCancel, onNew, onLoad, onSave)
+                    );
                 }
             );
         };
@@ -240,8 +246,7 @@ public partial class SaveMenu : VisualElement
                 },
             };
             saveFileButton.SetEnabled(
-                (File.Exists(CityModeManager.GetSaveFilePath(i)) && _onLoad is not null)
-                    || _onSave is not null
+                (File.Exists(getSaveFilePath(i)) && _onLoad is not null) || _onSave is not null
             );
             Label saveFileButtonLabel = new($"SAVE {i + 1}");
             saveFileButton.Add(saveFileButtonLabel);

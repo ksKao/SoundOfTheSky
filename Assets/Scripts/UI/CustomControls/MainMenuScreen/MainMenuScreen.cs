@@ -40,11 +40,25 @@ public partial class MainMenuScreen : VisualElement
 #endif
         };
 
+        campaignButton.clicked += () =>
+        {
+            UiManager.Instance.Modal.Show(
+                new SaveMenu(
+                    "Campaign Mode",
+                    CampaignModeManager.GetSaveFilePath,
+                    () => UiManager.Instance.Modal.Close(),
+                    () => SceneManager.LoadScene((int)Scene.CampaignMode),
+                    () => SceneManager.LoadScene((int)Scene.CampaignMode)
+                )
+            );
+        };
+
         cityModeButton.clicked += () =>
         {
             UiManager.Instance.Modal.Show(
                 new SaveMenu(
                     "City Mode",
+                    CityModeManager.GetSaveFilePath,
                     () => UiManager.Instance.Modal.Close(),
                     () => SceneManager.LoadScene((int)Scene.CityMode),
                     () => SceneManager.LoadScene((int)Scene.CityMode)

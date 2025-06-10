@@ -100,7 +100,15 @@ public partial class WeatherBar : VisualElement
         };
 
         heidiIconContainer.Add(
-            new Image() { sprite = UiUtils.LoadSprite("heidi_icon_square", Scene.CampaignMode) }
+            new Image()
+            {
+                sprite = UiUtils.LoadSprite("heidi_icon_square", Scene.CampaignMode),
+                style =
+                {
+                    width = UiUtils.GetLengthPercentage(100),
+                    height = UiUtils.GetLengthPercentage(100),
+                },
+            }
         );
 
         centerContainer.Add(weatherBarIcons);

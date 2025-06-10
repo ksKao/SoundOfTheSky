@@ -18,7 +18,7 @@ public partial class Modal : VisualElement
                 position = Position.Absolute,
                 width = UiUtils.GetLengthPercentage(100),
                 height = UiUtils.GetLengthPercentage(100),
-                backgroundColor = new(new Color(0, 0, 0, 0.4f)),
+                backgroundColor = new(new Color(0, 0, 0, 0.8f)),
             },
         };
 
@@ -74,8 +74,8 @@ public partial class Modal : VisualElement
                 flexDirection = FlexDirection.Column,
                 alignItems = Align.Center,
                 justifyContent = Justify.SpaceEvenly,
-                width = UiUtils.GetLengthPercentage(50),
-                minHeight = UiUtils.GetLengthPercentage(30),
+                width = UiUtils.GetLengthPercentage(40),
+                minHeight = UiUtils.GetLengthPercentage(20),
                 paddingLeft = UiUtils.GetLengthPercentage(10),
                 paddingRight = UiUtils.GetLengthPercentage(10),
             },
@@ -94,7 +94,7 @@ public partial class Modal : VisualElement
             {
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
-                width = UiUtils.GetLengthPercentage(60),
+                width = UiUtils.GetLengthPercentage(100),
                 justifyContent = Justify.SpaceBetween,
             },
         };

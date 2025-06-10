@@ -29,6 +29,7 @@ public partial class ChoiceButton : VisualElement
                 paddingBottom = 4,
                 paddingLeft = 8,
                 paddingRight = 8,
+                fontSize = 20,
             },
         };
 

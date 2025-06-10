@@ -62,12 +62,6 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         LoadGame();
     }
 
-    private void OnDestroy()
-    {
-        PlayerPrefs.SetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, 0); // TODO: Delete later, current for testing only
-        SaveGame();
-    }
-
     public static string GetSaveFilePath(int index)
     {
         return Path.Combine(Application.persistentDataPath, $"campaign_mode_{index}.json");
