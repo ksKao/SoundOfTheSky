@@ -32,20 +32,14 @@ public static class UiUtils
         element.style.borderRightColor = finalColor;
     }
 
-    public static Texture2D LoadTexture(
-        string fileName,
-        GameplayMode gameplayMode = GameplayMode.CityMode
-    )
+    public static Texture2D LoadTexture(string fileName, Scene scene = Scene.CityMode)
     {
-        return Resources.Load<Texture2D>($"Images/{gameplayMode}/{fileName}");
+        return Resources.Load<Texture2D>($"Images/{scene}/{fileName}");
     }
 
-    public static Sprite LoadSprite(
-        string fileName,
-        GameplayMode gameplayMode = GameplayMode.CityMode
-    )
+    public static Sprite LoadSprite(string fileName, Scene scene = Scene.CityMode)
     {
-        return Resources.Load<Sprite>($"Images/{gameplayMode}/{fileName}");
+        return Resources.Load<Sprite>($"Images/{scene}/{fileName}");
     }
 
     public static Color HexToRgb(string hex)

@@ -16,7 +16,7 @@ public partial class PassengersWindow : VisualElement
             height = UiUtils.GetLengthPercentage(85),
             backgroundImage = UiUtils.LoadTexture(
                 "passenger_window_background",
-                GameplayMode.CampaignMode
+                Scene.CampaignMode
             ),
         },
     };
@@ -37,7 +37,7 @@ public partial class PassengersWindow : VisualElement
     {
         style.backgroundImage = UiUtils.LoadTexture(
             "passenger_window_background",
-            GameplayMode.CampaignMode
+            Scene.CampaignMode
         );
         style.position = Position.Absolute;
         style.width = UiUtils.GetLengthPercentage(20);
@@ -190,10 +190,7 @@ public partial class PassengersWindow : VisualElement
                 {
                     style =
                     {
-                        backgroundImage = UiUtils.LoadTexture(
-                            "passenger_icon",
-                            GameplayMode.CampaignMode
-                        ),
+                        backgroundImage = UiUtils.LoadTexture("passenger_icon", Scene.CampaignMode),
                         width = UiUtils.GetLengthPercentage(100),
                         height = UiUtils.GetLengthPercentage(100),
                     },

@@ -27,7 +27,7 @@ public partial class CityModeMenu : VisualElement
 
         mainMenuButton.clicked += () =>
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene((int)Scene.MainMenu);
         };
 
         Button saveGameButton = new()

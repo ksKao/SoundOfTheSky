@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CampaignModeManager : Singleton<CampaignModeManager>
 {
@@ -186,11 +187,17 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         Passengers[index].status = (PassengerStatus)Math.Clamp(newStatusInt, min, max);
 
         UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+
+        if (Passengers.All(p => p.status == PassengerStatus.Death))
+            Lose();
     }
 
     private void StartNewDay()
     {
         Day++;
+
+        if (Day >= MAX_DAYS)
+            Win();
 
         if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))
             Temperature += TodaysWeather.temperatureIncrease;
@@ -214,5 +221,15 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             _skippedToday = false;
             UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
         }
+    }
+
+    private void Win()
+    {
+        SceneManager.LoadScene((int)Scene.MainMenu);
+    }
+
+    private void Lose()
+    {
+        SceneManager.LoadScene((int)Scene.MainMenu);
     }
 }

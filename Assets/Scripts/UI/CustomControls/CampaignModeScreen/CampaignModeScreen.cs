@@ -24,7 +24,7 @@ public partial class CampaignModeScreen : VisualElement
 
     public CampaignModeScreen()
     {
-        style.backgroundImage = UiUtils.LoadTexture("background", GameplayMode.CampaignMode);
+        style.backgroundImage = UiUtils.LoadTexture("background", Scene.CampaignMode);
         style.minHeight = UiUtils.GetLengthPercentage(100);
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
@@ -52,7 +52,7 @@ public partial class CampaignModeScreen : VisualElement
         _bottomContainer.Add(
             new Image()
             {
-                sprite = UiUtils.LoadSprite("heidi_portrait", GameplayMode.CampaignMode),
+                sprite = UiUtils.LoadSprite("heidi_portrait", Scene.CampaignMode),
                 style = { height = UiUtils.GetLengthPercentage(95), alignSelf = Align.FlexEnd },
             }
         );

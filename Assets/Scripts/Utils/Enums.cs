@@ -48,14 +48,15 @@ public enum Direction
     Center,
 }
 
-public enum GameplayMode
-{
-    CityMode,
-    CampaignMode,
-}
-
 public enum ActionType
 {
     Medical,
     Warming,
+}
+
+public enum Scene
+{
+    MainMenu,
+    CityMode,
+    CampaignMode,
 }

@@ -42,7 +42,7 @@ public partial class CampaignModeCrewContainer : VisualElement
             imageContainer.Add(
                 new Image()
                 {
-                    sprite = UiUtils.LoadSprite("crew_icon", GameplayMode.CampaignMode),
+                    sprite = UiUtils.LoadSprite("crew_icon", Scene.CampaignMode),
                     style =
                     {
                         width = 100,

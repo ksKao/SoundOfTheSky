@@ -100,10 +100,7 @@ public partial class WeatherBar : VisualElement
         };
 
         heidiIconContainer.Add(
-            new Image()
-            {
-                sprite = UiUtils.LoadSprite("heidi_icon_square", GameplayMode.CampaignMode),
-            }
+            new Image() { sprite = UiUtils.LoadSprite("heidi_icon_square", Scene.CampaignMode) }
         );
 
         centerContainer.Add(weatherBarIcons);
@@ -124,7 +121,7 @@ public partial class WeatherBar : VisualElement
         };
 
         rightContainer.Add(
-            new Image() { sprite = UiUtils.LoadSprite("arrivals_badge", GameplayMode.CampaignMode) }
+            new Image() { sprite = UiUtils.LoadSprite("arrivals_badge", Scene.CampaignMode) }
         );
 
         rightContainer.Add(

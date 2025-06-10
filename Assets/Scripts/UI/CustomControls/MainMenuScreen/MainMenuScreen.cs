@@ -46,8 +46,8 @@ public partial class MainMenuScreen : VisualElement
                 new SaveMenu(
                     "City Mode",
                     () => UiManager.Instance.Modal.Close(),
-                    () => SceneManager.LoadScene(1),
-                    () => SceneManager.LoadScene(1)
+                    () => SceneManager.LoadScene((int)Scene.CityMode),
+                    () => SceneManager.LoadScene((int)Scene.CityMode)
                 )
             );
         };
