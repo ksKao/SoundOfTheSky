@@ -41,7 +41,11 @@ public partial class WeatherBarIcons : VisualElement
     {
         Clear();
 
-        foreach (CampaignModeWeatherSO weatherSO in CampaignModeManager.Instance.FutureWeathers)
+        foreach (
+            (CampaignModeWeatherSO weatherSO, bool hidden) in CampaignModeManager
+                .Instance
+                .FutureWeathers
+        )
         {
             VisualElement container = new()
             {
@@ -61,7 +65,9 @@ public partial class WeatherBarIcons : VisualElement
             container.Add(
                 new Image()
                 {
-                    sprite = weatherSO.sprite,
+                    sprite = hidden
+                        ? UiUtils.LoadSprite("unknown", Scene.CampaignMode)
+                        : weatherSO.sprite,
                     style =
                     {
                         width = UiUtils.GetLengthPercentage(50),

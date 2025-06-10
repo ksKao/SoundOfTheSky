@@ -12,6 +12,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     public const int NUMBER_OF_FUTURE_WEATHER = 6;
     public const int NUMBER_OF_CREWS = 5;
     public const int NUMBER_OF_PASSENGERS = 20;
+    public const float WEATHER_HIDDEN_CHANCE = 0.2f;
 
     private int _day = 1;
     private int _temperature = 0;
@@ -36,8 +37,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 $"{value}{WeatherBar.DEGREE_SYMBOL}";
         }
     }
-    public CampaignModeWeatherSO TodaysWeather => FutureWeathers.First();
-    public List<CampaignModeWeatherSO> FutureWeathers { get; } = new(NUMBER_OF_FUTURE_WEATHER);
+    public CampaignModeWeatherSO TodaysWeather => FutureWeathers.First().weather;
+    public List<(CampaignModeWeatherSO weather, bool hidden)> FutureWeathers { get; } =
+        new(NUMBER_OF_FUTURE_WEATHER);
     public (string name, PassengerStatus status)[] Passengers { get; } =
         new (string, PassengerStatus)[NUMBER_OF_PASSENGERS];
     public int[] CrewCooldowns { get; } = new int[NUMBER_OF_CREWS] { 0, 0, 0, 0, 0 };
@@ -117,7 +119,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
         {
-            FutureWeathers.Add(Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers));
+            FutureWeathers.Add(
+                (
+                    Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers),
+                    Random.ShouldOccur(WEATHER_HIDDEN_CHANCE)
+                )
+            );
         }
 
         UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
@@ -162,7 +169,10 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             FutureWeathers[i - 1] = FutureWeathers[i];
         }
 
-        FutureWeathers[^1] = Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers);
+        FutureWeathers[^1] = (
+            Random.GetFromArray(DataManager.Instance.AllCampaignModeWeathers),
+            Random.ShouldOccur(WEATHER_HIDDEN_CHANCE)
+        );
 
         UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
     }
