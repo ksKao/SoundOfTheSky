@@ -175,6 +175,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Campaign Mode",
+            "id": "5cdc9365-b6e8-450b-ac64-2a4eae49253f",
+            "actions": [
+                {
+                    "name": "Open Console",
+                    "type": "Button",
+                    "id": "c470b007-5aa0-4d1b-b96e-0f57c2c5d733",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4a3ecf6a-d4b4-49cd-a763-1485cb6cdac7",
+                    "path": "<Keyboard>/f11",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Open Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

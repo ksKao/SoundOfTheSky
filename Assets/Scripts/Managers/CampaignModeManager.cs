@@ -32,13 +32,15 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     public int Temperature
     {
         get => _temperature;
-        private set
+        set
         {
             _temperature = value;
             UiManager.Instance.CampaignModeScreen.weatherBar.temperatureLabel.text =
                 $"{value}{WeatherBar.DEGREE_SYMBOL}";
         }
     }
+    public int DayTransitionDuration { get; set; } = DAY_TRANSITION_DURATION;
+    public int MaxDays { get; set; } = MAX_DAYS;
     public CampaignModeWeatherSO TodaysWeather => FutureWeathers.First().weather;
     public List<(CampaignModeWeatherSO weather, bool hidden)> FutureWeathers { get; } =
         new(NUMBER_OF_FUTURE_WEATHER);
@@ -54,12 +56,30 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         }
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        InputManager.Instance.InputAction.CampaignMode.OpenConsole.performed += ctx =>
+            ConsoleManager.Instance.OpenConsole();
+    }
+
+    private void OnEnable()
+    {
+        InputManager.Instance.InputAction.CampaignMode.Enable();
+    }
+
     private void Start()
     {
         UiManager.Instance.CampaignModeScreen.mainChoicesContainer.RefreshTab();
         StartGame();
 
         LoadGame();
+    }
+
+    private void OnDisable()
+    {
+        InputManager.Instance.InputAction.CampaignMode.Disable();
     }
 
     public static string GetSaveFilePath(int index)
@@ -225,7 +245,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
         }
 
-        yield return new WaitForSeconds(DAY_TRANSITION_DURATION);
+        yield return new WaitForSeconds(DayTransitionDuration);
         _transitioning = false;
 
         StartNewDay();
@@ -275,7 +295,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     {
         Day++;
 
-        if (Day >= MAX_DAYS)
+        if (Day >= MaxDays)
             Win();
 
         if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))

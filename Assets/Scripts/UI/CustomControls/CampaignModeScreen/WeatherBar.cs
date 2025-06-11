@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public partial class WeatherBar : VisualElement
 {
     public const string DEGREE_SYMBOL = "°";
+
     public readonly Label temperatureLabel = new()
     {
         text = $"0{DEGREE_SYMBOL}",
@@ -17,6 +18,7 @@ public partial class WeatherBar : VisualElement
             marginLeft = 0,
             marginRight = 0,
             fontSize = 28,
+            display = DisplayStyle.None,
         },
     };
     public readonly Label dayLabel = new()
@@ -28,6 +30,28 @@ public partial class WeatherBar : VisualElement
             fontSize = 18,
             paddingLeft = 0,
             paddingRight = 0,
+            marginLeft = 0,
+            marginRight = 0,
+        },
+    };
+    public readonly Label maxDaysLabel = new()
+    {
+        text =
+            $"{(CampaignModeManager.Instance == null ? CampaignModeManager.MAX_DAYS : CampaignModeManager.Instance.MaxDays)} Days",
+        style =
+        {
+            color = new Color(0, 0.44f, 0.74f),
+            unityFontStyleAndWeight = FontStyle.Bold,
+            backgroundColor = Color.white,
+            borderTopLeftRadius = 4,
+            borderTopRightRadius = 4,
+            borderBottomLeftRadius = 4,
+            borderBottomRightRadius = 4,
+            fontSize = 28,
+            paddingTop = 16,
+            paddingBottom = 16,
+            paddingLeft = 24,
+            paddingRight = 24,
             marginLeft = 0,
             marginRight = 0,
         },
@@ -133,29 +157,7 @@ public partial class WeatherBar : VisualElement
             new Image() { sprite = UiUtils.LoadSprite("arrivals_badge", Scene.CampaignMode) }
         );
 
-        rightContainer.Add(
-            new Label()
-            {
-                text = $"{CampaignModeManager.MAX_DAYS} Days",
-                style =
-                {
-                    color = new Color(0, 0.44f, 0.74f),
-                    unityFontStyleAndWeight = FontStyle.Bold,
-                    backgroundColor = Color.white,
-                    borderTopLeftRadius = 4,
-                    borderTopRightRadius = 4,
-                    borderBottomLeftRadius = 4,
-                    borderBottomRightRadius = 4,
-                    fontSize = 28,
-                    paddingTop = 16,
-                    paddingBottom = 16,
-                    paddingLeft = 24,
-                    paddingRight = 24,
-                    marginLeft = 0,
-                    marginRight = 0,
-                },
-            }
-        );
+        rightContainer.Add(maxDaysLabel);
 
         Add(rightContainer);
     }

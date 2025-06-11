@@ -197,6 +197,34 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Campaign Mode"",
+            ""id"": ""5cdc9365-b6e8-450b-ac64-2a4eae49253f"",
+            ""actions"": [
+                {
+                    ""name"": ""Open Console"",
+                    ""type"": ""Button"",
+                    ""id"": ""c470b007-5aa0-4d1b-b96e-0f57c2c5d733"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4a3ecf6a-d4b4-49cd-a763-1485cb6cdac7"",
+                    ""path"": ""<Keyboard>/f11"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Console"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -214,6 +242,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         // City Mode Menu
         m_CityModeMenu = asset.FindActionMap("City Mode Menu", throwIfNotFound: true);
         m_CityModeMenu_CloseMenu = m_CityModeMenu.FindAction("Close Menu", throwIfNotFound: true);
+        // Campaign Mode
+        m_CampaignMode = asset.FindActionMap("Campaign Mode", throwIfNotFound: true);
+        m_CampaignMode_OpenConsole = m_CampaignMode.FindAction("Open Console", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -221,6 +252,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_CityMode.enabled, "This will cause a leak and performance issues, GameInputAction.CityMode.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameInputAction.Console.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CityModeMenu.enabled, "This will cause a leak and performance issues, GameInputAction.CityModeMenu.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CampaignMode.enabled, "This will cause a leak and performance issues, GameInputAction.CampaignMode.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -448,6 +480,52 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         }
     }
     public CityModeMenuActions @CityModeMenu => new CityModeMenuActions(this);
+
+    // Campaign Mode
+    private readonly InputActionMap m_CampaignMode;
+    private List<ICampaignModeActions> m_CampaignModeActionsCallbackInterfaces = new List<ICampaignModeActions>();
+    private readonly InputAction m_CampaignMode_OpenConsole;
+    public struct CampaignModeActions
+    {
+        private @GameInputAction m_Wrapper;
+        public CampaignModeActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OpenConsole => m_Wrapper.m_CampaignMode_OpenConsole;
+        public InputActionMap Get() { return m_Wrapper.m_CampaignMode; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CampaignModeActions set) { return set.Get(); }
+        public void AddCallbacks(ICampaignModeActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CampaignModeActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CampaignModeActionsCallbackInterfaces.Add(instance);
+            @OpenConsole.started += instance.OnOpenConsole;
+            @OpenConsole.performed += instance.OnOpenConsole;
+            @OpenConsole.canceled += instance.OnOpenConsole;
+        }
+
+        private void UnregisterCallbacks(ICampaignModeActions instance)
+        {
+            @OpenConsole.started -= instance.OnOpenConsole;
+            @OpenConsole.performed -= instance.OnOpenConsole;
+            @OpenConsole.canceled -= instance.OnOpenConsole;
+        }
+
+        public void RemoveCallbacks(ICampaignModeActions instance)
+        {
+            if (m_Wrapper.m_CampaignModeActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICampaignModeActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CampaignModeActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CampaignModeActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CampaignModeActions @CampaignMode => new CampaignModeActions(this);
     public interface ICityModeActions
     {
         void OnOpenConsole(InputAction.CallbackContext context);
@@ -463,5 +541,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     public interface ICityModeMenuActions
     {
         void OnCloseMenu(InputAction.CallbackContext context);
+    }
+    public interface ICampaignModeActions
+    {
+        void OnOpenConsole(InputAction.CallbackContext context);
     }
 }

@@ -14,6 +14,16 @@ public class SetCommand : Command
                 "set seconds_per_mile <value>",
                 "Set how many seconds per mile, default is 5. Decimal numbers are allowed."
             },
+            {
+                "set day_transition_duration <value>",
+                "Set the day transition time in campaign mode, default is 5 seconds, integer only."
+            },
+            { "set day <value>", "Set the current day in campaign mode." },
+            { "set temperature <value>", "Set the current temperature in campaign mode." },
+            {
+                "set max_days <value>",
+                "Set the max days in campaign mode, i.e., how many days for the player to reach to win."
+            },
         };
 
     public override void Execute(string[] args)
@@ -24,6 +34,7 @@ public class SetCommand : Command
         switch (args[0])
         {
             case "seconds_per_mile":
+            {
                 if (!float.TryParse(args[1], out float value))
                     throw new Exception($"\"{args[1]}\" is not a valid number.");
                 CityModeManager.Instance.SecondsPerMile = value;
@@ -31,6 +42,33 @@ public class SetCommand : Command
                     $"Seconds per mile has been set to {args[1]}. It will take effect on the next interval."
                 );
                 break;
+            }
+            case "day_transition_duration":
+            {
+                if (!int.TryParse(args[1], out int value))
+                    throw new Exception($"\"{args[1]}\" is not a valid integer.");
+                CampaignModeManager.Instance.DayTransitionDuration = value;
+                ConsoleManager.Instance.Output(
+                    $"Day transition duration has been set to {args[1]}. It will take effect on the next transition"
+                );
+                break;
+            }
+            case "day":
+            {
+                if (!int.TryParse(args[1], out int value))
+                    throw new Exception($"\"{args[1]}\" is not a valid integer.");
+                CampaignModeManager.Instance.Day = value;
+                ConsoleManager.Instance.Output($"Day has been set to {args[1]}.");
+                break;
+            }
+            case "temperature":
+            {
+                if (!int.TryParse(args[1], out int value))
+                    throw new Exception($"\"{args[1]}\" is not a valid integer.");
+                CampaignModeManager.Instance.Temperature = value;
+                ConsoleManager.Instance.Output($"Temperature has been set to {args[1]}.");
+                break;
+            }
             default:
                 throw new Exception($"Invalid argument \"{args[0]}\"");
         }

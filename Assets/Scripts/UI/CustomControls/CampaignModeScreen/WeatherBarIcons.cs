@@ -25,7 +25,7 @@ public partial class WeatherBarIcons : VisualElement
                 () => 100 / (float)CampaignModeManager.NUMBER_OF_FUTURE_WEATHER,
                 x => style.left = UiUtils.GetLengthPercentage(x),
                 0f,
-                CampaignModeManager.DAY_TRANSITION_DURATION
+                CampaignModeManager.Instance.DayTransitionDuration
             )
             .SetEase(Ease.Linear)
             .OnComplete(() =>

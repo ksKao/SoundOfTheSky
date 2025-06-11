@@ -63,12 +63,17 @@ public class CityModeManager : Singleton<CityModeManager>
         Application.runInBackground = true;
 
         if (InputManager.Instance != null)
+        {
             InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
                 UiManager.Instance.Modal.Show(UiManager.Instance.CityModeScreen.cityModeMenu);
+            InputManager.Instance.InputAction.CityMode.OpenConsole.performed += ctx =>
+                ConsoleManager.Instance.OpenConsole();
+        }
     }
 
     private void OnEnable()
     {
+        InputManager.Instance.InputAction.CityMode.Enable();
         UiManager.Instance.CityModeScreen.bottomNavigationBar.deployButton.clicked +=
             DeploySelectedMission;
     }
@@ -93,6 +98,7 @@ public class CityModeManager : Singleton<CityModeManager>
 
     private void OnDisable()
     {
+        InputManager.Instance.InputAction.CityMode.Disable();
         UiManager.Instance.CityModeScreen.bottomNavigationBar.deployButton.clicked -=
             DeploySelectedMission;
     }
