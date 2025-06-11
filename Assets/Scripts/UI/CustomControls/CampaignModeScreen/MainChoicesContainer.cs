@@ -19,7 +19,7 @@ public partial class MainChoicesContainer : VisualElement
             paddingBottom = 8,
         },
     };
-    private ActionType _actionType = ActionType.Warming;
+    private ActionType _actionType = ActionType.Medical;
 
     public ActionType SelectedTab
     {
@@ -93,6 +93,7 @@ public partial class MainChoicesContainer : VisualElement
                 backgroundColor = redColor,
                 color = Color.white,
                 width = UiUtils.GetLengthPercentage(38),
+                display = DisplayStyle.None, // temporarily hide the button from UI
             },
         };
 
@@ -113,6 +114,7 @@ public partial class MainChoicesContainer : VisualElement
                 backgroundColor = Color.white,
                 color = redColor,
                 width = UiUtils.GetLengthPercentage(38),
+                display = DisplayStyle.None, // temporarily hide the button from UI
             },
         };
 
@@ -132,6 +134,7 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomRightRadius = 8,
                 fontSize = 20,
                 color = Color.white,
+                width = UiUtils.GetLengthPercentage(100),
             },
         };
 
