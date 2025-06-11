@@ -60,6 +60,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     protected override void Awake()
     {
         base.Awake();
+        Application.runInBackground = true;
 
         InputManager.Instance.InputAction.CampaignMode.OpenConsole.performed += ctx =>
             ConsoleManager.Instance.OpenConsole();
