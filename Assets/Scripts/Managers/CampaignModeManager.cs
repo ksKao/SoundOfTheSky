@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -229,10 +230,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                     && (!_skippedToday || Passengers[i].status < (PassengerStatus.Death - 1))
                 ) // passengers cannot die when today is skipped
                     ChangePassengerHealth(i, false);
-                if (
-                    Random.ShouldOccur(recoverChance)
-                    && Passengers[i].status != PassengerStatus.Death
-                ) // cannot revive dead passengers
+                if (Random.ShouldOccur(recoverChance)) // cannot revive dead passengers
                     ChangePassengerHealth(i, true);
             }
 
@@ -273,6 +271,10 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     /// <param name="isMakeBetter">true to make passenger better, false to make passenger worse</param>
     private void ChangePassengerHealth(int index, bool isMakeBetter)
     {
+        // cannot revive dead passengers
+        if (isMakeBetter && Passengers[index].status == PassengerStatus.Death)
+            return;
+
         IEnumerable<int> values = Enum.GetValues(typeof(PassengerStatus)).Cast<int>();
         int min = values.Min();
         int max = values.Max();
