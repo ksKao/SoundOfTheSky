@@ -158,7 +158,7 @@ public partial class PassengersWindow : VisualElement
                     flexDirection = FlexDirection.Column,
                     alignItems = Align.Center,
                     justifyContent = Justify.Center,
-                    width = UiUtils.GetLengthPercentage(20),
+                    width = UiUtils.GetLengthPercentage(18),
                     height = UiUtils.GetLengthPercentage(25),
                 },
             };

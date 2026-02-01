@@ -8,25 +8,31 @@ using UnityEngine.SceneManagement;
 
 public class CampaignModeManager : Singleton<CampaignModeManager>
 {
-    public const int MAX_DAYS = 243;
+    public const int MAX_INTERVALS = 240;
+    public const int HOURS_PER_INTERVAL = 2;
+    public const int INTERVAL_PER_DAY = 24 / HOURS_PER_INTERVAL;
+    public const int MAX_DAYS = MAX_INTERVALS / INTERVAL_PER_DAY;
     public const int DAY_TRANSITION_DURATION = 5;
     public const int NUMBER_OF_FUTURE_WEATHER = 6;
     public const int NUMBER_OF_CREWS = 5;
     public const int NUMBER_OF_PASSENGERS = 20;
     public const float WEATHER_HIDDEN_CHANCE = 0.2f;
 
-    private int _day = 1;
+    private int _interval = 0;
     private int _temperature = 0;
     private bool _skippedToday = false;
     private bool _transitioning = false;
 
-    public int Day
+    public int Interval
     {
-        get => _day;
+        get => _interval;
         set
         {
-            _day = value;
-            UiManager.Instance.CampaignModeScreen.weatherBar.dayLabel.text = $"DAY {value}";
+            _interval = value;
+            double days = Math.Floor((double)value / INTERVAL_PER_DAY) + 1;
+            int hours = value % INTERVAL_PER_DAY * HOURS_PER_INTERVAL;
+            UiManager.Instance.CampaignModeScreen.weatherBar.dayLabel.text = $"DAY {days}";
+            UiManager.Instance.CampaignModeScreen.weatherBar.timeLabel.text = $"{hours:D2}:00";
         }
     }
     public int Temperature
@@ -39,8 +45,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 $"{value}{WeatherBar.DEGREE_SYMBOL}";
         }
     }
+    public int MaxDays => MAX_DAYS;
+    public int Hours { get; set; } = 0;
     public int DayTransitionDuration { get; set; } = DAY_TRANSITION_DURATION;
-    public int MaxDays { get; set; } = MAX_DAYS;
     public CampaignModeWeatherSO TodaysWeather => FutureWeathers.First().weather;
     public List<(CampaignModeWeatherSO weather, bool hidden)> FutureWeathers { get; } =
         new(NUMBER_OF_FUTURE_WEATHER);
@@ -61,6 +68,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         base.Awake();
         Application.runInBackground = true;
 
+        InputManager.Instance.InputAction.CityMode.Disable();
         InputManager.Instance.InputAction.CampaignMode.OpenConsole.performed += ctx =>
             ConsoleManager.Instance.OpenConsole();
     }
@@ -93,7 +101,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         if (action != null)
         {
             // check if have enough crews
-            int numberOfCrewsAvailable = CrewCooldowns.Where(c => c == 0).Count();
+            int numberOfCrewsAvailable = CrewCooldowns.Count(c => c == 0);
 
             if (numberOfCrewsAvailable < action.crewsNeeded)
             {
@@ -138,7 +146,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     {
         CampaignModeState campaignModeState = new()
         {
-            day = Day,
+            day = Interval,
             temperature = Temperature,
             skippedToday = _skippedToday,
             transitioning = _transitioning,
@@ -176,7 +184,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private void StartGame()
     {
-        Day = 1;
+        Interval = 0;
 
         string[] names =
         {
@@ -295,9 +303,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private void StartNewDay()
     {
-        Day++;
+        Interval++;
 
-        if (Day >= MaxDays)
+        if (Interval >= MAX_INTERVALS)
             Win();
 
         if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))
@@ -366,7 +374,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         if (savedData is null)
             return;
 
-        Day = savedData.day;
+        Interval = savedData.day;
         Temperature = savedData.temperature;
         _skippedToday = savedData.skippedToday;
         _transitioning = savedData.transitioning;

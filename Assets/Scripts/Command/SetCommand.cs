@@ -18,7 +18,10 @@ public class SetCommand : Command
                 "set day_transition_duration <value>",
                 "Set the day transition time in campaign mode, default is 5 seconds, integer only."
             },
-            { "set day <value>", "Set the current day in campaign mode." },
+            {
+                "set interval <value>",
+                "Set the interval in campaign mode. Interval determines the hour and days. Each day has 12 intervals, e.g. interval 15 = day 2 06:00"
+            },
             { "set temperature <value>", "Set the current temperature in campaign mode." },
             {
                 "set max_days <value>",
@@ -53,12 +56,12 @@ public class SetCommand : Command
                 );
                 break;
             }
-            case "day":
+            case "interval":
             {
                 if (!int.TryParse(args[1], out int value))
                     throw new Exception($"\"{args[1]}\" is not a valid integer.");
-                CampaignModeManager.Instance.Day = value;
-                ConsoleManager.Instance.Output($"Day has been set to {args[1]}.");
+                CampaignModeManager.Instance.Interval = value;
+                ConsoleManager.Instance.Output($"Interval has been set to {args[1]}.");
                 break;
             }
             case "temperature":

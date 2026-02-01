@@ -21,6 +21,19 @@ public partial class WeatherBar : VisualElement
             display = DisplayStyle.None,
         },
     };
+    public readonly Label timeLabel = new()
+    {
+        text = $"00:00",
+        style =
+        {
+            unityTextAlign = TextAnchor.MiddleCenter,
+            fontSize = 18,
+            paddingLeft = 0,
+            paddingRight = 0,
+            marginLeft = 0,
+            marginRight = 0,
+        },
+    };
     public readonly Label dayLabel = new()
     {
         text = $"DAY 1",
@@ -103,6 +116,7 @@ public partial class WeatherBar : VisualElement
         };
 
         leftContainer.Add(temperatureLabel);
+        leftContainer.Add(timeLabel);
         leftContainer.Add(dayLabel);
 
         Add(leftContainer);
