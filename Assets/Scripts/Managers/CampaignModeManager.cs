@@ -20,7 +20,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private int _interval = 0;
     private int _temperature = 0;
-    private bool _skippedToday = false;
+    private bool _skippedThisInterval = false;
     private bool _transitioning = false;
 
     public int Interval
@@ -30,9 +30,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         {
             _interval = value;
             double days = Math.Floor((double)value / INTERVAL_PER_DAY) + 1;
-            int hours = value % INTERVAL_PER_DAY * HOURS_PER_INTERVAL;
-            UiManager.Instance.CampaignModeScreen.weatherBar.dayLabel.text = $"DAY {days}";
-            UiManager.Instance.CampaignModeScreen.weatherBar.timeLabel.text = $"{hours:D2}:00";
+            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.dayLabel.text = $"DAY {days}";
+            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.timeLabel.text =
+                $"{CurrentHour:D2}:00";
         }
     }
     public int Temperature
@@ -41,14 +41,14 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         set
         {
             _temperature = value;
-            UiManager.Instance.CampaignModeScreen.weatherBar.temperatureLabel.text =
+            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.temperatureLabel.text =
                 $"{value}{WeatherBar.DEGREE_SYMBOL}";
         }
     }
     public int MaxDays => MAX_DAYS;
-    public int Hours { get; set; } = 0;
+    public int CurrentHour => Interval % INTERVAL_PER_DAY * HOURS_PER_INTERVAL;
     public int DayTransitionDuration { get; set; } = DAY_TRANSITION_DURATION;
-    public CampaignModeWeatherSO TodaysWeather => FutureWeathers.First().weather;
+    public CampaignModeWeatherSO ThisIntervalsWeather => FutureWeathers.First().weather;
     public List<(CampaignModeWeatherSO weather, bool hidden)> FutureWeathers { get; } =
         new(NUMBER_OF_FUTURE_WEATHER);
     public (string name, PassengerStatus status)[] Passengers { get; } =
@@ -80,10 +80,15 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
     private void Start()
     {
-        UiManager.Instance.CampaignModeScreen.mainChoicesContainer.RefreshTab();
+        UiManager.Instance.CampaignModeScreen.gameplay.mainChoicesContainer.RefreshTab();
         StartGame();
 
         LoadGame();
+
+        if (CurrentHour == 0)
+        {
+            UiManager.Instance.CampaignModeScreen.ChangeToDialog();
+        }
     }
 
     private void OnDisable()
@@ -136,10 +141,10 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 cooldownsApplied++;
             }
 
-            UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
+            UiManager.Instance.CampaignModeScreen.gameplay.campaignModeCrewContainer.RefreshCooldown();
         }
 
-        StartCoroutine(TransitionDay());
+        StartCoroutine(TransitionInterval());
     }
 
     public bool SaveGame()
@@ -148,7 +153,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         {
             day = Interval,
             temperature = Temperature,
-            skippedToday = _skippedToday,
+            skippedThisInterval = _skippedThisInterval,
             transitioning = _transitioning,
             futureWeathers = FutureWeathers
                 .Select(w => new CampaignModeWeatherSerializable()
@@ -201,7 +206,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             Passengers[i] = (names[i % names.Length], PassengerStatus.Comfortable);
         }
 
-        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
 
         for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
         {
@@ -213,10 +218,10 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             );
         }
 
-        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
+        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.RepopulateIcons();
     }
 
-    private IEnumerator TransitionDay()
+    private IEnumerator TransitionInterval()
     {
         // apply health updates based on temperature
         if (!_transitioning)
@@ -235,7 +240,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
                 if (
                     Random.ShouldOccur(sickChance)
-                    && (!_skippedToday || Passengers[i].status < (PassengerStatus.Death - 1))
+                    && (!_skippedThisInterval || Passengers[i].status < (PassengerStatus.Death - 1))
                 ) // passengers cannot die when today is skipped
                     ChangePassengerHealth(i, false);
                 if (Random.ShouldOccur(recoverChance)) // cannot revive dead passengers
@@ -243,18 +248,18 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             }
 
             RerollWeather();
-            UiManager.Instance.CampaignModeScreen.HideBottomContainer();
+            UiManager.Instance.CampaignModeScreen.gameplay.HideBottomContainer();
             _transitioning = true;
         }
         else
         {
-            UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
+            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.Transition();
         }
 
         yield return new WaitForSeconds(DayTransitionDuration);
         _transitioning = false;
 
-        StartNewDay();
+        AdvanceToNextInterval();
     }
 
     private void RerollWeather()
@@ -269,7 +274,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             Random.ShouldOccur(WEATHER_HIDDEN_CHANCE)
         );
 
-        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
+        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.Transition();
     }
 
     /// <summary>
@@ -295,40 +300,47 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         Passengers[index].status = (PassengerStatus)Math.Clamp(newStatusInt, min, max);
 
-        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
 
         if (Passengers.All(p => p.status == PassengerStatus.Death))
             Lose();
     }
 
-    private void StartNewDay()
+    private void AdvanceToNextInterval()
     {
         Interval++;
 
         if (Interval >= MAX_INTERVALS)
             Win();
 
-        if (Random.ShouldOccur(TodaysWeather.chanceOfWarming))
-            Temperature += TodaysWeather.temperatureIncrease;
+        if (Random.ShouldOccur(ThisIntervalsWeather.chanceOfWarming))
+            Temperature += ThisIntervalsWeather.temperatureIncrease;
         else
-            Temperature -= TodaysWeather.temperatureDecrease;
+            Temperature -= ThisIntervalsWeather.temperatureDecrease;
 
         for (int i = 0; i < CrewCooldowns.Length; i++)
         {
             CrewCooldowns[i] = Math.Max(CrewCooldowns[i] - 1, 0);
         }
 
-        UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
+        UiManager.Instance.CampaignModeScreen.gameplay.campaignModeCrewContainer.RefreshCooldown();
 
-        if (!Random.ShouldOccur(TodaysWeather.eventChance))
+        if (CurrentHour == 0)
         {
-            _skippedToday = true;
-            ApplyAction(null);
+            UiManager.Instance.CampaignModeScreen.ChangeToDialog();
         }
         else
         {
-            _skippedToday = false;
-            UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
+            if (!Random.ShouldOccur(ThisIntervalsWeather.eventChance))
+            {
+                _skippedThisInterval = true;
+                ApplyAction(null);
+            }
+            else
+            {
+                _skippedThisInterval = false;
+                UiManager.Instance.CampaignModeScreen.gameplay.ShowBottomContainer();
+            }
         }
     }
 
@@ -376,7 +388,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         Interval = savedData.day;
         Temperature = savedData.temperature;
-        _skippedToday = savedData.skippedToday;
+        _skippedThisInterval = savedData.skippedThisInterval;
         _transitioning = savedData.transitioning;
 
         FutureWeathers.Clear();
@@ -405,12 +417,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             CrewCooldowns[i] = savedData.crewCooldowns[i];
         }
 
-        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
-        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.RepopulateIcons();
+        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
 
         if (_transitioning)
         {
-            UiManager.Instance.CampaignModeScreen.HideBottomContainer(false);
+            UiManager.Instance.CampaignModeScreen.gameplay.HideBottomContainer(false);
             ApplyAction(null);
         }
     }

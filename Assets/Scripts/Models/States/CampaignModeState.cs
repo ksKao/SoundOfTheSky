@@ -5,7 +5,7 @@ public class CampaignModeState
 {
     public int day;
     public int temperature;
-    public bool skippedToday;
+    public bool skippedThisInterval;
     public bool transitioning;
     public CampaignModeWeatherSerializable[] futureWeathers;
     public PassengerStatus[] statuses;
