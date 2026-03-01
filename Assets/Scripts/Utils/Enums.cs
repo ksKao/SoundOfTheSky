@@ -56,7 +56,16 @@ public enum ActionType
 
 public enum Scene
 {
-    MainMenu,
-    CityMode,
-    CampaignMode,
+    MainMenu = 0,
+    CityMode = 1,
+    CampaignMode = 2,
+    DialogMode,
+}
+
+public enum DialogScene
+{
+    TitleOnly,
+    TitleWithContent,
+    Dialog,
+    RhythmGame,
 }

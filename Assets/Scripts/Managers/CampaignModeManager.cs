@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,10 +30,10 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         set
         {
             _interval = value;
-            double days = Math.Floor((double)value / INTERVAL_PER_DAY) + 1;
-            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.dayLabel.text = $"DAY {days}";
+            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.dayLabel.text =
+                $"DAY {CurrentTime.day}";
             UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.timeLabel.text =
-                $"{CurrentHour:D2}:00";
+                $"{CurrentTime:D2}:00";
         }
     }
     public int Temperature
@@ -46,7 +47,8 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         }
     }
     public int MaxDays => MAX_DAYS;
-    public int CurrentHour => Interval % INTERVAL_PER_DAY * HOURS_PER_INTERVAL;
+    public (int day, int hour) CurrentTime =>
+        (Interval / INTERVAL_PER_DAY + 1, Interval % INTERVAL_PER_DAY * HOURS_PER_INTERVAL);
     public int DayTransitionDuration { get; set; } = DAY_TRANSITION_DURATION;
     public CampaignModeWeatherSO ThisIntervalsWeather => FutureWeathers.First().weather;
     public List<(CampaignModeWeatherSO weather, bool hidden)> FutureWeathers { get; } =
@@ -85,9 +87,11 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         LoadGame();
 
-        if (CurrentHour == 0)
+        if (CurrentTime.hour == 0 && Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}"))
         {
-            UiManager.Instance.CampaignModeScreen.ChangeToDialog();
+            UiManager.Instance.CampaignModeScreen.ChangeToDialog(
+                Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}")
+            );
         }
     }
 
@@ -325,9 +329,11 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         UiManager.Instance.CampaignModeScreen.gameplay.campaignModeCrewContainer.RefreshCooldown();
 
-        if (CurrentHour == 0)
+        if (CurrentTime.hour == 0 && Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}"))
         {
-            UiManager.Instance.CampaignModeScreen.ChangeToDialog();
+            UiManager.Instance.CampaignModeScreen.ChangeToDialog(
+                Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}")
+            );
         }
         else
         {

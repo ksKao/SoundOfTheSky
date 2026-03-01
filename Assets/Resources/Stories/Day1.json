@@ -1,0 +1,1 @@
+﻿{"inkVersion":21,"root":[["ev","str","^title","/str",{"x()":"ChangeScene","exArgs":1},"pop","/ev","\n","ev","str","^villagers_color","/str",5,{"x()":"FadeBackground","exArgs":2},"pop","/ev","\n","^Test","\n",["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}}

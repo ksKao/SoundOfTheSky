@@ -1,6 +1,4 @@
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -24,11 +22,12 @@ public partial class CampaignModeScreen : VisualElement
         gameplay.ShowBottomContainer();
     }
 
-    public void ChangeToDialog()
+    public void ChangeToDialog(TextAsset storyJsonAsset)
     {
         if (Contains(gameplay))
             Remove(gameplay);
 
         Add(dialog);
+        dialog.Play(storyJsonAsset);
     }
 }
