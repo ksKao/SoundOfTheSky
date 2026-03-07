@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
-public partial class TitleScene : VisualElement
+public partial class SubtitleScene : VisualElement
 {
-    public readonly Label textLabel = new()
+    public readonly Label titleLabel = new()
     {
         style =
         {
@@ -13,8 +13,19 @@ public partial class TitleScene : VisualElement
             color = Color.white,
         },
     };
+    public readonly Label textLabel = new()
+    {
+        style =
+        {
+            fontSize = 24,
+            color = Color.white,
+            width = UiUtils.GetLengthPercentage(75),
+            whiteSpace = WhiteSpace.Normal,
+            unityTextAlign = TextAnchor.MiddleCenter,
+        },
+    };
 
-    public TitleScene()
+    public SubtitleScene()
     {
         style.width = UiUtils.GetLengthPercentage(100);
         style.height = UiUtils.GetLengthPercentage(100);
@@ -22,8 +33,10 @@ public partial class TitleScene : VisualElement
         style.justifyContent = Justify.Center;
         style.alignItems = Align.Center;
         style.position = Position.Relative;
-        style.backgroundColor = new Color(0, 0, 0, 0);
+        style.flexDirection = FlexDirection.Column;
+        style.backgroundColor = new Color(1, 0, 0, 0);
 
+        Add(titleLabel);
         Add(textLabel);
 
         RegisterCallback<ClickEvent>(

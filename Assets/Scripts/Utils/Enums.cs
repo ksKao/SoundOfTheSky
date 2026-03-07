@@ -64,8 +64,9 @@ public enum Scene
 
 public enum DialogScene
 {
-    TitleOnly,
-    TitleWithContent,
+    Title,
+    Subtitle,
+    Blank,
     Dialog,
     RhythmGame,
 }
