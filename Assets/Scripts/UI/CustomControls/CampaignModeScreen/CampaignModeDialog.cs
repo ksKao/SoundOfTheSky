@@ -7,7 +7,8 @@ using UnityEngine.UIElements;
 public partial class CampaignModeDialog : VisualElement
 {
     private Story _story;
-    private DialogScene _dialogScene = DialogScene.Dialog;
+    private DialogScene _dialogScene = DialogScene.TitleOnly;
+    private readonly TitleScene _titleScene = new();
     private readonly Image _backgroundFront = new()
     {
         sprite = UiUtils.LoadSprite("black", Scene.DialogMode),
@@ -74,8 +75,12 @@ public partial class CampaignModeDialog : VisualElement
             return;
         }
 
-        Debug.Log(_story.canContinue);
-        Debug.Log(_story.Continue());
+        switch (_dialogScene)
+        {
+            case DialogScene.TitleOnly:
+                _titleScene.textLabel.text = _story.Continue();
+                break;
+        }
     }
 
     public void ChangeScene(string sceneType)
@@ -83,7 +88,8 @@ public partial class CampaignModeDialog : VisualElement
         switch (sceneType)
         {
             case "title":
-
+                Clear();
+                Add(_titleScene);
                 _dialogScene = DialogScene.TitleOnly;
                 break;
         }

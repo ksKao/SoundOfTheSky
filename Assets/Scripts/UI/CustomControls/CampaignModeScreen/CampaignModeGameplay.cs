@@ -29,10 +29,6 @@ public partial class CampaignModeGameplay : VisualElement
         style.minHeight = UiUtils.GetLengthPercentage(100);
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
-        style.unityFont = Resources.Load<Font>("Fonts/myriad_pro");
-        style.unityFontDefinition = new StyleFontDefinition(
-            Resources.Load<FontAsset>("Fonts/myriad_pro")
-        );
 
         VisualElement topContainer = new()
         {

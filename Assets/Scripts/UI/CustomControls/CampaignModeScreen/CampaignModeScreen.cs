@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -10,6 +11,11 @@ public partial class CampaignModeScreen : VisualElement
     public CampaignModeScreen()
     {
         style.minHeight = UiUtils.GetLengthPercentage(100);
+        style.unityFont = Resources.Load<Font>("Fonts/myriad_pro");
+        style.unityFontDefinition = new StyleFontDefinition(
+            Resources.Load<FontAsset>("Fonts/myriad_pro")
+        );
+
         Add(gameplay);
     }
 
@@ -22,7 +28,7 @@ public partial class CampaignModeScreen : VisualElement
         gameplay.ShowBottomContainer();
     }
 
-    public void ChangeToDialog(TextAsset storyJsonAsset)
+    public void ChangeToDialog(UnityEngine.TextAsset storyJsonAsset)
     {
         if (Contains(gameplay))
             Remove(gameplay);

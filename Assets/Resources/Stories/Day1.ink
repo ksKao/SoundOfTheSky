@@ -2,6 +2,5 @@
 EXTERNAL FadeBackground(fileName, duration)
 
 ~ ChangeScene("title")
-~ FadeBackground("villagers_color", 5)
 
-Test
+Chapter 1 Day 1
