@@ -125,6 +125,14 @@ public partial class CampaignModeDialog : VisualElement
                         ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
                         : ""
                 );
+                if (tags.ContainsKey("portrait"))
+                {
+                    _dialogScene.SetPortraits(tags["portrait"].Split(",").ToList());
+                }
+                else
+                {
+                    _dialogScene.SetPortraits(new());
+                }
                 break;
         }
     }

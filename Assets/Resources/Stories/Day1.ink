@@ -21,10 +21,22 @@ An arctic village clings to life like a dying ember, its snow-choked homes casti
 
 A mournful wind cuts through the silence, broken only by occasional distant chatter.
 
-[Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.] #speaker=sara
+[Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.] #speaker=Sara #portrait=sara_half
 
-When are they coming? #speaker=sara
+When are they coming? #speaker=Sara #portrait=sara_half
 
-[Shivering, clutching a thin blanket, tugging at two nearby adults. His lips are chapped from the cold.] #speaker=tim
+[Shivering, clutching a thin blanket, tugging at two nearby adults. His lips are chapped from the cold.] #speaker=Tim #portrait=tim_half
 
-Are they really coming? #speaker=tim
+Are they really coming? #speaker=Tim #portrait=tim_half
+
+[Kneeling, forcing a smile, though his eyes betray doubt.] #speaker=Frank #portrait=frank_half
+
+Don't worry, Tim, I'm sure they'll come. [His hand rests on Tim's head.] #speaker=Frank #portrait=frank_half
+
+[Arms crossed, staring at the ground, voice flat and resigned.] #speaker=Bobby #portrait=bobby_half
+
+Hmph. The capital starts the mess, then takes its sweet time fixing it. Bet they've forgotten us. #speaker=Bobby #portrait=bobby_half
+
+[Hunched slightly, shivering to generate any warmth possible.] #speaker=Mara #portrait=mara_half
+
+We're out of supplies and options. All we can do is stay optimistic and wait. #speaker=Mara #portrait=mara_half

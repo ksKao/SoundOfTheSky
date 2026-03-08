@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using DG.Tweening.Core;
 using UnityEngine;
@@ -17,6 +18,7 @@ public partial class DialogScene : VisualElement
         enableRichText = true,
     };
     private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Normal } };
+    private readonly List<Image> _images = new();
 
     public DialogScene()
     {
@@ -24,6 +26,10 @@ public partial class DialogScene : VisualElement
         style.height = UiUtils.GetLengthPercentage(100);
         style.position = Position.Relative;
         style.display = DisplayStyle.Flex;
+        style.flexDirection = FlexDirection.Row;
+        style.alignItems = Align.FlexEnd;
+        style.paddingLeft = 24;
+        style.paddingRight = 24;
 
         VisualElement textContainer = new()
         {
@@ -104,5 +110,34 @@ public partial class DialogScene : VisualElement
                 text.Length * 0.02f
             )
             .SetEase(Ease.Linear);
+    }
+
+    public void SetPortraits(List<string> portraits)
+    {
+        foreach (VisualElement image in _images)
+        {
+            Remove(image);
+        }
+
+        _images.Clear();
+
+        style.justifyContent = portraits.Count <= 1 ? Justify.Center : Justify.SpaceBetween;
+
+        if (_images.Capacity < portraits.Count)
+        {
+            _images.Capacity = portraits.Count;
+        }
+
+        foreach (string portrait in portraits)
+        {
+            Image imageElement = new()
+            {
+                sprite = UiUtils.LoadSprite(portrait, Scene.DialogMode),
+                style = { height = UiUtils.GetLengthPercentage(80) },
+            };
+            _images.Add(imageElement);
+            Add(imageElement);
+            imageElement.SendToBack();
+        }
     }
 }
