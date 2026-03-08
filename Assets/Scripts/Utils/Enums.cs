@@ -62,7 +62,7 @@ public enum Scene
     DialogMode,
 }
 
-public enum DialogScene
+public enum DialogSceneType
 {
     Title,
     Subtitle,

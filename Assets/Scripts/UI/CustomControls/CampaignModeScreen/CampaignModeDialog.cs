@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using DG.Tweening;
 using Ink.Runtime;
 using UnityEngine;
@@ -8,10 +11,12 @@ using UnityEngine.UIElements;
 public partial class CampaignModeDialog : VisualElement
 {
     private Story _story;
-    private DialogScene _dialogScene = DialogScene.Title;
+    private DialogSceneType _dialogSceneType = DialogSceneType.Title;
     private VisualElement _currentSceneElement = null;
+    private float _delayDuration = 0;
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
+    private readonly DialogScene _dialogScene = new();
     private readonly VisualElement _blankScene = new();
     private readonly Image _backgroundFront = new()
     {
@@ -58,7 +63,9 @@ public partial class CampaignModeDialog : VisualElement
             nameof(ChangeScene),
             (string sceneType) =>
             {
-                ChangeScene(sceneType);
+                // must handle this change before the delay otherwise the text will not be set in the correct scene
+                _dialogSceneType = Enum.Parse<DialogSceneType>(sceneType);
+                ExecuteWithDelay(() => ChangeScene(_dialogSceneType));
             }
         );
 
@@ -66,7 +73,21 @@ public partial class CampaignModeDialog : VisualElement
             nameof(FadeBackground),
             (string fileName, float duration) =>
             {
-                FadeBackground(fileName, duration);
+                DOVirtual.DelayedCall(
+                    _delayDuration,
+                    () =>
+                    {
+                        ExecuteWithDelay(() => FadeBackground(fileName, duration));
+                    }
+                );
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(Delay),
+            (float duration) =>
+            {
+                Delay(duration);
             }
         );
 
@@ -83,42 +104,52 @@ public partial class CampaignModeDialog : VisualElement
 
         string text = _story.Continue();
         Dictionary<string, string> tags = GetCurrentTags();
+        _delayDuration = 0;
 
-        switch (_dialogScene)
+        switch (_dialogSceneType)
         {
-            case DialogScene.Title:
+            case DialogSceneType.Title:
                 _titleScene.textLabel.text = text;
                 break;
-            case DialogScene.Subtitle:
+            case DialogSceneType.Subtitle:
                 _subtitleScene.textLabel.text = text;
                 if (tags.ContainsKey("title"))
                 {
                     _subtitleScene.titleLabel.text = tags["title"];
                 }
                 break;
+            case DialogSceneType.Dialog:
+                _dialogScene.SetText(
+                    text,
+                    tags.ContainsKey("speaker")
+                        ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
+                        : ""
+                );
+                break;
         }
     }
 
-    public void ChangeScene(string sceneType)
+    public void ChangeScene(DialogSceneType sceneType)
     {
         if (_currentSceneElement != null)
             Remove(_currentSceneElement);
 
         switch (sceneType)
         {
-            case "title":
+            case DialogSceneType.Title:
                 _currentSceneElement = _titleScene;
-                _dialogScene = DialogScene.Title;
                 break;
 
-            case "subtitle":
+            case DialogSceneType.Subtitle:
                 _currentSceneElement = _subtitleScene;
-                _dialogScene = DialogScene.Subtitle;
                 break;
 
-            case "blank":
+            case DialogSceneType.Blank:
                 _currentSceneElement = _blankScene;
-                _dialogScene = DialogScene.Blank;
+                break;
+
+            case DialogSceneType.Dialog:
+                _currentSceneElement = _dialogScene;
                 break;
         }
 
@@ -148,6 +179,11 @@ public partial class CampaignModeDialog : VisualElement
             });
     }
 
+    public void Delay(float duration)
+    {
+        _delayDuration += duration;
+    }
+
     public Dictionary<string, string> GetCurrentTags()
     {
         Dictionary<string, string> tags = new();
@@ -166,5 +202,23 @@ public partial class CampaignModeDialog : VisualElement
         }
 
         return tags;
+    }
+
+    private void ExecuteWithDelay(Action callback)
+    {
+        if (_delayDuration == 0f)
+        {
+            callback();
+        }
+        else
+        {
+            DOVirtual.DelayedCall(
+                _delayDuration,
+                () =>
+                {
+                    callback();
+                }
+            );
+        }
     }
 }
