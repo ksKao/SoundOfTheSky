@@ -73,13 +73,7 @@ public partial class CampaignModeDialog : VisualElement
             nameof(FadeBackground),
             (string fileName, float duration) =>
             {
-                DOVirtual.DelayedCall(
-                    _delayDuration,
-                    () =>
-                    {
-                        ExecuteWithDelay(() => FadeBackground(fileName, duration));
-                    }
-                );
+                ExecuteWithDelay(() => FadeBackground(fileName, duration));
             }
         );
 
@@ -88,6 +82,46 @@ public partial class CampaignModeDialog : VisualElement
             (float duration) =>
             {
                 Delay(duration);
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(PlayAudio),
+            (string fileName) =>
+            {
+                ExecuteWithDelay(() => PlayAudio(fileName));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(LoopAudio),
+            (string fileName) =>
+            {
+                ExecuteWithDelay(() => LoopAudio(fileName));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(SetAudioVolume),
+            (string fileName, float volume) =>
+            {
+                ExecuteWithDelay(() => SetAudioVolume(fileName, volume));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(FadeAudioVolume),
+            (string fileName, float volume, float duration) =>
+            {
+                ExecuteWithDelay(() => FadeAudioVolume(fileName, volume, duration));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(StopAudio),
+            (string fileName) =>
+            {
+                ExecuteWithDelay(() => StopAudio(fileName));
             }
         );
 
@@ -190,6 +224,41 @@ public partial class CampaignModeDialog : VisualElement
     public void Delay(float duration)
     {
         _delayDuration += duration;
+    }
+
+    public void PlayAudio(string name)
+    {
+        AudioManager.Instance.PlayAudio(name, false);
+    }
+
+    public void LoopAudio(string name)
+    {
+        AudioManager.Instance.PlayAudio(name, true);
+    }
+
+    public void SetAudioVolume(string name, float volume)
+    {
+        AudioManager.Instance.SetVolume(name, volume);
+    }
+
+    public void FadeAudioVolume(string name, float volume, float duration)
+    {
+        DOTween
+            .To(
+                () => AudioManager.Instance.GetVolume(name),
+                (x) =>
+                {
+                    AudioManager.Instance.SetVolume(name, x);
+                },
+                volume,
+                duration
+            )
+            .SetEase(Ease.InCubic);
+    }
+
+    public void StopAudio(string name)
+    {
+        AudioManager.Instance.StopAudio(name);
     }
 
     public Dictionary<string, string> GetCurrentTags()
