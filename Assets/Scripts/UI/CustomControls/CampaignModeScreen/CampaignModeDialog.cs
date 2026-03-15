@@ -160,14 +160,22 @@ public partial class CampaignModeDialog : VisualElement
                         ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
                         : ""
                 );
-                if (tags.ContainsKey("portrait"))
+                List<string> leftPortraits = new(),
+                    centerPortraits = new(),
+                    rightPortraits = new();
+                if (tags.ContainsKey("left_portraits"))
                 {
-                    _dialogScene.SetPortraits(tags["portrait"].Split(",").ToList());
+                    leftPortraits = tags["left_portraits"].Split(",").ToList();
                 }
-                else
+                if (tags.ContainsKey("center_portraits"))
                 {
-                    _dialogScene.SetPortraits(new());
+                    centerPortraits = tags["center_portraits"].Split(",").ToList();
                 }
+                if (tags.ContainsKey("right_portraits"))
+                {
+                    rightPortraits = tags["right_portraits"].Split(",").ToList();
+                }
+                _dialogScene.SetPortraits(leftPortraits, centerPortraits, rightPortraits);
                 break;
             case DialogSceneType.RhythmGame:
                 _rhythmGameScene.Text = text;

@@ -18,7 +18,44 @@ public partial class DialogScene : VisualElement
         enableRichText = true,
     };
     private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Normal } };
-    private readonly List<Image> _images = new();
+    private readonly VisualElement _leftPortraitContainer = new()
+    {
+        style =
+        {
+            height = UiUtils.GetLengthPercentage(100),
+            width = UiUtils.GetLengthPercentage(100f / 3),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            justifyContent = Justify.FlexStart,
+            alignItems = Align.FlexEnd,
+            paddingLeft = 24,
+        },
+    };
+    private readonly VisualElement _centerPortraitContainer = new()
+    {
+        style =
+        {
+            height = UiUtils.GetLengthPercentage(100),
+            width = UiUtils.GetLengthPercentage(100f / 3),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            justifyContent = Justify.Center,
+            alignItems = Align.FlexEnd,
+        },
+    };
+    private readonly VisualElement _rightPortraitContainer = new()
+    {
+        style =
+        {
+            height = UiUtils.GetLengthPercentage(100),
+            width = UiUtils.GetLengthPercentage(100f / 3),
+            display = DisplayStyle.Flex,
+            flexDirection = FlexDirection.Row,
+            justifyContent = Justify.FlexEnd,
+            alignItems = Align.FlexEnd,
+            paddingRight = 24,
+        },
+    };
 
     public DialogScene()
     {
@@ -28,8 +65,6 @@ public partial class DialogScene : VisualElement
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Row;
         style.alignItems = Align.FlexEnd;
-        style.paddingLeft = 24;
-        style.paddingRight = 24;
 
         VisualElement textContainer = new()
         {
@@ -72,6 +107,10 @@ public partial class DialogScene : VisualElement
             }
         });
 
+        Add(_leftPortraitContainer);
+        Add(_centerPortraitContainer);
+        Add(_rightPortraitContainer);
+
         Add(textContainer);
         textContainer.Add(_nameLabel);
         textContainer.Add(_textLabel);
@@ -112,21 +151,20 @@ public partial class DialogScene : VisualElement
             .SetEase(Ease.Linear);
     }
 
-    public void SetPortraits(List<string> portraits)
+    public void SetPortraits(
+        List<string> leftPortraits,
+        List<string> centerPortraits,
+        List<string> rightPortraits
+    )
     {
-        foreach (VisualElement image in _images)
-        {
-            Remove(image);
-        }
+        DisplayPortraitsInContainer(leftPortraits, _leftPortraitContainer);
+        DisplayPortraitsInContainer(centerPortraits, _centerPortraitContainer);
+        DisplayPortraitsInContainer(rightPortraits, _rightPortraitContainer);
+    }
 
-        _images.Clear();
-
-        style.justifyContent = portraits.Count <= 1 ? Justify.Center : Justify.SpaceBetween;
-
-        if (_images.Capacity < portraits.Count)
-        {
-            _images.Capacity = portraits.Count;
-        }
+    private void DisplayPortraitsInContainer(List<string> portraits, VisualElement container)
+    {
+        container.Clear();
 
         foreach (string portrait in portraits)
         {
@@ -135,9 +173,7 @@ public partial class DialogScene : VisualElement
                 sprite = UiUtils.LoadSprite(portrait, Scene.DialogMode),
                 style = { height = UiUtils.GetLengthPercentage(80) },
             };
-            _images.Add(imageElement);
-            Add(imageElement);
-            imageElement.SendToBack();
+            container.Add(imageElement);
         }
     }
 }
