@@ -226,3 +226,80 @@ Bobby, infuriated, steps close to Heidi, their faces inches apart. She stands he
 ~ PlayAudio("snowy_footstep")
 
 Cooper (28yrs old) takes a few steps to stand closer to his captain, wary of termpers flaring. He knows Heidi's bluntness can spark misunderstandings, few truly understand her. #left_portraits=cooper_half,heidi_half #right_portraits=mara_half
+
+[Pushing Bobby gently.] #speaker=Frank #left_portraits=cooper_half,heidi_half #right_portraits=mara_half
+
+Come on, Bobby, let's board. I'll treat you to king crab and salmon when we get there. #speaker=Frank #left_portraits=cooper_half,heidi_half #right_portraits=mara_half
+
+He nudges Bobby harder to keep him moving. #left_portraits=cooper_half,heidi_half #right_portraits=mara_half
+
+~ PlayAudio("metal_door")
+
+As villagers board, the heavy door slides shut with a tight slam, shielding the warmth inside from the frigid air.
+
+~ ChangeScene("Blank")
+~ FadeBackground("black", 3)
+~ Delay(3)
+~ FadeBackground("passenger_depot", 3)
+~ Delay(3)
+~ ChangeScene("Dialog")
+
+[Reporting to Heidi.] #speaker=Olivia #right_portraits=olivia_half
+
+Captain, with nearly 20 villagers, we can keep them in one passenger car for warmth. Everyone's disheveled but stable, no one's sick yet. With about 70 feet worth of space, we've got plenty of room. If you want, we can also split them up for even more room to further avoid the chance of disease spreading. #speaker=Olivia #right_portraits=olivia_half
+
+Let's keep them together. Body heat will help, and we'll save on coal. With the long journey and unpredictable weather, the steam line could freeze if we push too hard. Plus, there's something you're overlooking. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+[Bewildered.] #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+Overlooking? Hmm… #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+Here's a hint: we're all human in the end. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+[Connecting the dots.] #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+Oh! Even if we split them up, we could spread illness ourselves moving between cars. I was so focused on the villagers health, for a slight moment I forgot we're not immune ourselves, my apology. #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+Your instincts were sharp, but keeping everyone together would be better for our situation. We can use the second car for emergencies later if sickness becomes rampant. As for now, it will reduce our movement and need to communicate between the two cars. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+You're right, Captain. We need to conserve our energy for what's ahead. #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+[Dryly. Daydreaming] #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+Conserve energy? I was thinking more along the lines of being just too lazy to walk between cars. Maybe we can ask HQ to install a moving walkway next time. Or jetpacks, in case we're stranded, then we can fly home. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half
+
+[Dumbfounded.] #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+Captain… #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half
+
+[Approaching Heidi.] #speaker=Farin #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+Captain, I checked on everyone. Most feel stable. Should we read the infection safety rubric right now? #speaker=Farin #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+Let's wait until tomorrow. They're exhausted, more information now would overwhelm them. Time it for lunch, so they can eat and listen. It'll be like watching a dull channel you're too lazy to change. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+Ehhh… Captain, that's not very encouraging, Captain… #speaker=Olivia #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+It's fine, Olivia. They'll have three lovely ladies presenting. Studies show that beauty distracts from a poorly told story. We should use this evolutionary advantage given to us. #speaker=Heidi #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+Farin tried her hardest to suppress a smile. #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+Olivia looks even more dumbfounded. #left_portraits=heidi_half #right_portraits=olivia_half,farin_half
+
+~ PlayAudio("sara_tim_footstep")
+
+Sara and Tim dash to Heidi, excitement lighting their faces. #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+Ma'am, will you play the trumpet again? Can we try it too? #speaker=Tim #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+I'll play soon, when we leave the village. You can listen, but you'll have to wait until a bit later once everyone is settled in, to try it yourselves, and only if you're on your best behavior. Can you do that? #speaker=Heidi #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+[Nodding eagerly.] #speaker=Sara & Tim #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+Yes! #speaker=Sara & Tim #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+Good, help Olivia and Farin here get everyone settled. The faster we're ready, the sooner I'll play. #speaker=Heidi & Tim #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+~ PlayAudio("sara_tim_footstep")
+
+Sara and Tim exchange glances, then dash to Olivia and Farin, insisting on helping. #left_portraits=heidi_half #right_portraits=sara_half,tim_half
