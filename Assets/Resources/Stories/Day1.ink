@@ -9,7 +9,8 @@ EXTERNAL StopAudio(fileName)
 
 ~ ChangeScene("Title")
 
-Chapter 1 Day 1
+Chapter 1 Day 1\\n<>
+The Long Awaited Whistle
 
 ~ ChangeScene("Subtitle")
 
@@ -94,4 +95,79 @@ The prayer fades, buried in silence. A cold gust sweeps through, as if the sky i
 
 ~ ChangeScene("Blank")
 ~ FadeBackground("black", 5)
+~ Delay(5)
+~ PlayAudio("amazing_grace")
+~ Delay(45)
+~ FadeBackground("snowy_village_color", 5)
+~ Delay(5)
+~ StopAudio("amazing_grace")
+~ ChangeScene("RhythmGame")
 
+The trumpet's melody, pure and resonant, rolls across the sky like a beacon, rising and falling with haunting clarity.\\n\\n<>
+It's not the train's rumble that reaches the village first, but this sacred tune, amplified through the trumpet spreading the clouds, carrying hope on every note.\\n\\n<>
+Villagers stir, faces lifting, eyes widening as the music grows vibrant, each tune a promise of rescue, a sound from the sky.
+
+~ ChangeScene("Blank")
+~ FadeBackground("black", 5)
+~ Delay(5)
+~ FadeBackground("cover_train_tender_color", 5)
+~ LoopAudio("steam_train_with_whistle")
+~ Delay(5)
+~ ChangeScene("Dialog")
+
+A pinprick of light flickers along the tracks, the train's headlamp cutting through the mist. The low, rhythmic chug of the steam engine creeps in, a soft pulse growing into a deep roar that vibrates through the frozen earth, harmonizing with the trumpet's flair.
+
+The train emerges from the fog, its dark silhouette massive against the white expanse, steam billowing in silvery plumes that catch the weak sunlight. Villagers clutch one another, some weeping, others smiling, their fear thawing in the moment's warmth. The ground trembles as the iron beast closes the distance, its promise of salvation deafening and radiant with hope.
+
+~ StopAudio("steam_train_with_whistle")
+~ ChangeScene("Blank")
+~ FadeBackground("black", 5)
+~ Delay(5)
+~ ChangeScene("Title")
+
+Chapter 1 Day 1\\n<>
+Arrival of Trumpeter
+
+~ ChangeScene("Blank")
+~ FadeBackground("cover_train_tender_color", 5)
+~ PlayAudio("steam_train_stopping")
+~ Delay(10)
+~ ChangeScene("Dialog")
+
+The train cuts through snowdrifts, slowing but still thundering, its engine shaking the village. It halts with a screech of rails, steam hissing as the passenger car door slides open.
+
+~ FadeBackground("snowy_village_color", 0.1)
+
+[Standing firm, coat crisp, expression calm but eyes warm. A trumpet neatly strap to her coat.] #speaker=Heidi #portrait=heidi_half
+
+I'm sorry for the delay. Let us travel together, toward home. #speaker=Heidi #portrait=heidi_half
+
+Her voice is steady, kind, but measured, cutting through the winter silence.
+
+The passenger car door flings open, revealing three crew members. Two more trot down from the locomotive to meet the new guests.
+
+Tim and Sara dash toward Heidi, their faces bright with renewed energy.
+
+[Walking up to Heidi, relieved.] #speaker=Arthur #portrait=heidi_half,arthur_half
+
+I'm so glad you came. We feared help wouldn't arrive. #speaker=Arthur #portrait=heidi_half,arthur_half
+
+I apologize again for the delay. It takes longer than we'd like to complete mission briefings and secure supplies for such a journey. We'd prefer to depart at a moment's notice, but that's rarely possible. #speaker=Heidi #portrait=heidi_half,arthur_half
+
+~ PlayAudio("snowy_footstep")
+
+[Approaching grumpily.] #speaker=Bobby #portrait=heidi_half,bobby_half
+
+You took your damn time, as far as I'm concerned. #speaker=Bobby #portrait=heidi_half,bobby_half
+
+[Apologetic] #speaker=Heidi #portrait=heidi_half,bobby_half
+
+My sincerest apology once more. Protocol caused some delay. We— #speaker=Heidi #portrait=heidi_half,bobby_half
+
+[Annoyed] #speaker=Bobby #portrait=heidi_half,bobby_half
+
+Why didn't you just wait until Sunday to come. At least on Sunday you would have had an excuse to take your damn sweet time #speaker=Bobby #portrait=heidi_half,bobby_half
+
+[With dry humor, unfazed.] #speaker=Heidi #portrait=heidi_half,bobby_half
+
+\*\*Sigh\*\*, Your opinion has been noted sir. Next time, we'll make sure we arrive Sunday. If you want, you can wait while everyone else board, and we'll come back Sunday. Perhaps even add a cherry on top of your Sunday when we arrive. #speaker=Heidi #portrait=heidi_half,bobby_half

@@ -17,6 +17,7 @@ public partial class CampaignModeDialog : VisualElement
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
     private readonly DialogScene _dialogScene = new();
+    private readonly RhythmGameScene _rhythmGameScene = new();
     private readonly VisualElement _blankScene = new();
     private readonly Image _backgroundFront = new()
     {
@@ -136,7 +137,7 @@ public partial class CampaignModeDialog : VisualElement
             return;
         }
 
-        string text = _story.Continue();
+        string text = _story.Continue().Replace("\\n", "\n");
         Dictionary<string, string> tags = GetCurrentTags();
         _delayDuration = 0;
 
@@ -168,6 +169,9 @@ public partial class CampaignModeDialog : VisualElement
                     _dialogScene.SetPortraits(new());
                 }
                 break;
+            case DialogSceneType.RhythmGame:
+                _rhythmGameScene.Text = text;
+                break;
         }
     }
 
@@ -192,6 +196,9 @@ public partial class CampaignModeDialog : VisualElement
 
             case DialogSceneType.Dialog:
                 _currentSceneElement = _dialogScene;
+                break;
+            case DialogSceneType.RhythmGame:
+                _currentSceneElement = _rhythmGameScene;
                 break;
         }
 

@@ -11,6 +11,7 @@ public partial class TitleScene : VisualElement
             fontSize = 32,
             unityFontStyleAndWeight = FontStyle.Bold,
             color = Color.white,
+            unityTextAlign = TextAnchor.MiddleCenter,
         },
     };
 
