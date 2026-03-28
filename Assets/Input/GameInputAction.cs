@@ -290,6 +290,94 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""RhythmGame"",
+            ""id"": ""78c76f7c-e1d0-4a8c-ad62-e76bc95346c0"",
+            ""actions"": [
+                {
+                    ""name"": ""A"",
+                    ""type"": ""Button"",
+                    ""id"": ""d097b28f-e525-4953-930e-a3bd72cfdb66"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""S"",
+                    ""type"": ""Button"",
+                    ""id"": ""744f1392-331d-41d2-9858-3dc78b29ce1a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""D"",
+                    ""type"": ""Button"",
+                    ""id"": ""fe8a6e29-ffa3-4316-b644-880abbaff0f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""F"",
+                    ""type"": ""Button"",
+                    ""id"": ""87353dbe-fa6e-4adb-9d5f-6ff0750400d8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""83094402-80c1-46a5-a5b3-33e5f83db94c"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8e695f4-adc2-4898-b00b-fc9048db0ad3"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""S"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78342e3b-6b0c-445c-be7c-a48c817c1f1f"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""D"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb72372c-794c-4d16-b83f-4c871e717702"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""F"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -310,6 +398,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         // Campaign Mode
         m_CampaignMode = asset.FindActionMap("Campaign Mode", throwIfNotFound: true);
         m_CampaignMode_OpenConsole = m_CampaignMode.FindAction("Open Console", throwIfNotFound: true);
+        // RhythmGame
+        m_RhythmGame = asset.FindActionMap("RhythmGame", throwIfNotFound: true);
+        m_RhythmGame_A = m_RhythmGame.FindAction("A", throwIfNotFound: true);
+        m_RhythmGame_S = m_RhythmGame.FindAction("S", throwIfNotFound: true);
+        m_RhythmGame_D = m_RhythmGame.FindAction("D", throwIfNotFound: true);
+        m_RhythmGame_F = m_RhythmGame.FindAction("F", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -318,6 +412,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameInputAction.Console.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CityModeMenu.enabled, "This will cause a leak and performance issues, GameInputAction.CityModeMenu.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CampaignMode.enabled, "This will cause a leak and performance issues, GameInputAction.CampaignMode.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_RhythmGame.enabled, "This will cause a leak and performance issues, GameInputAction.RhythmGame.Disable() has not been called.");
     }
 
     /// <summary>
@@ -817,6 +912,135 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="CampaignModeActions" /> instance referencing this action map.
     /// </summary>
     public CampaignModeActions @CampaignMode => new CampaignModeActions(this);
+
+    // RhythmGame
+    private readonly InputActionMap m_RhythmGame;
+    private List<IRhythmGameActions> m_RhythmGameActionsCallbackInterfaces = new List<IRhythmGameActions>();
+    private readonly InputAction m_RhythmGame_A;
+    private readonly InputAction m_RhythmGame_S;
+    private readonly InputAction m_RhythmGame_D;
+    private readonly InputAction m_RhythmGame_F;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "RhythmGame".
+    /// </summary>
+    public struct RhythmGameActions
+    {
+        private @GameInputAction m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public RhythmGameActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "RhythmGame/A".
+        /// </summary>
+        public InputAction @A => m_Wrapper.m_RhythmGame_A;
+        /// <summary>
+        /// Provides access to the underlying input action "RhythmGame/S".
+        /// </summary>
+        public InputAction @S => m_Wrapper.m_RhythmGame_S;
+        /// <summary>
+        /// Provides access to the underlying input action "RhythmGame/D".
+        /// </summary>
+        public InputAction @D => m_Wrapper.m_RhythmGame_D;
+        /// <summary>
+        /// Provides access to the underlying input action "RhythmGame/F".
+        /// </summary>
+        public InputAction @F => m_Wrapper.m_RhythmGame_F;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_RhythmGame; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="RhythmGameActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(RhythmGameActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="RhythmGameActions" />
+        public void AddCallbacks(IRhythmGameActions instance)
+        {
+            if (instance == null || m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Add(instance);
+            @A.started += instance.OnA;
+            @A.performed += instance.OnA;
+            @A.canceled += instance.OnA;
+            @S.started += instance.OnS;
+            @S.performed += instance.OnS;
+            @S.canceled += instance.OnS;
+            @D.started += instance.OnD;
+            @D.performed += instance.OnD;
+            @D.canceled += instance.OnD;
+            @F.started += instance.OnF;
+            @F.performed += instance.OnF;
+            @F.canceled += instance.OnF;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="RhythmGameActions" />
+        private void UnregisterCallbacks(IRhythmGameActions instance)
+        {
+            @A.started -= instance.OnA;
+            @A.performed -= instance.OnA;
+            @A.canceled -= instance.OnA;
+            @S.started -= instance.OnS;
+            @S.performed -= instance.OnS;
+            @S.canceled -= instance.OnS;
+            @D.started -= instance.OnD;
+            @D.performed -= instance.OnD;
+            @D.canceled -= instance.OnD;
+            @F.started -= instance.OnF;
+            @F.performed -= instance.OnF;
+            @F.canceled -= instance.OnF;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />.
+        /// </summary>
+        /// <seealso cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />
+        public void RemoveCallbacks(IRhythmGameActions instance)
+        {
+            if (m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="RhythmGameActions.AddCallbacks(IRhythmGameActions)" />
+        /// <seealso cref="RhythmGameActions.RemoveCallbacks(IRhythmGameActions)" />
+        /// <seealso cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />
+        public void SetCallbacks(IRhythmGameActions instance)
+        {
+            foreach (var item in m_Wrapper.m_RhythmGameActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="RhythmGameActions" /> instance referencing this action map.
+    /// </summary>
+    public RhythmGameActions @RhythmGame => new RhythmGameActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "City Mode" which allows adding and removing callbacks.
     /// </summary>
@@ -904,5 +1128,41 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenConsole(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "RhythmGame" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="RhythmGameActions.AddCallbacks(IRhythmGameActions)" />
+    /// <seealso cref="RhythmGameActions.RemoveCallbacks(IRhythmGameActions)" />
+    public interface IRhythmGameActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "A" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnA(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "S" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnS(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "D" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnD(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "F" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnF(InputAction.CallbackContext context);
     }
 }

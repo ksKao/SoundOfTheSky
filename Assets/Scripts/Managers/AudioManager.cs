@@ -53,4 +53,14 @@ public class AudioManager : Singleton<AudioManager>
         audioSource.Stop();
         _audioSources.Remove(name);
     }
+
+    public float GetSongDuration(string name)
+    {
+        if (!_audioSources.TryGetValue(name, out AudioSource audioSource))
+        {
+            return 0;
+        }
+
+        return audioSource.clip.length;
+    }
 }

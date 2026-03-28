@@ -70,3 +70,11 @@ public enum DialogSceneType
     Dialog,
     RhythmGame,
 }
+
+public enum RhythmGameLane
+{
+    A = 0,
+    S = 1,
+    D = 2,
+    F = 3,
+}

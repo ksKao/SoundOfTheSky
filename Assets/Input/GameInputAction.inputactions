@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "GameInputAction",
     "maps": [
         {
@@ -199,6 +200,94 @@
                     "processors": "",
                     "groups": "",
                     "action": "Open Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "RhythmGame",
+            "id": "78c76f7c-e1d0-4a8c-ad62-e76bc95346c0",
+            "actions": [
+                {
+                    "name": "A",
+                    "type": "Button",
+                    "id": "d097b28f-e525-4953-930e-a3bd72cfdb66",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "S",
+                    "type": "Button",
+                    "id": "744f1392-331d-41d2-9858-3dc78b29ce1a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "D",
+                    "type": "Button",
+                    "id": "fe8a6e29-ffa3-4316-b644-880abbaff0f8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "F",
+                    "type": "Button",
+                    "id": "87353dbe-fa6e-4adb-9d5f-6ff0750400d8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "83094402-80c1-46a5-a5b3-33e5f83db94c",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8e695f4-adc2-4898-b00b-fc9048db0ad3",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "S",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78342e3b-6b0c-445c-be7c-a48c817c1f1f",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "D",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb72372c-794c-4d16-b83f-4c871e717702",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "F",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

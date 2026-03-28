@@ -72,6 +72,38 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         InputManager.Instance.InputAction.CityMode.Disable();
         InputManager.Instance.InputAction.CampaignMode.OpenConsole.performed += ctx =>
             ConsoleManager.Instance.OpenConsole();
+        InputManager.Instance.InputAction.RhythmGame.A.performed += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
+                RhythmGameLane.A
+            );
+        InputManager.Instance.InputAction.RhythmGame.S.performed += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
+                RhythmGameLane.S
+            );
+        InputManager.Instance.InputAction.RhythmGame.D.performed += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
+                RhythmGameLane.D
+            );
+        InputManager.Instance.InputAction.RhythmGame.F.performed += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
+                RhythmGameLane.F
+            );
+        InputManager.Instance.InputAction.RhythmGame.A.canceled += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
+                RhythmGameLane.A
+            );
+        InputManager.Instance.InputAction.RhythmGame.S.canceled += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
+                RhythmGameLane.S
+            );
+        InputManager.Instance.InputAction.RhythmGame.D.canceled += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
+                RhythmGameLane.D
+            );
+        InputManager.Instance.InputAction.RhythmGame.F.canceled += ctx =>
+            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
+                RhythmGameLane.F
+            );
     }
 
     private void OnEnable()

@@ -46,6 +46,8 @@ public partial class CampaignModeDialog : VisualElement
         scaleMode = ScaleMode.StretchToFill,
     };
 
+    public RhythmGameScene RhythmGameScene => _rhythmGameScene;
+
     public CampaignModeDialog()
     {
         style.height = UiUtils.GetLengthPercentage(100);
@@ -123,6 +125,14 @@ public partial class CampaignModeDialog : VisualElement
             (string fileName) =>
             {
                 ExecuteWithDelay(() => StopAudio(fileName));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(SetRhythmGameSong),
+            (string songName) =>
+            {
+                ExecuteWithDelay(() => SetRhythmGameSong(songName));
             }
         );
 
@@ -276,7 +286,12 @@ public partial class CampaignModeDialog : VisualElement
         AudioManager.Instance.StopAudio(name);
     }
 
-    public Dictionary<string, string> GetCurrentTags()
+    public void SetRhythmGameSong(string name)
+    {
+        _rhythmGameScene.CurrentSong = name;
+    }
+
+    private Dictionary<string, string> GetCurrentTags()
     {
         Dictionary<string, string> tags = new();
 

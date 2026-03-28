@@ -1,0 +1,16 @@
+{
+  "notes": [
+    {
+      "showSecond": 1,
+      "startSecond": 2,
+      "endSecond": -1,
+      "lane": 0
+    },
+    {
+      "showSecond": 2,
+      "startSecond": 4,
+      "endSecond": 8,
+      "lane": 3
+    }
+  ]
+}

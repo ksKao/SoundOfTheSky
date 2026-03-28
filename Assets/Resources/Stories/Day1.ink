@@ -6,6 +6,7 @@ EXTERNAL LoopAudio(fileName)
 EXTERNAL SetAudioVolume(fileName, volume)
 EXTERNAL FadeAudioVolume(fileName, volume, duration)
 EXTERNAL StopAudio(fileName)
+EXTERNAL SetRhythmGameSong(songName)
 
 ~ ChangeScene("Title")
 
@@ -97,12 +98,12 @@ The prayer fades, buried in silence. A cold gust sweeps through, as if the sky i
 ~ FadeBackground("black", 5)
 ~ Delay(5)
 ~ PlayAudio("amazing_grace")
-// ~ Delay(45)
-~ Delay(5)
+~ Delay(45)
 ~ FadeBackground("snowy_village_color", 5)
 ~ Delay(5)
 ~ StopAudio("amazing_grace")
 ~ ChangeScene("RhythmGame")
+~ SetRhythmGameSong("amazing_grace_2")
 
 The trumpet's melody, pure and resonant, rolls across the sky like a beacon, rising and falling with haunting clarity.\\n\\n<>
 It's not the train's rumble that reaches the village first, but this sacred tune, amplified through the trumpet spreading the clouds, carrying hope on every note.\\n\\n<>
@@ -303,3 +304,33 @@ Good, help Olivia and Farin here get everyone settled. The faster we're ready, t
 ~ PlayAudio("sara_tim_footstep")
 
 Sara and Tim exchange glances, then dash to Olivia and Farin, insisting on helping. #left_portraits=heidi_half #right_portraits=sara_half,tim_half
+
+~ ChangeScene("Blank")
+~ FadeBackground("black", 3)
+~ Delay(3)
+~ ChangeScene("Dialog")
+~ LoopAudio("chatter")
+
+Loud chatter continues alongside the train engine as people settle in. Some sit closely, others farther apart. But everyone seemed happy to be in a warmer place.
+
+Minutes later, Olivia approaches Heidi, Sara and Tim holding her hands.
+
+~ ChangeScene("Blank")
+~ FadeAudioVolume("chatter", 0, 3)
+~ Delay(3)
+~ StopAudio("chatter")
+~ FadeBackground("passenger_depot", 3)
+~ Delay(3)
+~ ChangeScene("Dialog")
+
+[Looking at the kids.] #speaker=Olivia #right_portraits=olivia_half
+
+Okay, you two, tell the Captain what you did. #speaker=Olivia #right_portraits=olivia_half
+
+[Waving excitedly.] #speaker=Tim #right_portraits=tim_half,sara_half
+
+We got everyone seated and comfortable! #speaker=Tim #right_portraits=tim_half,sara_half
+
+Well done, you two. Your skills are noted, I'll count on you again. #speaker=Heidi #left_portraits=heidi_half #right_portraits=tim_half,sara_half
+
+She salutes them, and they salute back, grinning. #left_portraits=heidi_half #right_portraits=tim_half,sara_half
