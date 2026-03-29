@@ -69,6 +69,7 @@ public enum DialogSceneType
     Blank,
     Dialog,
     RhythmGame,
+    Comic,
 }
 
 public enum RhythmGameLane

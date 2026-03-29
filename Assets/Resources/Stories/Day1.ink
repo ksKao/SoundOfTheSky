@@ -1,12 +1,4 @@
-﻿EXTERNAL ChangeScene(sceneType)
-EXTERNAL FadeBackground(fileName, duration)
-EXTERNAL Delay(duration)
-EXTERNAL PlayAudio(fileName)
-EXTERNAL LoopAudio(fileName)
-EXTERNAL SetAudioVolume(fileName, volume)
-EXTERNAL FadeAudioVolume(fileName, volume, duration)
-EXTERNAL StopAudio(fileName)
-EXTERNAL SetRhythmGameSong(songName)
+﻿INCLUDE Externals.ink
 
 ~ ChangeScene("Title")
 
@@ -334,3 +326,45 @@ We got everyone seated and comfortable! #speaker=Tim #right_portraits=tim_half,s
 Well done, you two. Your skills are noted, I'll count on you again. #speaker=Heidi #left_portraits=heidi_half #right_portraits=tim_half,sara_half
 
 She salutes them, and they salute back, grinning. #left_portraits=heidi_half #right_portraits=tim_half,sara_half
+
+~ ChangeScene("Blank")
+~ FadeBackground("black", 3)
+~ Delay(3)
+
+~ ChangeScene("Comic")
+Heidi grabs her trumpet, strapped to her chest. She heads to the last car ,where all the supplies are, a large metal door awaits. #image=ch1_pg1 #duration=15
+
+~ PlayAudio("metal_door_creaking")
+
+The handle is ice-cold, the door creaking as if untouched for centuries.
+
+~ StopAudio("metal_door_creaking")
+~ PlayAudioWithDuration("cold_strong_wind", 12)
+
+A strong wind rushes in. Outside, a giant steel megaphone looms on the platform, ready to amplify her signal.
+
+~ StopAudio("cold_strong_wind")
+~ FadeBackground("black", 0)
+~ ChangeScene("Blank")
+~ Delay(1)
+~ ChangeScene("Dialog")
+
+Hopefully it won't take more than a week. May the other trains join us as well. #speaker=Heidi
+
+Heidi positions herself before the megaphone, aligning her trumpet. She plays an tune, soaring through the sky, signaling the train's current status.
+
+~ PlayAudio("march_on")
+
+~ ChangeScene("Blank")
+~ PanBackground("ch1_pg2", 158)
+~ Delay(158)
+~ StopAudio("march_on")
+
+~ FadeBackground("black", 3)
+~ Delay(3)
+~ PlayAudio("steam_train_full_moving")
+~ FadeBackground("cover_train_tender_color", 5)
+~ Delay(5)
+
+~ ChangeScene("Dialog")
+The song ends, the engine roars to life, the train rolls on its course to the capital.

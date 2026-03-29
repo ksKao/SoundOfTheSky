@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class AudioManager : Singleton<AudioManager>
@@ -18,6 +19,21 @@ public class AudioManager : Singleton<AudioManager>
 
         audioSource.loop = loop;
         audioSource.Play();
+    }
+
+    public void PlayAudioWithDuration(string name, float duration)
+    {
+        // check if audio exist in the list
+        if (!_audioSources.TryGetValue(name, out AudioSource audioSource))
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            _audioSources.Add(name, audioSource);
+
+            audioSource.clip = Resources.Load<AudioClip>($"Audio/{name}");
+        }
+
+        audioSource.Play();
+        DOVirtual.DelayedCall(duration, () => audioSource.Stop());
     }
 
     public float GetVolume(string name)
@@ -52,6 +68,14 @@ public class AudioManager : Singleton<AudioManager>
 
         audioSource.Stop();
         _audioSources.Remove(name);
+    }
+
+    public void StopAllAudio()
+    {
+        foreach (KeyValuePair<string, AudioSource> audioSource in _audioSources)
+        {
+            audioSource.Value.Stop();
+        }
     }
 
     public float GetSongDuration(string name)

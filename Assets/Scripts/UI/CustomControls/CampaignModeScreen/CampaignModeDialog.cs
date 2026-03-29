@@ -17,8 +17,8 @@ public partial class CampaignModeDialog : VisualElement
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
     private readonly DialogScene _dialogScene = new();
-    private readonly RhythmGameScene _rhythmGameScene = new();
     private readonly VisualElement _blankScene = new();
+    public readonly ComicScene _comicScene = new();
     private readonly Image _backgroundFront = new()
     {
         sprite = UiUtils.LoadSprite("black", Scene.DialogMode),
@@ -29,6 +29,7 @@ public partial class CampaignModeDialog : VisualElement
             height = UiUtils.GetLengthPercentage(100),
             top = 0,
             left = 0,
+            translate = new Translate(0, 0),
         },
         scaleMode = ScaleMode.StretchToFill,
     };
@@ -42,11 +43,12 @@ public partial class CampaignModeDialog : VisualElement
             height = UiUtils.GetLengthPercentage(100),
             top = 0,
             left = 0,
+            translate = new Translate(0, 0),
         },
         scaleMode = ScaleMode.StretchToFill,
     };
 
-    public RhythmGameScene RhythmGameScene => _rhythmGameScene;
+    public RhythmGameScene RhythmGameScene { get; } = new();
 
     public CampaignModeDialog()
     {
@@ -81,6 +83,14 @@ public partial class CampaignModeDialog : VisualElement
         );
 
         _story.BindExternalFunction(
+            nameof(PanBackground),
+            (string fileName, float duration) =>
+            {
+                ExecuteWithDelay(() => PanBackground(fileName, duration));
+            }
+        );
+
+        _story.BindExternalFunction(
             nameof(Delay),
             (float duration) =>
             {
@@ -101,6 +111,14 @@ public partial class CampaignModeDialog : VisualElement
             (string fileName) =>
             {
                 ExecuteWithDelay(() => LoopAudio(fileName));
+            }
+        );
+
+        _story.BindExternalFunction(
+            nameof(PlayAudioWithDuration),
+            (string fileName, float duration) =>
+            {
+                ExecuteWithDelay(() => PlayAudioWithDuration(fileName, duration));
             }
         );
 
@@ -143,6 +161,7 @@ public partial class CampaignModeDialog : VisualElement
     {
         if (_story == null || !_story.canContinue)
         {
+            AudioManager.Instance.StopAllAudio();
             UiManager.Instance.CampaignModeScreen.ChangeToGameplay();
             return;
         }
@@ -188,7 +207,24 @@ public partial class CampaignModeDialog : VisualElement
                 _dialogScene.SetPortraits(leftPortraits, centerPortraits, rightPortraits);
                 break;
             case DialogSceneType.RhythmGame:
-                _rhythmGameScene.Text = text;
+                RhythmGameScene.Text = text;
+                break;
+            case DialogSceneType.Comic:
+                if (tags.ContainsKey("image"))
+                {
+                    float duration = 10;
+
+                    if (tags.TryGetValue("duration", out string durationStr))
+                        float.TryParse(durationStr, out duration);
+
+                    _comicScene.PanImage(tags["image"], duration);
+                }
+                _comicScene.SetText(
+                    text,
+                    tags.ContainsKey("speaker")
+                        ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
+                        : ""
+                );
                 break;
         }
     }
@@ -216,7 +252,10 @@ public partial class CampaignModeDialog : VisualElement
                 _currentSceneElement = _dialogScene;
                 break;
             case DialogSceneType.RhythmGame:
-                _currentSceneElement = _rhythmGameScene;
+                _currentSceneElement = RhythmGameScene;
+                break;
+            case DialogSceneType.Comic:
+                _currentSceneElement = _comicScene;
                 break;
         }
 
@@ -228,22 +267,49 @@ public partial class CampaignModeDialog : VisualElement
         Sprite sprite = UiUtils.LoadSprite(fileName, Scene.DialogMode);
 
         _backgroundBack.sprite = sprite;
-        DOTween
-            .To(
-                () => 1f,
+
+        DOVirtual
+            .Float(
+                1f,
+                0,
+                duration,
                 (x) =>
                 {
                     _backgroundFront.style.opacity = x;
-                },
-                0f,
-                duration
+                }
             )
-            .SetEase(Ease.InCubic)
+            .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
                 _backgroundFront.sprite = sprite;
                 _backgroundFront.style.opacity = 1;
+                _backgroundFront.style.translate = new Translate(0, 0);
+                _backgroundFront.style.height = UiUtils.GetLengthPercentage(100);
             });
+    }
+
+    public void PanBackground(string fileName, float duration)
+    {
+        Sprite sprite = UiUtils.LoadSprite(fileName, Scene.DialogMode);
+
+        _backgroundFront.sprite = sprite;
+
+        float aspectRatio = (float)sprite.texture.height / sprite.texture.width;
+        _backgroundFront.style.height = Screen.width * aspectRatio;
+        _backgroundFront.style.translate = new Translate(0, UiUtils.GetLengthPercentage(0));
+
+        DOVirtual
+            .Float(
+                0,
+                -50,
+                duration,
+                (x) =>
+                    _backgroundFront.style.translate = new Translate(
+                        0,
+                        UiUtils.GetLengthPercentage(x)
+                    )
+            )
+            .SetEase(Ease.Linear);
     }
 
     public void Delay(float duration)
@@ -259,6 +325,11 @@ public partial class CampaignModeDialog : VisualElement
     public void LoopAudio(string name)
     {
         AudioManager.Instance.PlayAudio(name, true);
+    }
+
+    public void PlayAudioWithDuration(string name, float duration)
+    {
+        AudioManager.Instance.PlayAudioWithDuration(name, duration);
     }
 
     public void SetAudioVolume(string name, float volume)
@@ -288,7 +359,7 @@ public partial class CampaignModeDialog : VisualElement
 
     public void SetRhythmGameSong(string name)
     {
-        _rhythmGameScene.CurrentSong = name;
+        RhythmGameScene.CurrentSong = name;
     }
 
     private Dictionary<string, string> GetCurrentTags()
