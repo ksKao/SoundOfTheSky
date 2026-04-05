@@ -24,15 +24,11 @@ A mournful wind cuts through the silence, broken only by occasional distant chat
 
 ~ SetAudioVolume("dragonwind", 0.2)
 
-When are they coming? #speaker=Sara #center_portraits=sara_half #subtext=Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.
+When are they coming? #speaker=Sara #center_portraits=sara_half #voice=day_1_sara_1 #subtext=Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.
 
-[Shivering, clutching a thin blanket, tugging at two nearby adults. His lips are chapped from the cold.] #speaker=Tim #center_portraits=tim_half
+Are they really coming? #speaker=Tim #center_portraits=tim_half #voice=day_1_tim_1 #subtext=Shivering, clutching a thin blanket, tugging at two nearby adults. His lips are chapped from the cold.
 
-Are they really coming? #speaker=Tim #center_portraits=tim_half
-
-[Kneeling, forcing a smile, though his eyes betray doubt.] #speaker=Frank #center_portraits=frank_half
-
-Don't worry, Tim, I'm sure they'll come. [His hand rests on Tim's head.] #speaker=Frank #center_portraits=frank_half
+Don't worry, Tim, I'm sure they'll come. [His hand rests on Tim's head.] #speaker=Frank #center_portraits=frank_half #voice=day_1_frank_1 #subtext=Kneeling, forcing a smile, though his eyes betray doubt.
 
 [Arms crossed, staring at the ground, voice flat and resigned.] #speaker=Bobby #center_portraits=bobby_half
 

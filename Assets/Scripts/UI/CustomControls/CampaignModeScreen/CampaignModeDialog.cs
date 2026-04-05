@@ -181,11 +181,12 @@ public partial class CampaignModeDialog : VisualElement
                 break;
             case DialogSceneType.Dialog:
                 _dialogScene.SetText(
-                    text,
-                    CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                    text: text,
+                    speaker: CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
                         tags.GetValueOrDefault("speaker", "")
                     ),
-                    tags.GetValueOrDefault("subtext", "")
+                    subtext: tags.GetValueOrDefault("subtext", ""),
+                    voice: tags.GetValueOrDefault("voice", "")
                 );
                 List<string> leftPortraits = tags.GetValueOrDefault("left_portraits", "")
                     .Split(",")

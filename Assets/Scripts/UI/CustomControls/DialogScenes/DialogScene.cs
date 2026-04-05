@@ -11,6 +11,8 @@ public partial class DialogScene : VisualElement
     private string _text = "";
     private string _speaker = "";
     private string _subtext = "";
+    private string _voice = "";
+    private bool _attached = false;
     private TweenerCore<float, float, DG.Tweening.Plugins.Options.FloatOptions> _currentTween =
         null;
     private readonly Label _nameLabel = new()
@@ -93,7 +95,14 @@ public partial class DialogScene : VisualElement
         // replay the typing animation on attach because the transition might be done when switching scenes.
         RegisterCallback<AttachToPanelEvent>(_ =>
         {
-            SetText(_text, _speaker, _subtext);
+            SetText(_text, _speaker, _subtext, _voice);
+            _attached = true;
+        });
+
+        RegisterCallback<DetachFromPanelEvent>(_ =>
+        {
+            _attached = false;
+            AudioManager.Instance.StopVoice();
         });
 
         RegisterCallback<ClickEvent>(_ =>
@@ -117,13 +126,21 @@ public partial class DialogScene : VisualElement
         textContainer.Add(_textLabel);
     }
 
-    public void SetText(string text, string speaker, string subtext)
+    public void SetText(string text, string speaker, string subtext, string voice)
     {
+        AudioManager.Instance.StopVoice();
+
         _text = text;
         _speaker = speaker;
         _subtext = subtext;
+        _voice = voice;
         _currentTween?.Complete();
         _textLabel.text = "";
+
+        if (_attached && !string.IsNullOrEmpty(_voice))
+        {
+            AudioManager.Instance.PlayVoice(_voice);
+        }
 
         if (string.IsNullOrWhiteSpace(speaker))
         {

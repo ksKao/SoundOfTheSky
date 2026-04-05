@@ -5,6 +5,15 @@ using UnityEngine;
 public class AudioManager : Singleton<AudioManager>
 {
     private readonly Dictionary<string, AudioSource> _audioSources = new();
+    private AudioSource _voiceAudioSource;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _voiceAudioSource = gameObject.AddComponent<AudioSource>();
+        _voiceAudioSource.loop = false;
+    }
 
     public void PlayAudio(string name, bool loop)
     {
@@ -19,6 +28,20 @@ public class AudioManager : Singleton<AudioManager>
 
         audioSource.loop = loop;
         audioSource.Play();
+    }
+
+    public void PlayVoice(string name)
+    {
+        _voiceAudioSource.clip = Resources.Load<AudioClip>(
+            $"Audio/Voices/Day {CampaignModeManager.Instance.CurrentTime.day}/{name}"
+        );
+
+        _voiceAudioSource.Play();
+    }
+
+    public void StopVoice()
+    {
+        _voiceAudioSource.Stop();
     }
 
     public void PlayAudioWithDuration(string name, float duration)
