@@ -217,7 +217,8 @@ public partial class CampaignModeDialog : VisualElement
                     CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
                         tags.GetValueOrDefault("speaker", "")
                     ),
-                    tags.GetValueOrDefault("subtext", "")
+                    tags.GetValueOrDefault("subtext", ""),
+                    voice: tags.GetValueOrDefault("voice", "")
                 );
                 break;
         }
