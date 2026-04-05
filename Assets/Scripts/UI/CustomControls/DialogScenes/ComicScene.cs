@@ -7,6 +7,7 @@ public partial class ComicScene : VisualElement
 {
     private string _text = "";
     private string _speaker = "";
+    private string _subtext = "";
     private string _panImage = "";
     private float _panDuration = 0;
     private Tweener _currentTextTween = null;
@@ -59,7 +60,7 @@ public partial class ComicScene : VisualElement
         // replay the typing animation && pan image on attach because the transition might be done when switching scenes.
         RegisterCallback<AttachToPanelEvent>(_ =>
         {
-            SetText(_text, _speaker);
+            SetText(_text, _speaker, _subtext);
             PanImage(_panImage, _panDuration);
         });
 
@@ -80,11 +81,13 @@ public partial class ComicScene : VisualElement
         });
     }
 
-    public void SetText(string text, string speaker)
+    public void SetText(string text, string speaker, string subtext)
     {
         _dialogBox.style.display = DisplayStyle.Flex;
         _text = text;
         _speaker = speaker;
+        _subtext = subtext;
+
         _currentTextTween?.Complete();
         _textLabel.text = "";
 
@@ -97,6 +100,10 @@ public partial class ComicScene : VisualElement
         {
             _nameLabel.style.display = DisplayStyle.Flex;
             _nameLabel.text = $"<u>{speaker}</u>";
+
+            if (!string.IsNullOrEmpty(subtext))
+                _nameLabel.text += $": <i>[{subtext}]</i>";
+
             _textLabel.style.unityFontStyleAndWeight = FontStyle.Normal;
         }
 

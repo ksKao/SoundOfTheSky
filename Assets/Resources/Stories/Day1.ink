@@ -24,9 +24,7 @@ A mournful wind cuts through the silence, broken only by occasional distant chat
 
 ~ SetAudioVolume("dragonwind", 0.2)
 
-[Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.] #speaker=Sara #center_portraits=sara_half
-
-When are they coming? #speaker=Sara #center_portraits=sara_half
+When are they coming? #speaker=Sara #center_portraits=sara_half #subtext=Looking down, wringing her hands. Her voice trembles, eyes scanning the white horizon.
 
 [Shivering, clutching a thin blanket, tugging at two nearby adults. His lips are chapped from the cold.] #speaker=Tim #center_portraits=tim_half
 

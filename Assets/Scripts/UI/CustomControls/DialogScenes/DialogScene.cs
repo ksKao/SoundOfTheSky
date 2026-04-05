@@ -10,11 +10,12 @@ public partial class DialogScene : VisualElement
 {
     private string _text = "";
     private string _speaker = "";
+    private string _subtext = "";
     private TweenerCore<float, float, DG.Tweening.Plugins.Options.FloatOptions> _currentTween =
         null;
     private readonly Label _nameLabel = new()
     {
-        style = { unityFontStyleAndWeight = FontStyle.Bold, marginBottom = 8 },
+        style = { marginBottom = 8 },
         enableRichText = true,
     };
     private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Normal } };
@@ -92,7 +93,7 @@ public partial class DialogScene : VisualElement
         // replay the typing animation on attach because the transition might be done when switching scenes.
         RegisterCallback<AttachToPanelEvent>(_ =>
         {
-            SetText(_text, _speaker);
+            SetText(_text, _speaker, _subtext);
         });
 
         RegisterCallback<ClickEvent>(_ =>
@@ -116,10 +117,11 @@ public partial class DialogScene : VisualElement
         textContainer.Add(_textLabel);
     }
 
-    public void SetText(string text, string speaker)
+    public void SetText(string text, string speaker, string subtext)
     {
         _text = text;
         _speaker = speaker;
+        _subtext = subtext;
         _currentTween?.Complete();
         _textLabel.text = "";
 
@@ -131,7 +133,11 @@ public partial class DialogScene : VisualElement
         else
         {
             _nameLabel.style.display = DisplayStyle.Flex;
-            _nameLabel.text = $"<u>{speaker}</u>";
+            _nameLabel.text = $"<b><u>{speaker}</u></b>";
+
+            if (!string.IsNullOrEmpty(subtext))
+                _nameLabel.text += $": <i>[{subtext}]</i>";
+
             _textLabel.style.unityFontStyleAndWeight = FontStyle.Normal;
         }
 

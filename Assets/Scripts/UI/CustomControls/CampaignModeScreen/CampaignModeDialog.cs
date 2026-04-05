@@ -177,33 +177,25 @@ public partial class CampaignModeDialog : VisualElement
                 break;
             case DialogSceneType.Subtitle:
                 _subtitleScene.textLabel.text = text;
-                if (tags.ContainsKey("title"))
-                {
-                    _subtitleScene.titleLabel.text = tags["title"];
-                }
+                _subtitleScene.titleLabel.text = tags.GetValueOrDefault("title", "");
                 break;
             case DialogSceneType.Dialog:
                 _dialogScene.SetText(
                     text,
-                    tags.ContainsKey("speaker")
-                        ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
-                        : ""
+                    CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                        tags.GetValueOrDefault("speaker", "")
+                    ),
+                    tags.GetValueOrDefault("subtext", "")
                 );
-                List<string> leftPortraits = new(),
-                    centerPortraits = new(),
-                    rightPortraits = new();
-                if (tags.ContainsKey("left_portraits"))
-                {
-                    leftPortraits = tags["left_portraits"].Split(",").ToList();
-                }
-                if (tags.ContainsKey("center_portraits"))
-                {
-                    centerPortraits = tags["center_portraits"].Split(",").ToList();
-                }
-                if (tags.ContainsKey("right_portraits"))
-                {
-                    rightPortraits = tags["right_portraits"].Split(",").ToList();
-                }
+                List<string> leftPortraits = tags.GetValueOrDefault("left_portraits", "")
+                    .Split(",")
+                    .ToList();
+                List<string> centerPortraits = tags.GetValueOrDefault("center_portraits", "")
+                    .Split(",")
+                    .ToList();
+                List<string> rightPortraits = tags.GetValueOrDefault("right_portraits", "")
+                    .Split(",")
+                    .ToList();
                 _dialogScene.SetPortraits(leftPortraits, centerPortraits, rightPortraits);
                 break;
             case DialogSceneType.RhythmGame:
@@ -221,9 +213,10 @@ public partial class CampaignModeDialog : VisualElement
                 }
                 _comicScene.SetText(
                     text,
-                    tags.ContainsKey("speaker")
-                        ? CultureInfo.CurrentCulture.TextInfo.ToTitleCase(tags["speaker"])
-                        : ""
+                    CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                        tags.GetValueOrDefault("speaker", "")
+                    ),
+                    tags.GetValueOrDefault("subtext", "")
                 );
                 break;
         }
