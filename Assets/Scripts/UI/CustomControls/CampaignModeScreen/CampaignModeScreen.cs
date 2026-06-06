@@ -8,6 +8,8 @@ public partial class CampaignModeScreen : VisualElement
     public readonly CampaignModeGameplay gameplay = new();
     public readonly CampaignModeDialog dialog = new();
 
+    public bool IsDialog => Contains(dialog);
+
     public CampaignModeScreen()
     {
         style.minHeight = UiUtils.GetLengthPercentage(100);

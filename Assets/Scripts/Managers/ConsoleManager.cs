@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 public class ConsoleManager : Singleton<ConsoleManager>
@@ -24,6 +23,7 @@ public class ConsoleManager : Singleton<ConsoleManager>
             new GiveCommand(),
             new UnlockCommand(),
             new SetCommand(),
+            new SkipCommand(),
             new QuitCommand(),
         };
 
