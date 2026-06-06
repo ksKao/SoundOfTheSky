@@ -32,7 +32,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.dayLabel.text =
                 $"DAY {CurrentTime.day}";
             UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.timeLabel.text =
-                $"{CurrentTime:D2}:00";
+                $"{CurrentTime.hour:D2}:00";
         }
     }
     public int Temperature

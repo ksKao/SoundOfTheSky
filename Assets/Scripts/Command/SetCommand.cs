@@ -19,14 +19,14 @@ public class SetCommand : Command
                 "Set the day transition time in campaign mode, default is 5 seconds, integer only."
             },
             {
-                "set interval <value>",
-                "Set the interval in campaign mode. Interval determines the hour and days. Each day has 12 intervals, e.g. interval 15 = day 2 06:00"
+                "set day <value>",
+                "Set the day in campaign mode (1-indexed). Preserves current time of day."
+            },
+            {
+                "set hours <value>",
+                "Set the hour in campaign mode. Valid values: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22. Preserves current day."
             },
             { "set temperature <value>", "Set the current temperature in campaign mode." },
-            {
-                "set max_days <value>",
-                "Set the max days in campaign mode, i.e., how many days for the player to reach to win."
-            },
         };
 
     public override void Execute(string[] args)
@@ -56,12 +56,31 @@ public class SetCommand : Command
                 );
                 break;
             }
-            case "interval":
+            case "day":
             {
-                if (!int.TryParse(args[1], out int value))
-                    throw new Exception($"\"{args[1]}\" is not a valid integer.");
-                CampaignModeManager.Instance.Interval = value;
-                ConsoleManager.Instance.Output($"Interval has been set to {args[1]}.");
+                if (!int.TryParse(args[1], out int value) || value < 1)
+                    throw new Exception(
+                        $"\"{args[1]}\" is not a valid day (must be an integer >= 1)."
+                    );
+                int currentInterval = CampaignModeManager.Instance.Interval;
+                CampaignModeManager.Instance.Interval = (value - 1) * 12 + (currentInterval % 12);
+                ConsoleManager.Instance.Output($"Day has been set to {value}.");
+                break;
+            }
+            case "hours":
+            {
+                if (
+                    !int.TryParse(args[1], out int value)
+                    || value < 0
+                    || value > 22
+                    || value % 2 != 0
+                )
+                    throw new Exception(
+                        $"\"{args[1]}\" is not a valid hour (must be 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, or 22)."
+                    );
+                int currentDay = CampaignModeManager.Instance.Interval / 12;
+                CampaignModeManager.Instance.Interval = currentDay * 12 + value / 2;
+                ConsoleManager.Instance.Output($"Hours has been set to {value}:00.");
                 break;
             }
             case "temperature":
