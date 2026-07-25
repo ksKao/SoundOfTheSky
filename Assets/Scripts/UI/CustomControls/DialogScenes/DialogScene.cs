@@ -95,8 +95,8 @@ public partial class DialogScene : VisualElement
         // replay the typing animation on attach because the transition might be done when switching scenes.
         RegisterCallback<AttachToPanelEvent>(_ =>
         {
-            SetText(_text, _speaker, _subtext, _voice);
             _attached = true;
+            SetText(_text, _speaker, _subtext, _voice);
         });
 
         RegisterCallback<DetachFromPanelEvent>(_ =>

@@ -41,7 +41,10 @@ public class AudioManager : Singleton<AudioManager>
 
     public void StopVoice()
     {
-        _voiceAudioSource.Stop();
+        if (_voiceAudioSource != null)
+        {
+            _voiceAudioSource.Stop();
+        }
     }
 
     public void PlayAudioWithDuration(string name, float duration)
