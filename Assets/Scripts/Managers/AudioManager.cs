@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -6,6 +7,11 @@ public class AudioManager : Singleton<AudioManager>
 {
     private readonly Dictionary<string, AudioSource> _audioSources = new();
     private AudioSource _voiceAudioSource;
+    private bool _wasVoicePlaying = false;
+
+    public event Action OnVoiceFinish;
+
+    public bool IsVoicePlaying => _voiceAudioSource != null && _voiceAudioSource.isPlaying;
 
     protected override void Awake()
     {
@@ -13,6 +19,16 @@ public class AudioManager : Singleton<AudioManager>
 
         _voiceAudioSource = gameObject.AddComponent<AudioSource>();
         _voiceAudioSource.loop = false;
+    }
+
+    public void Update()
+    {
+        if (_wasVoicePlaying && !IsVoicePlaying)
+        {
+            OnVoiceFinish();
+        }
+
+        _wasVoicePlaying = IsVoicePlaying;
     }
 
     public void PlayAudio(string name, bool loop)

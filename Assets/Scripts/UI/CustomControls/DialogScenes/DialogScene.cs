@@ -15,50 +15,62 @@ public partial class DialogScene : VisualElement
     private bool _attached = false;
     private TweenerCore<float, float, DG.Tweening.Plugins.Options.FloatOptions> _currentTween =
         null;
-    private readonly Label _nameLabel = new()
-    {
-        style = { marginBottom = 8 },
-        enableRichText = true,
-    };
+    private readonly Label _nameLabel =
+        new() { style = { marginRight = 8 }, enableRichText = true };
+    private readonly Label _speakerIconLabel = new() { text = "O)))" };
     private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Normal } };
-    private readonly VisualElement _leftPortraitContainer = new()
-    {
-        style =
+    private readonly VisualElement _nameLabelContainer =
+        new()
         {
-            height = UiUtils.GetLengthPercentage(100),
-            width = UiUtils.GetLengthPercentage(100f / 3),
-            display = DisplayStyle.Flex,
-            flexDirection = FlexDirection.Row,
-            justifyContent = Justify.FlexStart,
-            alignItems = Align.FlexEnd,
-            paddingLeft = 24,
-        },
-    };
-    private readonly VisualElement _centerPortraitContainer = new()
-    {
-        style =
+            style =
+            {
+                marginBottom = 8,
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                alignItems = Align.Center,
+            },
+        };
+    private readonly VisualElement _leftPortraitContainer =
+        new()
         {
-            height = UiUtils.GetLengthPercentage(100),
-            width = UiUtils.GetLengthPercentage(100f / 3),
-            display = DisplayStyle.Flex,
-            flexDirection = FlexDirection.Row,
-            justifyContent = Justify.Center,
-            alignItems = Align.FlexEnd,
-        },
-    };
-    private readonly VisualElement _rightPortraitContainer = new()
-    {
-        style =
+            style =
+            {
+                height = UiUtils.GetLengthPercentage(100),
+                width = UiUtils.GetLengthPercentage(100f / 3),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.FlexStart,
+                alignItems = Align.FlexEnd,
+                paddingLeft = 24,
+            },
+        };
+    private readonly VisualElement _centerPortraitContainer =
+        new()
         {
-            height = UiUtils.GetLengthPercentage(100),
-            width = UiUtils.GetLengthPercentage(100f / 3),
-            display = DisplayStyle.Flex,
-            flexDirection = FlexDirection.Row,
-            justifyContent = Justify.FlexEnd,
-            alignItems = Align.FlexEnd,
-            paddingRight = 24,
-        },
-    };
+            style =
+            {
+                height = UiUtils.GetLengthPercentage(100),
+                width = UiUtils.GetLengthPercentage(100f / 3),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.Center,
+                alignItems = Align.FlexEnd,
+            },
+        };
+    private readonly VisualElement _rightPortraitContainer =
+        new()
+        {
+            style =
+            {
+                height = UiUtils.GetLengthPercentage(100),
+                width = UiUtils.GetLengthPercentage(100f / 3),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Row,
+                justifyContent = Justify.FlexEnd,
+                alignItems = Align.FlexEnd,
+                paddingRight = 24,
+            },
+        };
 
     public DialogScene()
     {
@@ -69,25 +81,26 @@ public partial class DialogScene : VisualElement
         style.flexDirection = FlexDirection.Row;
         style.alignItems = Align.FlexEnd;
 
-        VisualElement textContainer = new()
-        {
-            style =
+        VisualElement textContainer =
+            new()
             {
-                width = UiUtils.GetLengthPercentage(98),
-                height = UiUtils.GetLengthPercentage(33),
-                position = Position.Absolute,
-                bottom = 16,
-                left = UiUtils.GetLengthPercentage(50),
-                translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
-                backgroundColor = new Color(0.165f, 0.18f, 0.243f, 0.9f),
-                fontSize = 24,
-                color = Color.white,
-                paddingTop = 16,
-                paddingBottom = 16,
-                paddingLeft = 16,
-                paddingRight = 16,
-            },
-        };
+                style =
+                {
+                    width = UiUtils.GetLengthPercentage(98),
+                    height = UiUtils.GetLengthPercentage(33),
+                    position = Position.Absolute,
+                    bottom = 16,
+                    left = UiUtils.GetLengthPercentage(50),
+                    translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
+                    backgroundColor = new Color(0.165f, 0.18f, 0.243f, 0.9f),
+                    fontSize = 24,
+                    color = Color.white,
+                    paddingTop = 16,
+                    paddingBottom = 16,
+                    paddingLeft = 16,
+                    paddingRight = 16,
+                },
+            };
 
         UiUtils.ToggleBorder(textContainer, true, Color.white);
         UiUtils.SetBorderWidth(textContainer, 1);
@@ -97,16 +110,23 @@ public partial class DialogScene : VisualElement
         {
             _attached = true;
             SetText(_text, _speaker, _subtext, _voice);
+            AudioManager.Instance.OnVoiceFinish += OnVoiceFinish;
         });
 
         RegisterCallback<DetachFromPanelEvent>(_ =>
         {
             _attached = false;
             AudioManager.Instance.StopVoice();
+            AudioManager.Instance.OnVoiceFinish -= OnVoiceFinish;
         });
 
         RegisterCallback<ClickEvent>(_ =>
         {
+            if (AudioManager.Instance.IsVoicePlaying)
+            {
+                return;
+            }
+
             if (_currentTween == null || !_currentTween.IsActive() || _currentTween.IsComplete())
             {
                 UiManager.Instance.CampaignModeScreen.dialog.ContinueStory();
@@ -122,8 +142,11 @@ public partial class DialogScene : VisualElement
         Add(_rightPortraitContainer);
 
         Add(textContainer);
-        textContainer.Add(_nameLabel);
+        textContainer.Add(_nameLabelContainer);
         textContainer.Add(_textLabel);
+
+        _nameLabelContainer.Add(_nameLabel);
+        _nameLabelContainer.Add(_speakerIconLabel);
     }
 
     public void SetText(string text, string speaker, string subtext, string voice)
@@ -139,17 +162,18 @@ public partial class DialogScene : VisualElement
 
         if (_attached && !string.IsNullOrEmpty(_voice))
         {
+            _speakerIconLabel.style.display = DisplayStyle.Flex;
             AudioManager.Instance.PlayVoice(_voice);
         }
 
         if (string.IsNullOrWhiteSpace(speaker))
         {
-            _nameLabel.style.display = DisplayStyle.None;
+            _nameLabelContainer.style.display = DisplayStyle.None;
             _textLabel.style.unityFontStyleAndWeight = FontStyle.Italic;
         }
         else
         {
-            _nameLabel.style.display = DisplayStyle.Flex;
+            _nameLabelContainer.style.display = DisplayStyle.Flex;
             _nameLabel.text = $"<b><u>{speaker}</u></b>";
 
             if (!string.IsNullOrEmpty(subtext))
@@ -191,12 +215,18 @@ public partial class DialogScene : VisualElement
 
         foreach (string portrait in portraits)
         {
-            Image imageElement = new()
-            {
-                sprite = UiUtils.LoadSprite(portrait, Scene.DialogMode),
-                style = { height = UiUtils.GetLengthPercentage(80) },
-            };
+            Image imageElement =
+                new()
+                {
+                    sprite = UiUtils.LoadSprite(portrait, Scene.DialogMode),
+                    style = { height = UiUtils.GetLengthPercentage(80) },
+                };
             container.Add(imageElement);
         }
+    }
+
+    private void OnVoiceFinish()
+    {
+        _speakerIconLabel.style.display = DisplayStyle.None;
     }
 }
