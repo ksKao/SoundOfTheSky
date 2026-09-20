@@ -49,7 +49,7 @@ public class AudioManager : Singleton<AudioManager>
     public void PlayVoice(string name)
     {
         _voiceAudioSource.clip = Resources.Load<AudioClip>(
-            $"Audio/Voices/Day {CampaignModeManager.Instance.CurrentTime.day}/{name}"
+            $"Audio/Voices/{name}"
         );
 
         _voiceAudioSource.Play();

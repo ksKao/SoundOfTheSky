@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine; // This is needed here for Application.Quit, otherwise the build will fail
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
@@ -19,14 +20,17 @@ public partial class MainMenuScreen : VisualElement
         );
         style.backgroundImage = UiUtils.LoadTexture("background", Scene.MainMenu);
 
-        Button campaignButton = new() { text = "Campaign " };
-        UiUtils.ApplyCommonMenuButtonStyle(campaignButton);
+        Button visualNovelButton = new() { text = "Visual Novel" };
+        UiUtils.ApplyCommonMenuButtonStyle(visualNovelButton);
 
-        Button cityModeButton = new() { text = "City Mode" };
-        UiUtils.ApplyCommonMenuButtonStyle(cityModeButton);
+        Button extrasButton = new() { text = "Extras" };
+        UiUtils.ApplyCommonMenuButtonStyle(extrasButton);
 
         Button settingsButton = new() { text = "Settings" };
         UiUtils.ApplyCommonMenuButtonStyle(settingsButton);
+
+        Button followUsButton = new() { text = "Follow Us" };
+        UiUtils.ApplyCommonMenuButtonStyle(followUsButton);
 
         Button quitButton = new() { text = "Quit" };
         UiUtils.ApplyCommonMenuButtonStyle(quitButton);
@@ -40,20 +44,21 @@ public partial class MainMenuScreen : VisualElement
 #endif
         };
 
-        campaignButton.clicked += () =>
+        visualNovelButton.clicked += () =>
         {
-            UiManager.Instance.Modal.Show(
-                new SaveMenu(
-                    "Campaign Mode",
-                    CampaignModeManager.GetSaveFilePath,
-                    () => UiManager.Instance.Modal.Close(),
-                    () => SceneManager.LoadScene((int)Scene.CampaignMode),
-                    () => SceneManager.LoadScene((int)Scene.CampaignMode)
-                )
-            );
+            SceneManager.LoadScene((int)Scene.StoryMode);
+            //UiManager.Instance.Modal.Show(
+            //    new SaveMenu(
+            //        "Campaign Mode",
+            //        CampaignModeManager.GetSaveFilePath,
+            //        () => UiManager.Instance.Modal.Close(),
+            //        () => SceneManager.LoadScene((int)Scene.CampaignMode),
+            //        () => SceneManager.LoadScene((int)Scene.CampaignMode)
+            //    )
+            //);
         };
 
-        cityModeButton.clicked += () =>
+        extrasButton.clicked += () =>
         {
             UiManager.Instance.Modal.Show(
                 new SaveMenu(
@@ -66,23 +71,68 @@ public partial class MainMenuScreen : VisualElement
             );
         };
 
+        VisualElement bottomRightContainer = new()
+        {
+            style =
+            {
+                position = Position.Absolute,
+                right = 16,
+                bottom = 16,
+                width = UiUtils.GetLengthPercentage(15),
+                display = DisplayStyle.Flex,
+                flexDirection = FlexDirection.Column
+            },
+        };
+        UiUtils.ToggleBorder(bottomRightContainer, true, Color.white);
+        UiUtils.SetBorderWidth(bottomRightContainer, 1);
+
+        Add(bottomRightContainer);
+
         VisualElement buttonsContainer = new()
         {
             style =
             {
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Column,
-                width = UiUtils.GetLengthPercentage(20),
-                marginLeft = 36,
-                marginBottom = 36,
-            },
+                backgroundColor = new Color(0, 0, 0, 0.7f),
+                borderTopLeftRadius = 8,
+                borderTopRightRadius = 8,
+                borderBottomLeftRadius = 8,
+                borderBottomRightRadius = 8,
+            }
+        };
+        bottomRightContainer.Add(buttonsContainer);
+
+        buttonsContainer.Add(CreateButtonGroup(visualNovelButton));
+        buttonsContainer.Add(CreateButtonGroup(extrasButton, settingsButton));
+        buttonsContainer.Add(CreateButtonGroup(followUsButton, quitButton));
+
+        List<Button> buttons = buttonsContainer.Query<Button>().ToList();
+
+        foreach (Button button in buttons)
+        {
+            button.style.backgroundColor = new Color(0, 0, 0, 0);
+            button.style.paddingTop = 8;
+            button.style.paddingBottom = 8;
+        }
+    }
+
+    private VisualElement CreateButtonGroup(params Button[] buttons)
+    {
+        VisualElement buttonGroup = new()
+        {
+            style =
+            {
+                marginTop = 16,
+                marginBottom = 16
+            }
         };
 
-        Add(buttonsContainer);
+        foreach (Button button in buttons)
+        {
+            buttonGroup.Add(button);
+        }
 
-        buttonsContainer.Add(campaignButton);
-        buttonsContainer.Add(cityModeButton);
-        buttonsContainer.Add(settingsButton);
-        buttonsContainer.Add(quitButton);
+        return buttonGroup;
     }
 }

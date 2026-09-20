@@ -11,14 +11,4 @@ public class InputManager : Singleton<InputManager>
         _inputAction = new();
         _inputAction.Disable();
     }
-
-    protected void OnEnable()
-    {
-        _inputAction.CityMode.Enable();
-    }
-
-    protected void OnDisable()
-    {
-        _inputAction.CityMode.Disable();
-    }
 }

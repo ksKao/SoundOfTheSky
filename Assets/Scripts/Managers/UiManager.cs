@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 public class UiManager : Singleton<UiManager>
@@ -7,6 +8,7 @@ public class UiManager : Singleton<UiManager>
     public CityModeScreen CityModeScreen { get; private set; }
     public MainMenuScreen MainMenuScreen { get; private set; }
     public CampaignModeScreen CampaignModeScreen { get; private set; }
+    public StoryModeScreen StoryModeScreen { get; private set;  }
     public Modal Modal { get; private set; }
 
     public VisualElement ModalParent
@@ -19,6 +21,8 @@ public class UiManager : Singleton<UiManager>
                 return MainMenuScreen;
             else if (CampaignModeScreen != null)
                 return CampaignModeScreen;
+            else if (StoryModeScreen != null)
+                return StoryModeScreen;
             else
                 return null;
         }
@@ -39,6 +43,7 @@ public class UiManager : Singleton<UiManager>
             CityModeScreen = uiDocument.rootVisualElement.Q<CityModeScreen>();
             MainMenuScreen = uiDocument.rootVisualElement.Q<MainMenuScreen>();
             CampaignModeScreen = uiDocument.rootVisualElement.Q<CampaignModeScreen>();
+            StoryModeScreen = uiDocument.rootVisualElement.Q<StoryModeScreen>();
         }
 
         Modal = new();

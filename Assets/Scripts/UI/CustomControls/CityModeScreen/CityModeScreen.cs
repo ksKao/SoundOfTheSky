@@ -32,10 +32,6 @@ public partial class CityModeScreen : VisualElement
         style.display = DisplayStyle.Flex;
         style.alignItems = Align.Center;
         style.justifyContent = Justify.Center;
-        style.unityFont = Resources.Load<Font>("Fonts/myriad_pro");
-        style.unityFontDefinition = new StyleFontDefinition(
-            Resources.Load<FontAsset>("Fonts/myriad_pro")
-        );
         style.position = Position.Relative;
 
         VisualElement container = new()

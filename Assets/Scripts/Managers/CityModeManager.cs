@@ -73,6 +73,7 @@ public class CityModeManager : Singleton<CityModeManager>
 
     private void OnEnable()
     {
+        InputManager.Instance.InputAction.Disable();
         InputManager.Instance.InputAction.CityMode.Enable();
         UiManager.Instance.CityModeScreen.bottomNavigationBar.deployButton.clicked +=
             DeploySelectedMission;

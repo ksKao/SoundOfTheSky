@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 86f98e8b9349a46288b0e66b68f240e3
+guid: 2eda014687ca48d09b9b386e767b3852
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7443756053782179069
-    second: background_0
+      213: -4732158205172286729
+    second: snowy_village_color_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: background_0
+      name: snowy_village_color_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 3840
-        height: 2160
+        width: 4124
+        height: 2890
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 30356abce4772b890800000000000000
-      internalID: -7443756053782179069
+      spriteID: 7fa71c73f2ff35eb0800000000000000
+      internalID: -4732158205172286729
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      background_0: -7443756053782179069
+      snowy_village_color_0: -4732158205172286729
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

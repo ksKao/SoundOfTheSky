@@ -292,7 +292,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""RhythmGame"",
+            ""name"": ""Story Mode"",
             ""id"": ""78c76f7c-e1d0-4a8c-ad62-e76bc95346c0"",
             ""actions"": [
                 {
@@ -398,12 +398,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         // Campaign Mode
         m_CampaignMode = asset.FindActionMap("Campaign Mode", throwIfNotFound: true);
         m_CampaignMode_OpenConsole = m_CampaignMode.FindAction("Open Console", throwIfNotFound: true);
-        // RhythmGame
-        m_RhythmGame = asset.FindActionMap("RhythmGame", throwIfNotFound: true);
-        m_RhythmGame_A = m_RhythmGame.FindAction("A", throwIfNotFound: true);
-        m_RhythmGame_S = m_RhythmGame.FindAction("S", throwIfNotFound: true);
-        m_RhythmGame_D = m_RhythmGame.FindAction("D", throwIfNotFound: true);
-        m_RhythmGame_F = m_RhythmGame.FindAction("F", throwIfNotFound: true);
+        // Story Mode
+        m_StoryMode = asset.FindActionMap("Story Mode", throwIfNotFound: true);
+        m_StoryMode_A = m_StoryMode.FindAction("A", throwIfNotFound: true);
+        m_StoryMode_S = m_StoryMode.FindAction("S", throwIfNotFound: true);
+        m_StoryMode_D = m_StoryMode.FindAction("D", throwIfNotFound: true);
+        m_StoryMode_F = m_StoryMode.FindAction("F", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -412,7 +412,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameInputAction.Console.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CityModeMenu.enabled, "This will cause a leak and performance issues, GameInputAction.CityModeMenu.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CampaignMode.enabled, "This will cause a leak and performance issues, GameInputAction.CampaignMode.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_RhythmGame.enabled, "This will cause a leak and performance issues, GameInputAction.RhythmGame.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_StoryMode.enabled, "This will cause a leak and performance issues, GameInputAction.StoryMode.Disable() has not been called.");
     }
 
     /// <summary>
@@ -913,44 +913,44 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     /// </summary>
     public CampaignModeActions @CampaignMode => new CampaignModeActions(this);
 
-    // RhythmGame
-    private readonly InputActionMap m_RhythmGame;
-    private List<IRhythmGameActions> m_RhythmGameActionsCallbackInterfaces = new List<IRhythmGameActions>();
-    private readonly InputAction m_RhythmGame_A;
-    private readonly InputAction m_RhythmGame_S;
-    private readonly InputAction m_RhythmGame_D;
-    private readonly InputAction m_RhythmGame_F;
+    // Story Mode
+    private readonly InputActionMap m_StoryMode;
+    private List<IStoryModeActions> m_StoryModeActionsCallbackInterfaces = new List<IStoryModeActions>();
+    private readonly InputAction m_StoryMode_A;
+    private readonly InputAction m_StoryMode_S;
+    private readonly InputAction m_StoryMode_D;
+    private readonly InputAction m_StoryMode_F;
     /// <summary>
-    /// Provides access to input actions defined in input action map "RhythmGame".
+    /// Provides access to input actions defined in input action map "Story Mode".
     /// </summary>
-    public struct RhythmGameActions
+    public struct StoryModeActions
     {
         private @GameInputAction m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public RhythmGameActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public StoryModeActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "RhythmGame/A".
+        /// Provides access to the underlying input action "StoryMode/A".
         /// </summary>
-        public InputAction @A => m_Wrapper.m_RhythmGame_A;
+        public InputAction @A => m_Wrapper.m_StoryMode_A;
         /// <summary>
-        /// Provides access to the underlying input action "RhythmGame/S".
+        /// Provides access to the underlying input action "StoryMode/S".
         /// </summary>
-        public InputAction @S => m_Wrapper.m_RhythmGame_S;
+        public InputAction @S => m_Wrapper.m_StoryMode_S;
         /// <summary>
-        /// Provides access to the underlying input action "RhythmGame/D".
+        /// Provides access to the underlying input action "StoryMode/D".
         /// </summary>
-        public InputAction @D => m_Wrapper.m_RhythmGame_D;
+        public InputAction @D => m_Wrapper.m_StoryMode_D;
         /// <summary>
-        /// Provides access to the underlying input action "RhythmGame/F".
+        /// Provides access to the underlying input action "StoryMode/F".
         /// </summary>
-        public InputAction @F => m_Wrapper.m_RhythmGame_F;
+        public InputAction @F => m_Wrapper.m_StoryMode_F;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_RhythmGame; }
+        public InputActionMap Get() { return m_Wrapper.m_StoryMode; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -958,9 +958,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="RhythmGameActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="StoryModeActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(RhythmGameActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(StoryModeActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -968,11 +968,11 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="RhythmGameActions" />
-        public void AddCallbacks(IRhythmGameActions instance)
+        /// <seealso cref="StoryModeActions" />
+        public void AddCallbacks(IStoryModeActions instance)
         {
-            if (instance == null || m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_StoryModeActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_StoryModeActionsCallbackInterfaces.Add(instance);
             @A.started += instance.OnA;
             @A.performed += instance.OnA;
             @A.canceled += instance.OnA;
@@ -993,8 +993,8 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="RhythmGameActions" />
-        private void UnregisterCallbacks(IRhythmGameActions instance)
+        /// <seealso cref="StoryModeActions" />
+        private void UnregisterCallbacks(IStoryModeActions instance)
         {
             @A.started -= instance.OnA;
             @A.performed -= instance.OnA;
@@ -1011,12 +1011,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="StoryModeActions.UnregisterCallbacks(IStoryModeActions)" />.
         /// </summary>
-        /// <seealso cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />
-        public void RemoveCallbacks(IRhythmGameActions instance)
+        /// <seealso cref="StoryModeActions.UnregisterCallbacks(IStoryModeActions)" />
+        public void RemoveCallbacks(IStoryModeActions instance)
         {
-            if (m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_StoryModeActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -1026,21 +1026,21 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="RhythmGameActions.AddCallbacks(IRhythmGameActions)" />
-        /// <seealso cref="RhythmGameActions.RemoveCallbacks(IRhythmGameActions)" />
-        /// <seealso cref="RhythmGameActions.UnregisterCallbacks(IRhythmGameActions)" />
-        public void SetCallbacks(IRhythmGameActions instance)
+        /// <seealso cref="StoryModeActions.AddCallbacks(IStoryModeActions)" />
+        /// <seealso cref="StoryModeActions.RemoveCallbacks(IStoryModeActions)" />
+        /// <seealso cref="StoryModeActions.UnregisterCallbacks(IStoryModeActions)" />
+        public void SetCallbacks(IStoryModeActions instance)
         {
-            foreach (var item in m_Wrapper.m_RhythmGameActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_StoryModeActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_RhythmGameActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_StoryModeActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="RhythmGameActions" /> instance referencing this action map.
+    /// Provides a new <see cref="StoryModeActions" /> instance referencing this action map.
     /// </summary>
-    public RhythmGameActions @RhythmGame => new RhythmGameActions(this);
+    public StoryModeActions @StoryMode => new StoryModeActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "City Mode" which allows adding and removing callbacks.
     /// </summary>
@@ -1130,11 +1130,11 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnOpenConsole(InputAction.CallbackContext context);
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "RhythmGame" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Story Mode" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="RhythmGameActions.AddCallbacks(IRhythmGameActions)" />
-    /// <seealso cref="RhythmGameActions.RemoveCallbacks(IRhythmGameActions)" />
-    public interface IRhythmGameActions
+    /// <seealso cref="StoryModeActions.AddCallbacks(IStoryModeActions)" />
+    /// <seealso cref="StoryModeActions.RemoveCallbacks(IStoryModeActions)" />
+    public interface IStoryModeActions
     {
         /// <summary>
         /// Method invoked when associated input action "A" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.

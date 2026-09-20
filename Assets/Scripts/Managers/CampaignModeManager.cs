@@ -29,9 +29,9 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         set
         {
             _interval = value;
-            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.dayLabel.text =
+            UiManager.Instance.CampaignModeScreen.weatherBar.dayLabel.text =
                 $"DAY {CurrentTime.day}";
-            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.timeLabel.text =
+            UiManager.Instance.CampaignModeScreen.weatherBar.timeLabel.text =
                 $"{CurrentTime.hour:D2}:00";
         }
     }
@@ -41,7 +41,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         set
         {
             _temperature = value;
-            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.temperatureLabel.text =
+            UiManager.Instance.CampaignModeScreen.weatherBar.temperatureLabel.text =
                 $"{value}{WeatherBar.DEGREE_SYMBOL}";
         }
     }
@@ -69,61 +69,22 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         base.Awake();
         Application.runInBackground = true;
 
-        InputManager.Instance.InputAction.CityMode.Disable();
         InputManager.Instance.InputAction.CampaignMode.OpenConsole.performed += ctx =>
             ConsoleManager.Instance.OpenConsole();
-        InputManager.Instance.InputAction.RhythmGame.A.performed += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
-                RhythmGameLane.A
-            );
-        InputManager.Instance.InputAction.RhythmGame.S.performed += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
-                RhythmGameLane.S
-            );
-        InputManager.Instance.InputAction.RhythmGame.D.performed += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
-                RhythmGameLane.D
-            );
-        InputManager.Instance.InputAction.RhythmGame.F.performed += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.PressLane(
-                RhythmGameLane.F
-            );
-        InputManager.Instance.InputAction.RhythmGame.A.canceled += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
-                RhythmGameLane.A
-            );
-        InputManager.Instance.InputAction.RhythmGame.S.canceled += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
-                RhythmGameLane.S
-            );
-        InputManager.Instance.InputAction.RhythmGame.D.canceled += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
-                RhythmGameLane.D
-            );
-        InputManager.Instance.InputAction.RhythmGame.F.canceled += ctx =>
-            UiManager.Instance.CampaignModeScreen.dialog.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
-                RhythmGameLane.F
-            );
     }
 
     private void OnEnable()
     {
+        InputManager.Instance.InputAction.Disable();
         InputManager.Instance.InputAction.CampaignMode.Enable();
     }
 
     private void Start()
     {
-        UiManager.Instance.CampaignModeScreen.gameplay.mainChoicesContainer.RefreshTab();
+        UiManager.Instance.CampaignModeScreen.mainChoicesContainer.RefreshTab();
         StartGame();
 
         LoadGame();
-
-        if (CurrentTime.hour == 0 && Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}"))
-        {
-            UiManager.Instance.CampaignModeScreen.ChangeToDialog(
-                Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}")
-            );
-        }
     }
 
     private void OnDisable()
@@ -176,7 +137,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 cooldownsApplied++;
             }
 
-            UiManager.Instance.CampaignModeScreen.gameplay.campaignModeCrewContainer.RefreshCooldown();
+            UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
         }
 
         StartCoroutine(TransitionInterval());
@@ -241,7 +202,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             Passengers[i] = (names[i % names.Length], PassengerStatus.Comfortable);
         }
 
-        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
 
         for (int i = 0; i < NUMBER_OF_FUTURE_WEATHER; i++)
         {
@@ -253,7 +214,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             );
         }
 
-        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.RepopulateIcons();
+        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
     }
 
     private IEnumerator TransitionInterval()
@@ -283,12 +244,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             }
 
             RerollWeather();
-            UiManager.Instance.CampaignModeScreen.gameplay.HideBottomContainer();
+            UiManager.Instance.CampaignModeScreen.HideBottomContainer();
             _transitioning = true;
         }
         else
         {
-            UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.Transition();
+            UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
         }
 
         yield return new WaitForSeconds(DayTransitionDuration);
@@ -309,7 +270,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             Random.ShouldOccur(WEATHER_HIDDEN_CHANCE)
         );
 
-        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.Transition();
+        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
     }
 
     /// <summary>
@@ -335,7 +296,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         Passengers[index].status = (PassengerStatus)Math.Clamp(newStatusInt, min, max);
 
-        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
 
         if (Passengers.All(p => p.status == PassengerStatus.Death))
             Lose();
@@ -358,26 +319,17 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             CrewCooldowns[i] = Math.Max(CrewCooldowns[i] - 1, 0);
         }
 
-        UiManager.Instance.CampaignModeScreen.gameplay.campaignModeCrewContainer.RefreshCooldown();
+        UiManager.Instance.CampaignModeScreen.campaignModeCrewContainer.RefreshCooldown();
 
-        if (CurrentTime.hour == 0 && Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}"))
+        if (!Random.ShouldOccur(ThisIntervalsWeather.eventChance))
         {
-            UiManager.Instance.CampaignModeScreen.ChangeToDialog(
-                Resources.Load<TextAsset>($"Stories/Day{CurrentTime.day}")
-            );
+            _skippedThisInterval = true;
+            ApplyAction(null);
         }
         else
         {
-            if (!Random.ShouldOccur(ThisIntervalsWeather.eventChance))
-            {
-                _skippedThisInterval = true;
-                ApplyAction(null);
-            }
-            else
-            {
-                _skippedThisInterval = false;
-                UiManager.Instance.CampaignModeScreen.gameplay.ShowBottomContainer();
-            }
+            _skippedThisInterval = false;
+            UiManager.Instance.CampaignModeScreen.ShowBottomContainer();
         }
     }
 
@@ -454,12 +406,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             CrewCooldowns[i] = savedData.crewCooldowns[i];
         }
 
-        UiManager.Instance.CampaignModeScreen.gameplay.weatherBar.weatherBarIcons.RepopulateIcons();
-        UiManager.Instance.CampaignModeScreen.gameplay.passengersWindow.Refresh();
+        UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.RepopulateIcons();
+        UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
 
         if (_transitioning)
         {
-            UiManager.Instance.CampaignModeScreen.gameplay.HideBottomContainer(false);
+            UiManager.Instance.CampaignModeScreen.HideBottomContainer(false);
             ApplyAction(null);
         }
     }
