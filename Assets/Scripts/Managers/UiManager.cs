@@ -9,6 +9,7 @@ public class UiManager : Singleton<UiManager>
     public MainMenuScreen MainMenuScreen { get; private set; }
     public CampaignModeScreen CampaignModeScreen { get; private set; }
     public StoryModeScreen StoryModeScreen { get; private set;  }
+    public ExtrasScreen ExtrasScreen { get; private set;  }
     public Modal Modal { get; private set; }
 
     public VisualElement ModalParent
@@ -23,6 +24,8 @@ public class UiManager : Singleton<UiManager>
                 return CampaignModeScreen;
             else if (StoryModeScreen != null)
                 return StoryModeScreen;
+            else if (ExtrasScreen != null)
+                return ExtrasScreen;
             else
                 return null;
         }
@@ -44,6 +47,7 @@ public class UiManager : Singleton<UiManager>
             MainMenuScreen = uiDocument.rootVisualElement.Q<MainMenuScreen>();
             CampaignModeScreen = uiDocument.rootVisualElement.Q<CampaignModeScreen>();
             StoryModeScreen = uiDocument.rootVisualElement.Q<StoryModeScreen>();
+            ExtrasScreen = uiDocument.rootVisualElement.Q<ExtrasScreen>();
         }
 
         Modal = new();

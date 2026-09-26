@@ -60,6 +60,7 @@ public enum Scene
     CityMode = 1,
     CampaignMode = 2,
     StoryMode = 3,
+    Extras = 4
 }
 
 public enum DialogSceneType

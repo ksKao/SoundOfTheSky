@@ -13,7 +13,13 @@ public partial class SaveMenu : VisualElement
     private int _selectedIndex = -1;
     private readonly Action _onLoad = null;
     private readonly Action _onSave = null;
-    private readonly Label _titleLabel = new();
+    private readonly Label _titleLabel = new()
+    {
+        style =
+        {
+            unityTextAlign = TextAnchor.MiddleCenter
+        }
+    };
     private readonly List<Label> _saveFileLabels = new(5);
     private readonly Button _loadButton = new()
     {
@@ -109,7 +115,9 @@ public partial class SaveMenu : VisualElement
         style.color = Color.white;
         style.backgroundColor = UiUtils.semiTransparentBlackColor;
         style.minHeight = UiUtils.GetLengthPercentage(50);
-        style.width = UiUtils.GetLengthPercentage(20);
+        style.width = StyleKeyword.Auto;
+        style.paddingLeft = 16;
+        style.paddingRight = 16;
         style.borderTopLeftRadius = 8;
         style.borderTopRightRadius = 8;
         style.borderBottomLeftRadius = 8;
@@ -243,6 +251,10 @@ public partial class SaveMenu : VisualElement
                     borderBottomWidth = 0,
                     borderLeftWidth = 0,
                     borderRightWidth = 0,
+                    paddingTop = 4,
+                    paddingBottom = 4,
+                    paddingLeft = 4,
+                    paddingRight = 4
                 },
             };
             saveFileButton.SetEnabled(

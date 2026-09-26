@@ -42,6 +42,11 @@ public static class UiUtils
         return Resources.Load<Sprite>($"Images/{scene}/{fileName}");
     }
 
+    public static VectorImage LoadVector(string fileName, Scene scene = Scene.CityMode)
+    {
+        return Resources.Load<VectorImage>($"Images/{scene}/{fileName}");
+    }
+
     public static Color HexToRgb(string hex)
     {
         if (hex.StartsWith("#"))
