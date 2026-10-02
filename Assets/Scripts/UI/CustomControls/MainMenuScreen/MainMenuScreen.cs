@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class MainMenuScreen : VisualElement
 {
+    private readonly SaveMenu _saveMenu;
     public MainMenuScreen()
     {
         style.position = Position.Relative;
@@ -35,6 +36,17 @@ public partial class MainMenuScreen : VisualElement
         Button quitButton = new() { text = "Quit" };
         UiUtils.ApplyCommonMenuButtonStyle(quitButton);
 
+        _saveMenu = new(
+            title: "Visual Novel",
+            getSaveFilePath: StoryModeManager.GetSaveFilePath,
+            onLoad: () => SceneManager.LoadScene((int)Scene.StoryMode),
+            onNew: () => SceneManager.LoadScene((int)Scene.StoryMode),
+            onCancel: () => _saveMenu.style.display = DisplayStyle.None
+        );
+        _saveMenu.style.display = DisplayStyle.None;
+        _saveMenu.style.marginBottom = 16;
+        _saveMenu.style.backgroundColor = new Color(0, 0, 0, 0.7f);
+
         quitButton.clicked += () =>
         {
 #if UNITY_EDITOR
@@ -46,7 +58,7 @@ public partial class MainMenuScreen : VisualElement
 
         visualNovelButton.clicked += () =>
         {
-            SceneManager.LoadScene((int)Scene.StoryMode);
+            _saveMenu.style.display = DisplayStyle.Flex;
         };
 
         extrasButton.clicked += () =>
@@ -66,10 +78,9 @@ public partial class MainMenuScreen : VisualElement
                 flexDirection = FlexDirection.Column
             },
         };
-        UiUtils.ToggleBorder(bottomRightContainer, true, Color.white);
-        UiUtils.SetBorderWidth(bottomRightContainer, 1);
 
         Add(bottomRightContainer);
+        bottomRightContainer.Add(_saveMenu);
 
         VisualElement buttonsContainer = new()
         {
@@ -84,6 +95,8 @@ public partial class MainMenuScreen : VisualElement
                 borderBottomRightRadius = 8,
             }
         };
+        UiUtils.ToggleBorder(buttonsContainer, true, Color.white);
+        UiUtils.SetBorderWidth(buttonsContainer, 1);
         bottomRightContainer.Add(buttonsContainer);
 
         buttonsContainer.Add(CreateButtonGroup(visualNovelButton));

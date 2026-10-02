@@ -236,7 +236,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""City Mode Menu"",
+            ""name"": ""Menu"",
             ""id"": ""fa3f3b64-c717-4010-853d-bcffb76189d0"",
             ""actions"": [
                 {
@@ -330,6 +330,15 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Open Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""a2f8e944-60d3-4477-8d7b-205780889573"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -376,6 +385,17 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""F"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6fc1d9ff-c2a8-4eb7-b5be-70af59544889"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -392,9 +412,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_Console_Submit = m_Console.FindAction("Submit", throwIfNotFound: true);
         m_Console_PreviousCommand = m_Console.FindAction("PreviousCommand", throwIfNotFound: true);
         m_Console_NextCommand = m_Console.FindAction("NextCommand", throwIfNotFound: true);
-        // City Mode Menu
-        m_CityModeMenu = asset.FindActionMap("City Mode Menu", throwIfNotFound: true);
-        m_CityModeMenu_CloseMenu = m_CityModeMenu.FindAction("Close Menu", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+        m_Menu_CloseMenu = m_Menu.FindAction("Close Menu", throwIfNotFound: true);
         // Campaign Mode
         m_CampaignMode = asset.FindActionMap("Campaign Mode", throwIfNotFound: true);
         m_CampaignMode_OpenConsole = m_CampaignMode.FindAction("Open Console", throwIfNotFound: true);
@@ -404,13 +424,14 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_StoryMode_S = m_StoryMode.FindAction("S", throwIfNotFound: true);
         m_StoryMode_D = m_StoryMode.FindAction("D", throwIfNotFound: true);
         m_StoryMode_F = m_StoryMode.FindAction("F", throwIfNotFound: true);
+        m_StoryMode_OpenMenu = m_StoryMode.FindAction("Open Menu", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
     {
         UnityEngine.Debug.Assert(!m_CityMode.enabled, "This will cause a leak and performance issues, GameInputAction.CityMode.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Console.enabled, "This will cause a leak and performance issues, GameInputAction.Console.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_CityModeMenu.enabled, "This will cause a leak and performance issues, GameInputAction.CityModeMenu.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Menu.enabled, "This will cause a leak and performance issues, GameInputAction.Menu.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CampaignMode.enabled, "This will cause a leak and performance issues, GameInputAction.CampaignMode.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_StoryMode.enabled, "This will cause a leak and performance issues, GameInputAction.StoryMode.Disable() has not been called.");
     }
@@ -721,29 +742,29 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     /// </summary>
     public ConsoleActions @Console => new ConsoleActions(this);
 
-    // City Mode Menu
-    private readonly InputActionMap m_CityModeMenu;
-    private List<ICityModeMenuActions> m_CityModeMenuActionsCallbackInterfaces = new List<ICityModeMenuActions>();
-    private readonly InputAction m_CityModeMenu_CloseMenu;
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
+    private readonly InputAction m_Menu_CloseMenu;
     /// <summary>
-    /// Provides access to input actions defined in input action map "City Mode Menu".
+    /// Provides access to input actions defined in input action map "Menu".
     /// </summary>
-    public struct CityModeMenuActions
+    public struct MenuActions
     {
         private @GameInputAction m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public CityModeMenuActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public MenuActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "CityModeMenu/CloseMenu".
+        /// Provides access to the underlying input action "Menu/CloseMenu".
         /// </summary>
-        public InputAction @CloseMenu => m_Wrapper.m_CityModeMenu_CloseMenu;
+        public InputAction @CloseMenu => m_Wrapper.m_Menu_CloseMenu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_CityModeMenu; }
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -751,9 +772,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="CityModeMenuActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="MenuActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(CityModeMenuActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -761,11 +782,11 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="CityModeMenuActions" />
-        public void AddCallbacks(ICityModeMenuActions instance)
+        /// <seealso cref="MenuActions" />
+        public void AddCallbacks(IMenuActions instance)
         {
-            if (instance == null || m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_MenuActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Add(instance);
             @CloseMenu.started += instance.OnCloseMenu;
             @CloseMenu.performed += instance.OnCloseMenu;
             @CloseMenu.canceled += instance.OnCloseMenu;
@@ -777,8 +798,8 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="CityModeMenuActions" />
-        private void UnregisterCallbacks(ICityModeMenuActions instance)
+        /// <seealso cref="MenuActions" />
+        private void UnregisterCallbacks(IMenuActions instance)
         {
             @CloseMenu.started -= instance.OnCloseMenu;
             @CloseMenu.performed -= instance.OnCloseMenu;
@@ -786,12 +807,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="CityModeMenuActions.UnregisterCallbacks(ICityModeMenuActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="MenuActions.UnregisterCallbacks(IMenuActions)" />.
         /// </summary>
-        /// <seealso cref="CityModeMenuActions.UnregisterCallbacks(ICityModeMenuActions)" />
-        public void RemoveCallbacks(ICityModeMenuActions instance)
+        /// <seealso cref="MenuActions.UnregisterCallbacks(IMenuActions)" />
+        public void RemoveCallbacks(IMenuActions instance)
         {
-            if (m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_MenuActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -801,21 +822,21 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="CityModeMenuActions.AddCallbacks(ICityModeMenuActions)" />
-        /// <seealso cref="CityModeMenuActions.RemoveCallbacks(ICityModeMenuActions)" />
-        /// <seealso cref="CityModeMenuActions.UnregisterCallbacks(ICityModeMenuActions)" />
-        public void SetCallbacks(ICityModeMenuActions instance)
+        /// <seealso cref="MenuActions.AddCallbacks(IMenuActions)" />
+        /// <seealso cref="MenuActions.RemoveCallbacks(IMenuActions)" />
+        /// <seealso cref="MenuActions.UnregisterCallbacks(IMenuActions)" />
+        public void SetCallbacks(IMenuActions instance)
         {
-            foreach (var item in m_Wrapper.m_CityModeMenuActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_MenuActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_CityModeMenuActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="CityModeMenuActions" /> instance referencing this action map.
+    /// Provides a new <see cref="MenuActions" /> instance referencing this action map.
     /// </summary>
-    public CityModeMenuActions @CityModeMenu => new CityModeMenuActions(this);
+    public MenuActions @Menu => new MenuActions(this);
 
     // Campaign Mode
     private readonly InputActionMap m_CampaignMode;
@@ -920,6 +941,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_StoryMode_S;
     private readonly InputAction m_StoryMode_D;
     private readonly InputAction m_StoryMode_F;
+    private readonly InputAction m_StoryMode_OpenMenu;
     /// <summary>
     /// Provides access to input actions defined in input action map "Story Mode".
     /// </summary>
@@ -947,6 +969,10 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "StoryMode/F".
         /// </summary>
         public InputAction @F => m_Wrapper.m_StoryMode_F;
+        /// <summary>
+        /// Provides access to the underlying input action "StoryMode/OpenMenu".
+        /// </summary>
+        public InputAction @OpenMenu => m_Wrapper.m_StoryMode_OpenMenu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -985,6 +1011,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @F.started += instance.OnF;
             @F.performed += instance.OnF;
             @F.canceled += instance.OnF;
+            @OpenMenu.started += instance.OnOpenMenu;
+            @OpenMenu.performed += instance.OnOpenMenu;
+            @OpenMenu.canceled += instance.OnOpenMenu;
         }
 
         /// <summary>
@@ -1008,6 +1037,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @F.started -= instance.OnF;
             @F.performed -= instance.OnF;
             @F.canceled -= instance.OnF;
+            @OpenMenu.started -= instance.OnOpenMenu;
+            @OpenMenu.performed -= instance.OnOpenMenu;
+            @OpenMenu.canceled -= instance.OnOpenMenu;
         }
 
         /// <summary>
@@ -1100,11 +1132,11 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnNextCommand(InputAction.CallbackContext context);
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "City Mode Menu" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Menu" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="CityModeMenuActions.AddCallbacks(ICityModeMenuActions)" />
-    /// <seealso cref="CityModeMenuActions.RemoveCallbacks(ICityModeMenuActions)" />
-    public interface ICityModeMenuActions
+    /// <seealso cref="MenuActions.AddCallbacks(IMenuActions)" />
+    /// <seealso cref="MenuActions.RemoveCallbacks(IMenuActions)" />
+    public interface IMenuActions
     {
         /// <summary>
         /// Method invoked when associated input action "Close Menu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
@@ -1164,5 +1196,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnF(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Open Menu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenMenu(InputAction.CallbackContext context);
     }
 }

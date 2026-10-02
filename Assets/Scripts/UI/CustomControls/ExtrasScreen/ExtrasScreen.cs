@@ -27,7 +27,7 @@ public partial class ExtrasScreen : VisualElement
         _saveMenu = new(
             "Campaign Mode",
             CampaignModeManager.GetSaveFilePath,
-            () => SwitchToMenuView(),
+            SwitchToMenuView,
             () => SceneManager.LoadScene((int)Scene.CampaignMode),
             () => SceneManager.LoadScene((int)Scene.CampaignMode)
         );

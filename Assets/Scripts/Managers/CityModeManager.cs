@@ -65,7 +65,7 @@ public class CityModeManager : Singleton<CityModeManager>
         if (InputManager.Instance != null)
         {
             InputManager.Instance.InputAction.CityMode.OpenMenu.performed += ctx =>
-                UiManager.Instance.Modal.Show(UiManager.Instance.CityModeScreen.cityModeMenu);
+                UiManager.Instance.Modal.Show(UiManager.Instance.CityModeScreen.twoButtonMenu);
             InputManager.Instance.InputAction.CityMode.OpenConsole.performed += ctx =>
                 ConsoleManager.Instance.OpenConsole();
         }

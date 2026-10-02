@@ -1,7 +1,17 @@
+using System.IO;
 using UnityEngine;
 
 public class StoryModeManager : Singleton<StoryModeManager>
 {
+    public static string SaveFilePath
+    {
+        get
+        {
+            int index = PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY, -1);
+            return GetSaveFilePath(index);
+        }
+    }
+
     protected override void Awake()
     {
         Application.runInBackground = true;
@@ -38,6 +48,8 @@ public class StoryModeManager : Singleton<StoryModeManager>
             UiManager.Instance.StoryModeScreen.RhythmGameScene.RhythmGameGameplay.ReleaseLane(
                 RhythmGameLane.F
             );
+        InputManager.Instance.InputAction.StoryMode.OpenMenu.performed += ctx =>
+            UiManager.Instance.Modal.Show(UiManager.Instance.StoryModeScreen.twoButtonMenu);
     }
 
     private void OnEnable()
@@ -48,11 +60,42 @@ public class StoryModeManager : Singleton<StoryModeManager>
     private void Start()
     {
         TextAsset storyTextAsset = Resources.Load<TextAsset>($"Stories/Main");
-        UiManager.Instance.StoryModeScreen.Play(storyTextAsset);
+        UiManager.Instance.StoryModeScreen.Play(storyTextAsset, LoadGame());
     }
 
     private void OnDisable()
     {
         InputManager.Instance.InputAction.StoryMode.Disable();
+    }
+
+    public static string GetSaveFilePath(int index)
+    {
+        return Path.Combine(Application.persistentDataPath, $"story_mode_{index}.json");
+    }
+
+    private string LoadGame()
+    {
+        if (!File.Exists(SaveFilePath))
+            return "";
+
+        try
+        {
+            string serialized = "";
+
+            using (FileStream stream = new(SaveFilePath, FileMode.Open))
+            {
+                using (StreamReader reader = new(stream))
+                {
+                    serialized = reader.ReadToEnd();
+                }
+            }
+
+            return serialized;
+        }
+        catch
+        {
+            UiUtils.ShowError("Failed to load save file. Starting a new game.");
+            return "";
+        }
     }
 }

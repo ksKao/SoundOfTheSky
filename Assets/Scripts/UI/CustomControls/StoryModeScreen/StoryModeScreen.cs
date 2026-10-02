@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using DG.Tweening;
 using Ink.Runtime;
@@ -10,8 +11,10 @@ using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
-public partial class StoryModeScreen : VisualElement
+public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 {
+    public readonly TwoButtonMenu twoButtonMenu;
+
     private Story _story;
     private DialogSceneType _dialogSceneType = DialogSceneType.Title;
     private float _delayDuration = 0;
@@ -19,7 +22,7 @@ public partial class StoryModeScreen : VisualElement
     private readonly SubtitleScene _subtitleScene = new();
     private readonly DialogScene _dialogScene = new();
     private readonly VisualElement _blankScene = new();
-    public readonly ComicScene _comicScene = new();
+    private readonly ComicScene _comicScene = new();
     private readonly Image _backgroundFront = new()
     {
         sprite = UiUtils.LoadSprite("black", Scene.StoryMode),
@@ -61,13 +64,20 @@ public partial class StoryModeScreen : VisualElement
         style.unityFontDefinition = new StyleFontDefinition(
             Resources.Load<FontAsset>("Fonts/myriad_pro"));
 
+        twoButtonMenu = new(this);
+
         Add(_backgroundBack);
         Add(_backgroundFront);
     }
 
-    public void Play(UnityEngine.TextAsset storyJsonAsset)
+    public void Play(UnityEngine.TextAsset storyJsonAsset, string savedFile = "")
     {
         _story = new(storyJsonAsset.text);
+
+        if (!string.IsNullOrEmpty(savedFile))
+        {
+            _story.state.LoadJson(savedFile);
+        }
 
         _story.BindExternalFunction(
             nameof(ChangeScene),
@@ -398,5 +408,42 @@ public partial class StoryModeScreen : VisualElement
                 }
             );
         }
+    }
+
+    public string GetSaveFilePath(int index)
+    {
+        return StoryModeManager.GetSaveFilePath(index);
+    }
+
+    public bool OnSave()
+    {
+        try
+        {
+            string serialized = _story.state.ToJson();
+
+            using (FileStream stream = new(StoryModeManager.SaveFilePath, FileMode.Create))
+            {
+                using (StreamWriter writer = new(stream))
+                {
+                    writer.Write(serialized);
+                }
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public void DisableScreenInput()
+    {
+        InputManager.Instance.InputAction.StoryMode.Disable();
+    }
+
+    public void EnableScreenInput()
+    {
+        InputManager.Instance.InputAction.StoryMode.Enable();
     }
 }

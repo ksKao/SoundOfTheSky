@@ -3,15 +3,26 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-[UxmlElement]
-public partial class CityModeMenu : VisualElement
+public interface TwoButtonMenuScreen
 {
-    public CityModeMenu()
+    string GetSaveFilePath(int index);
+    bool OnSave();
+    void DisableScreenInput();
+    void EnableScreenInput();
+}
+
+[UxmlElement]
+public partial class TwoButtonMenu : VisualElement
+{
+    public TwoButtonMenu() =>
+        Debug.LogWarning($"Detected calling the default constructor of {nameof(TwoButtonMenu)}");
+
+    public TwoButtonMenu(TwoButtonMenuScreen screen)
     {
         style.display = DisplayStyle.Flex;
         style.flexDirection = FlexDirection.Column;
         style.justifyContent = Justify.Center;
-        style.width = UiUtils.GetLengthPercentage(20);
+        style.width = UiUtils.GetLengthPercentage(30);
         style.alignItems = Align.Center;
         style.unityFont = Resources.Load<Font>("Fonts/ronix");
         style.unityFontDefinition = new StyleFontDefinition(
@@ -42,16 +53,13 @@ public partial class CityModeMenu : VisualElement
             UiManager.Instance.Modal.Show(
                 new SaveMenu(
                     "SAVE GAME",
-                    CityModeManager.GetSaveFilePath,
-                    () =>
-                        UiManager.Instance.Modal.Show(
-                            UiManager.Instance.CityModeScreen.cityModeMenu
-                        ),
+                    screen.GetSaveFilePath,
+                    () => UiManager.Instance.Modal.Show(this),
                     null,
                     null,
                     () =>
                     {
-                        bool success = CityModeManager.Instance.SaveGame();
+                        bool success = screen.OnSave();
 
                         if (!success)
                             UiUtils.ShowError(
@@ -62,9 +70,7 @@ public partial class CityModeMenu : VisualElement
                             UiUtils.ShowError(
                                 $"Game saved to file {PlayerPrefs.GetInt(SaveMenu.PLAYER_PREFS_SAVE_FILE_TO_LOAD_KEY) + 1}."
                             );
-                            UiManager.Instance.Modal.Show(
-                                UiManager.Instance.CityModeScreen.cityModeMenu
-                            );
+                            UiManager.Instance.Modal.Show(this);
                         }
                     }
                 )
@@ -77,18 +83,18 @@ public partial class CityModeMenu : VisualElement
         RegisterCallback<AttachToPanelEvent>(
             (e) =>
             {
-                InputManager.Instance.InputAction.CityMode.Disable();
-                InputManager.Instance.InputAction.CityModeMenu.Enable();
-                InputManager.Instance.InputAction.CityModeMenu.CloseMenu.performed += OnClose;
+                screen.DisableScreenInput();
+                InputManager.Instance.InputAction.Menu.Enable();
+                InputManager.Instance.InputAction.Menu.CloseMenu.performed += OnClose;
             }
         );
 
         RegisterCallback<DetachFromPanelEvent>(
             (e) =>
             {
-                InputManager.Instance.InputAction.CityMode.Enable();
-                InputManager.Instance.InputAction.CityModeMenu.CloseMenu.performed -= OnClose;
-                InputManager.Instance.InputAction.CityModeMenu.Disable();
+                screen.EnableScreenInput();
+                InputManager.Instance.InputAction.Menu.CloseMenu.performed -= OnClose;
+                InputManager.Instance.InputAction.Menu.Disable();
             }
         );
     }

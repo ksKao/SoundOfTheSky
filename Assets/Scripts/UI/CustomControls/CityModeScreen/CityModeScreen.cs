@@ -1,11 +1,10 @@
 using System.Linq;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
 [UxmlElement]
-public partial class CityModeScreen : VisualElement
+public partial class CityModeScreen : VisualElement, TwoButtonMenuScreen
 {
     public readonly MaterialsBar materialBar = new();
     public readonly MissionTypeTab missionTypeTab = new();
@@ -15,7 +14,7 @@ public partial class CityModeScreen : VisualElement
     public readonly CrewSelectionPanel crewSelectionPanel = new();
     public readonly TrainList trainList = new();
     public readonly Map map = new();
-    public readonly CityModeMenu cityModeMenu = new();
+    public readonly TwoButtonMenu twoButtonMenu;
     public readonly TutorialOverlay tutorialOverlay = new();
 
     private readonly VisualElement _right = new();
@@ -36,6 +35,8 @@ public partial class CityModeScreen : VisualElement
         style.unityFont = Resources.Load<Font>("Fonts/myriad_pro");
         style.unityFontDefinition = new StyleFontDefinition(
             Resources.Load<FontAsset>("Fonts/myriad_pro"));
+
+        twoButtonMenu = new(this);
 
         VisualElement container = new()
         {
@@ -117,5 +118,25 @@ public partial class CityModeScreen : VisualElement
         }
 
         CityModeManager.Instance.SelectedPendingMission = null;
+    }
+
+    public string GetSaveFilePath(int index)
+    {
+        return CityModeManager.GetSaveFilePath(index);
+    }
+
+    public bool OnSave()
+    {
+        return CityModeManager.Instance.SaveGame();
+    }
+
+    public void DisableScreenInput()
+    {
+        InputManager.Instance.InputAction.CityMode.Disable();
+    }
+
+    public void EnableScreenInput()
+    {
+        InputManager.Instance.InputAction.CityMode.Enable();
     }
 }
