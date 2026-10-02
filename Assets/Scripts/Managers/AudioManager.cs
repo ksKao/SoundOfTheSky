@@ -108,6 +108,7 @@ public class AudioManager : Singleton<AudioManager>
             return;
         }
 
+        DOTween.Kill(GetFadeTweenId(name));
         audioSource.Stop();
         _audioSources.Remove(name);
     }
@@ -116,8 +117,44 @@ public class AudioManager : Singleton<AudioManager>
     {
         foreach (KeyValuePair<string, AudioSource> audioSource in _audioSources)
         {
+            DOTween.Kill(GetFadeTweenId(audioSource.Key));
             audioSource.Value.Stop();
         }
+    }
+
+    public static string GetFadeTweenId(string name)
+    {
+        return $"audio_fade_{name}";
+    }
+
+    private void OnDestroy()
+    {
+        foreach (string name in _audioSources.Keys)
+        {
+            DOTween.Kill(GetFadeTweenId(name));
+        }
+    }
+
+    public List<AudioTrackSerializable> GetActiveAudioTracks()
+    {
+        List<AudioTrackSerializable> tracks = new();
+
+        foreach (KeyValuePair<string, AudioSource> audioSource in _audioSources)
+        {
+            if (audioSource.Value.isPlaying)
+            {
+                tracks.Add(
+                    new AudioTrackSerializable
+                    {
+                        name = audioSource.Key,
+                        loop = audioSource.Value.loop,
+                        volume = audioSource.Value.volume,
+                    }
+                );
+            }
+        }
+
+        return tracks;
     }
 
     public float GetSongDuration(string name)

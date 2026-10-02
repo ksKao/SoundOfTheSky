@@ -18,6 +18,8 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     private Story _story;
     private DialogSceneType _dialogSceneType = DialogSceneType.Title;
     private float _delayDuration = 0;
+    private string _currentBackgroundFileName = "black";
+    private StoryModeState _stateBeforeCurrentLine;
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
     private readonly DialogScene _dialogScene = new();
@@ -74,9 +76,12 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     {
         _story = new(storyJsonAsset.text);
 
+        StoryModeState savedState = null;
+
         if (!string.IsNullOrEmpty(savedFile))
         {
-            _story.state.LoadJson(savedFile);
+            savedState = JsonUtility.FromJson<StoryModeState>(savedFile);
+            _story.state.LoadJson(savedState.inkJson);
         }
 
         _story.BindExternalFunction(
@@ -169,7 +174,42 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
             }
         );
 
+        if (savedState != null)
+            RestoreSceneState(savedState);
+
         ContinueStory();
+    }
+
+    private StoryModeState CaptureState()
+    {
+        return new StoryModeState
+        {
+            inkJson = _story.state.ToJson(),
+            dialogSceneType = _dialogSceneType,
+            backgroundFileName = _currentBackgroundFileName,
+            rhythmGameSong = RhythmGameScene.CurrentSong,
+            activeAudioTracks = AudioManager.Instance.GetActiveAudioTracks(),
+        };
+    }
+
+    // ink's saved state doesn't replay external functions, so restore their side effects manually
+    private void RestoreSceneState(StoryModeState savedState)
+    {
+        _dialogSceneType = savedState.dialogSceneType;
+        ChangeScene(_dialogSceneType);
+
+        _currentBackgroundFileName = savedState.backgroundFileName;
+        Sprite sprite = UiUtils.LoadSprite(_currentBackgroundFileName, Scene.StoryMode);
+        _backgroundBack.sprite = sprite;
+        _backgroundFront.sprite = sprite;
+
+        foreach (AudioTrackSerializable track in savedState.activeAudioTracks)
+        {
+            AudioManager.Instance.PlayAudio(track.name, track.loop);
+            AudioManager.Instance.SetVolume(track.name, track.volume);
+        }
+
+        RhythmGameScene.CurrentSong = savedState.rhythmGameSong;
     }
 
     public void ContinueStory()
@@ -180,6 +220,9 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
             SceneManager.LoadScene((int)Scene.MainMenu);
             return;
         }
+
+        // saving uses the state from before this line so loading shows the line again instead of skipping it
+        _stateBeforeCurrentLine = CaptureState();
 
         string text = _story.Continue().Replace("\\n", "\n");
         Dictionary<string, string> tags = GetCurrentTags();
@@ -274,6 +317,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 
     public void FadeBackground(string fileName, float duration)
     {
+        _currentBackgroundFileName = fileName;
         Sprite sprite = UiUtils.LoadSprite(fileName, Scene.StoryMode);
 
         _backgroundBack.sprite = sprite;
@@ -300,6 +344,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 
     public void PanBackground(string fileName, float duration)
     {
+        _currentBackgroundFileName = fileName;
         Sprite sprite = UiUtils.LoadSprite(fileName, Scene.StoryMode);
 
         _backgroundFront.sprite = sprite;
@@ -359,6 +404,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
                 volume,
                 duration
             )
+            .SetId(AudioManager.GetFadeTweenId(name))
             .SetEase(Ease.InCubic);
     }
 
@@ -419,7 +465,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     {
         try
         {
-            string serialized = _story.state.ToJson();
+            string serialized = JsonUtility.ToJson(_stateBeforeCurrentLine);
 
             using (FileStream stream = new(StoryModeManager.SaveFilePath, FileMode.Create))
             {
@@ -444,6 +490,10 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 
     public void EnableScreenInput()
     {
+        // the menu detaches during scene teardown, after StoryModeManager.OnDisable; re-enabling then leaks the map
+        if (StoryModeManager.Instance == null || !StoryModeManager.Instance.isActiveAndEnabled)
+            return;
+
         InputManager.Instance.InputAction.StoryMode.Enable();
     }
 }
