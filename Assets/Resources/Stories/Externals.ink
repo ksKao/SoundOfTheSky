@@ -1,6 +1,6 @@
 EXTERNAL ChangeScene(sceneType)
-EXTERNAL FadeBackground(fileName, duration)
-EXTERNAL PanBackground(fileName, duration)
+EXTERNAL FadeBackground(fileName, duration, loop)
+EXTERNAL PanBackground(fileName, duration, loop)
 EXTERNAL Delay(duration)
 EXTERNAL PlayAudio(fileName)
 EXTERNAL LoopAudio(fileName)

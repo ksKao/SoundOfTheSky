@@ -12,7 +12,7 @@ It's been years since the civil war ended, but Alaska's scars linger along with 
 We're all under one sky, no matter the noise below. A sound from from the sky might remind us we're not as divided as we think.” -Olga Orlov
 
 ~ ChangeScene("Blank")
-~ FadeBackground("villagers_color", 5)
+~ FadeBackground("villagers_color", 5, false)
 ~ LoopAudio("dragonwind")
 ~ SetAudioVolume("dragonwind", 1)
 ~ Delay(5)
@@ -69,7 +69,7 @@ Villagers nod, some clasping hands, others bowing heads. Arthur raises his chin,
 Heavenly Father, in this hour of trial, we turn to You, our rock and refuge. Grant us strength to endure, courage to face our fears, and faith to trust Your plan. Surround us with Your love, unite us in hope, and guide us through this storm. May Your peace fill our hearts as we await Your deliverance. Amen. #speaker=Arthur #center_portraits=arthur
 
 ~ ChangeScene("Blank")
-~ FadeBackground("snowy_village_color", 0.5)
+~ FadeBackground("sample", 0.5, false)
 ~ StopAudio("dragonwind")
 ~ LoopAudio("cold_strong_wind")
 ~ Delay(10)
@@ -81,11 +81,11 @@ Heavenly Father, in this hour of trial, we turn to You, our rock and refuge. Gra
 The prayer fades, buried in silence. A cold gust sweeps through, as if the sky itself presses down on the world.
 
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 5)
+~ FadeBackground("black", 5, false)
 ~ Delay(5)
 ~ PlayAudio("amazing_grace")
 ~ Delay(45)
-~ FadeBackground("snowy_village_color", 5)
+~ FadeBackground("snowy_village_color", 5, false)
 ~ Delay(5)
 ~ StopAudio("amazing_grace")
 ~ ChangeScene("RhythmGame")
@@ -96,9 +96,9 @@ It's not the train's rumble that reaches the village first, but this sacred tune
 Villagers stir, faces lifting, eyes widening as the music grows vibrant, each tune a promise of rescue, a sound from the sky.
 
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 5)
+~ FadeBackground("black", 5, false)
 ~ Delay(5)
-~ FadeBackground("cover_train_tender_color", 5)
+~ FadeBackground("cover_train_tender_color", 5, false)
 ~ LoopAudio("steam_train_with_whistle")
 ~ Delay(5)
 ~ ChangeScene("Dialog")
@@ -109,7 +109,7 @@ The train emerges from the fog, its dark silhouette massive against the white ex
 
 ~ StopAudio("steam_train_with_whistle")
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 5)
+~ FadeBackground("black", 5, false)
 ~ Delay(5)
 ~ ChangeScene("Title")
 
@@ -117,14 +117,14 @@ Chapter 1 Day 1\\n<>
 Arrival of Trumpeter
 
 ~ ChangeScene("Blank")
-~ FadeBackground("cover_train_tender_color", 5)
+~ FadeBackground("cover_train_tender_color", 5, false)
 ~ PlayAudio("steam_train_stopping")
 ~ Delay(10)
 ~ ChangeScene("Dialog")
 
 The train cuts through snowdrifts, slowing but still thundering, its engine shaking the village. It halts with a screech of rails, steam hissing as the passenger car door slides open.
 
-~ FadeBackground("snowy_village_color", 0.1)
+~ FadeBackground("snowy_village_color", 0.1, false)
 
 [Standing firm, coat crisp, expression calm but eyes warm. A trumpet neatly strap to her coat.] #speaker=Heidi #center_portraits=heidi_half
 
@@ -225,9 +225,9 @@ He nudges Bobby harder to keep him moving. #left_portraits=cooper_half,heidi_hal
 As villagers board, the heavy door slides shut with a tight slam, shielding the warmth inside from the frigid air.
 
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 3)
+~ FadeBackground("black", 3, false)
 ~ Delay(3)
-~ FadeBackground("passenger_depot", 3)
+~ FadeBackground("passenger_depot", 3, false)
 ~ Delay(3)
 ~ ChangeScene("Dialog")
 
@@ -292,7 +292,7 @@ Good, help Olivia and Farin here get everyone settled. The faster we're ready, t
 Sara and Tim exchange glances, then dash to Olivia and Farin, insisting on helping. #left_portraits=heidi_half #right_portraits=sara_half,tim_half
 
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 3)
+~ FadeBackground("black", 3, false)
 ~ Delay(3)
 ~ ChangeScene("Dialog")
 ~ LoopAudio("chatter")
@@ -305,7 +305,7 @@ Minutes later, Olivia approaches Heidi, Sara and Tim holding her hands.
 ~ FadeAudioVolume("chatter", 0, 3)
 ~ Delay(3)
 ~ StopAudio("chatter")
-~ FadeBackground("passenger_depot", 3)
+~ FadeBackground("passenger_depot", 3, false)
 ~ Delay(3)
 ~ ChangeScene("Dialog")
 
@@ -322,7 +322,7 @@ Well done, you two. Your skills are noted, I'll count on you again. #speaker=Hei
 She salutes them, and they salute back, grinning. #left_portraits=heidi_half #right_portraits=tim_half,sara_half
 
 ~ ChangeScene("Blank")
-~ FadeBackground("black", 3)
+~ FadeBackground("black", 3, false)
 ~ Delay(3)
 
 ~ ChangeScene("Comic")
@@ -338,7 +338,7 @@ The handle is ice-cold, the door creaking as if untouched for centuries.
 A strong wind rushes in. Outside, a giant steel megaphone looms on the platform, ready to amplify her signal.
 
 ~ StopAudio("cold_strong_wind")
-~ FadeBackground("black", 0)
+~ FadeBackground("black", 0, false)
 ~ ChangeScene("Blank")
 ~ Delay(1)
 ~ ChangeScene("Dialog")
@@ -350,14 +350,14 @@ Heidi positions herself before the megaphone, aligning her trumpet. She plays an
 ~ PlayAudio("march_on")
 
 ~ ChangeScene("Blank")
-~ PanBackground("ch1_pg2", 158)
+~ PanBackground("ch1_pg2", 158, false)
 ~ Delay(158)
 ~ StopAudio("march_on")
 
-~ FadeBackground("black", 3)
+~ FadeBackground("black", 3, false)
 ~ Delay(3)
 ~ PlayAudio("steam_train_full_moving")
-~ FadeBackground("cover_train_tender_color", 5)
+~ FadeBackground("cover_train_tender_color", 5, false)
 ~ Delay(5)
 
 ~ ChangeScene("Dialog")

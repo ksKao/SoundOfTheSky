@@ -7,6 +7,8 @@ public class StoryModeState
     public string inkJson;
     public DialogSceneType dialogSceneType;
     public string backgroundFileName;
+    public string videoFileName;
+    public bool videoLoop;
     public string rhythmGameSong;
     public List<AudioTrackSerializable> activeAudioTracks = new();
 }

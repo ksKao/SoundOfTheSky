@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
+using UnityEngine.Video;
 
 [UxmlElement]
 public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
@@ -19,6 +20,8 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     private DialogSceneType _dialogSceneType = DialogSceneType.Title;
     private float _delayDuration = 0;
     private string _currentBackgroundFileName = "black";
+    private string _currentVideoFileName = "";
+    private bool _currentVideoLoop = false;
     private StoryModeState _stateBeforeCurrentLine;
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
@@ -96,17 +99,17 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 
         _story.BindExternalFunction(
             nameof(FadeBackground),
-            (string fileName, float duration) =>
+            (string fileName, float duration, bool loop) =>
             {
-                ExecuteWithDelay(() => FadeBackground(fileName, duration));
+                ExecuteWithDelay(() => FadeBackground(fileName, duration, loop));
             }
         );
 
         _story.BindExternalFunction(
             nameof(PanBackground),
-            (string fileName, float duration) =>
+            (string fileName, float duration, bool loop) =>
             {
-                ExecuteWithDelay(() => PanBackground(fileName, duration));
+                ExecuteWithDelay(() => PanBackground(fileName, duration, loop));
             }
         );
 
@@ -187,6 +190,8 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
             inkJson = _story.state.ToJson(),
             dialogSceneType = _dialogSceneType,
             backgroundFileName = _currentBackgroundFileName,
+            videoFileName = _currentVideoFileName,
+            videoLoop = _currentVideoLoop,
             rhythmGameSong = RhythmGameScene.CurrentSong,
             activeAudioTracks = AudioManager.Instance.GetActiveAudioTracks(),
         };
@@ -198,10 +203,27 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
         _dialogSceneType = savedState.dialogSceneType;
         ChangeScene(_dialogSceneType);
 
-        _currentBackgroundFileName = savedState.backgroundFileName;
-        Sprite sprite = UiUtils.LoadSprite(_currentBackgroundFileName, Scene.StoryMode);
-        _backgroundBack.sprite = sprite;
-        _backgroundFront.sprite = sprite;
+        _currentVideoFileName = savedState.videoFileName;
+        _currentVideoLoop = savedState.videoLoop;
+
+        if (
+            !string.IsNullOrEmpty(_currentVideoFileName)
+            && VideoManager.Instance.TryGetVideoClip(_currentVideoFileName, out VideoClip clip)
+        )
+        {
+            VideoManager.Instance.PlayVideo(clip, _currentVideoLoop);
+            _backgroundBack.sprite = null;
+            _backgroundBack.image = VideoManager.Instance.Texture;
+            _backgroundFront.sprite = null;
+            _backgroundFront.image = VideoManager.Instance.Texture;
+        }
+        else
+        {
+            _currentBackgroundFileName = savedState.backgroundFileName;
+            Sprite sprite = UiUtils.LoadSprite(_currentBackgroundFileName, Scene.StoryMode);
+            _backgroundBack.sprite = sprite;
+            _backgroundFront.sprite = sprite;
+        }
 
         foreach (AudioTrackSerializable track in savedState.activeAudioTracks)
         {
@@ -315,8 +337,45 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
         Add(CurrentScene);
     }
 
-    public void FadeBackground(string fileName, float duration)
+    public void FadeBackground(string fileName, float duration, bool loop = false)
     {
+        if (VideoManager.Instance.TryGetVideoClip(fileName, out VideoClip clip))
+        {
+            _currentVideoFileName = fileName;
+            _currentVideoLoop = loop;
+            _currentBackgroundFileName = "";
+
+            VideoManager.Instance.PlayVideo(clip, loop);
+
+            _backgroundBack.sprite = null;
+            _backgroundBack.image = VideoManager.Instance.Texture;
+
+            DOVirtual
+                .Float(
+                    1f,
+                    0,
+                    duration,
+                    (x) =>
+                    {
+                        _backgroundFront.style.opacity = x;
+                    }
+                )
+                .SetEase(Ease.Linear)
+                .OnComplete(() =>
+                {
+                    _backgroundFront.sprite = null;
+                    _backgroundFront.image = VideoManager.Instance.Texture;
+                    _backgroundFront.style.opacity = 1;
+                    _backgroundFront.style.translate = new Translate(0, 0);
+                    _backgroundFront.style.height = UiUtils.GetLengthPercentage(100);
+                });
+
+            return;
+        }
+
+        VideoManager.Instance.StopVideo();
+        _currentVideoFileName = "";
+
         _currentBackgroundFileName = fileName;
         Sprite sprite = UiUtils.LoadSprite(fileName, Scene.StoryMode);
 
@@ -342,8 +401,42 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
             });
     }
 
-    public void PanBackground(string fileName, float duration)
+    public void PanBackground(string fileName, float duration, bool loop = false)
     {
+        if (VideoManager.Instance.TryGetVideoClip(fileName, out VideoClip clip))
+        {
+            _currentVideoFileName = fileName;
+            _currentVideoLoop = loop;
+            _currentBackgroundFileName = "";
+
+            VideoManager.Instance.PlayVideo(clip, loop);
+
+            _backgroundFront.sprite = null;
+            _backgroundFront.image = VideoManager.Instance.Texture;
+
+            float videoAspectRatio = (float)clip.height / clip.width;
+            _backgroundFront.style.height = Screen.width * videoAspectRatio;
+            _backgroundFront.style.translate = new Translate(0, UiUtils.GetLengthPercentage(0));
+
+            DOVirtual
+                .Float(
+                    0,
+                    -50,
+                    duration,
+                    (x) =>
+                        _backgroundFront.style.translate = new Translate(
+                            0,
+                            UiUtils.GetLengthPercentage(x)
+                        )
+                )
+                .SetEase(Ease.Linear);
+
+            return;
+        }
+
+        VideoManager.Instance.StopVideo();
+        _currentVideoFileName = "";
+
         _currentBackgroundFileName = fileName;
         Sprite sprite = UiUtils.LoadSprite(fileName, Scene.StoryMode);
 
