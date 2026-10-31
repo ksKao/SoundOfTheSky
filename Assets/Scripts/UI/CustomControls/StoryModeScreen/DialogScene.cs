@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DG.Tweening;
 using DG.Tweening.Core;
 using UnityEngine;
@@ -20,6 +21,14 @@ public partial class DialogScene : VisualElement
     // much of the narrowest portrait, so nobody gets completely hidden.
     private const float MaxPortraitOverlapRatio = 0.4f;
 
+    private const float DialogFontSize = 29f;
+
+    // approximate rendered line height as a multiple of font size, used to size the dialogue box
+    // to show a fixed number of lines at once.
+    private const float LineHeightMultiplier = 1.3f;
+    private const int VisibleLineCount = 4;
+    private const int MaxLineLength = 80;
+
     private string _text = "";
     private string _speaker = "";
     private string _subtext = "";
@@ -30,7 +39,15 @@ public partial class DialogScene : VisualElement
     private readonly Label _nameLabel =
         new() { style = { marginRight = 8 }, enableRichText = true };
     private readonly Label _speakerIconLabel = new() { text = "O)))" };
-    private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Normal } };
+
+    // whitespace is Pre so the manual 80-character wrapping in WrapText is respected as-is,
+    // instead of the box re-wrapping it again based on pixel width.
+    private readonly Label _textLabel = new() { style = { whiteSpace = WhiteSpace.Pre, unityTextAlign = TextAnchor.UpperCenter } };
+    private readonly ScrollView _textScrollView =
+        new(ScrollViewMode.Vertical)
+        {
+            style = { height = DialogFontSize * LineHeightMultiplier * VisibleLineCount },
+        };
     private readonly VisualElement _nameLabelContainer =
         new()
         {
@@ -61,13 +78,12 @@ public partial class DialogScene : VisualElement
                 style =
                 {
                     width = UiUtils.GetLengthPercentage(98),
-                    height = UiUtils.GetLengthPercentage(33),
                     position = Position.Absolute,
                     bottom = 16,
                     left = UiUtils.GetLengthPercentage(50),
                     translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
                     backgroundColor = new Color(0.165f, 0.18f, 0.243f, 0.9f),
-                    fontSize = 24,
+                    fontSize = DialogFontSize,
                     color = Color.white,
                     paddingTop = 16,
                     paddingBottom = 16,
@@ -123,7 +139,8 @@ public partial class DialogScene : VisualElement
 
         Add(textContainer);
         textContainer.Add(_nameLabelContainer);
-        textContainer.Add(_textLabel);
+        textContainer.Add(_textScrollView);
+        _textScrollView.Add(_textLabel);
 
         _nameLabelContainer.Add(_nameLabel);
         _nameLabelContainer.Add(_speakerIconLabel);
@@ -168,6 +185,7 @@ public partial class DialogScene : VisualElement
             _textLabel.style.unityFontStyleAndWeight = FontStyle.Normal;
         }
 
+        string wrappedText = WrapText(text, MaxLineLength);
         float visibleChars = 0;
 
         _currentTween = DOTween
@@ -176,12 +194,52 @@ public partial class DialogScene : VisualElement
                 x =>
                 {
                     visibleChars = x;
-                    _textLabel.text = text.Substring(0, (int)Math.Round(visibleChars));
+                    _textLabel.text = wrappedText.Substring(0, (int)Math.Round(visibleChars));
                 },
-                text.Length,
-                text.Length * 0.02f
+                wrappedText.Length,
+                wrappedText.Length * 0.02f
             )
             .SetEase(Ease.Linear);
+
+        // just complete the tween for now due to requirement change
+        _currentTween.Complete();
+    }
+
+    // greedily wraps text so each line is at most maxLineLength characters (including spaces),
+    // breaking on word boundaries. existing newlines in the source text are kept as paragraph breaks.
+    private static string WrapText(string text, int maxLineLength)
+    {
+        string[] paragraphs = text.Split('\n');
+        List<string> wrappedParagraphs = new();
+
+        foreach (string paragraph in paragraphs)
+        {
+            List<string> lines = new();
+            StringBuilder currentLine = new();
+
+            foreach (string word in paragraph.Split(' '))
+            {
+                if (currentLine.Length == 0)
+                {
+                    currentLine.Append(word);
+                }
+                else if (currentLine.Length + 1 + word.Length <= maxLineLength)
+                {
+                    currentLine.Append(' ').Append(word);
+                }
+                else
+                {
+                    lines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    currentLine.Append(word);
+                }
+            }
+
+            lines.Add(currentLine.ToString());
+            wrappedParagraphs.Add(string.Join("\n", lines));
+        }
+
+        return string.Join("\n", wrappedParagraphs);
     }
 
     public void SetPortraits(
