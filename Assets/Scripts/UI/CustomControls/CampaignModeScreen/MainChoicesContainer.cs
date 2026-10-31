@@ -19,7 +19,7 @@ public partial class MainChoicesContainer : VisualElement
             paddingBottom = 8,
         },
     };
-    private ActionType _actionType = ActionType.Medical;
+    private ActionType _actionType = ActionType.Wellness;
 
     public ActionType SelectedTab
     {
@@ -120,7 +120,7 @@ public partial class MainChoicesContainer : VisualElement
 
         UiUtils.ToggleBorder(medicalTab, false);
 
-        medicalTab.clicked += () => SelectedTab = ActionType.Medical;
+        medicalTab.clicked += () => SelectedTab = ActionType.Wellness;
 
         Button skipButton = new()
         {

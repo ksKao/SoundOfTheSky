@@ -50,7 +50,7 @@ public enum Direction
 
 public enum ActionType
 {
-    Medical,
+    Wellness,
     Warming,
 }
 

@@ -109,7 +109,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
                 return;
             }
 
-            if (action.type == ActionType.Medical)
+            if (action.type == ActionType.Wellness)
             {
                 for (int i = 0; i < Passengers.Length; i++)
                 {

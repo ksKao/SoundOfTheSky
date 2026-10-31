@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4ada0e44b76c59f0839103879b7b926, type: 3}
-  m_Name: AdministerMedicine
+  m_Name: IncreaseHeat
   m_EditorClassIdentifier: 
-  name: Administer Medicine
+  name: Increase Heat
   type: 0
-  valueIncrease: 1
-  crewsNeeded: 1
-  cooldownMin: 2
-  cooldownMax: 3
+  valueIncrease: 4
+  crewsNeeded: 4
+  cooldownMin: 5
+  cooldownMax: 7
