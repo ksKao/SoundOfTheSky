@@ -14,7 +14,6 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     public const int MAX_DAYS = MAX_INTERVALS / INTERVAL_PER_DAY;
     public const int DAY_TRANSITION_DURATION = 5;
     public const int NUMBER_OF_FUTURE_WEATHER = 6;
-    public const int NUMBER_OF_CREWS = 5;
     public const int NUMBER_OF_PASSENGERS = 20;
     public const float WEATHER_HIDDEN_CHANCE = 0.2f;
 
@@ -54,7 +53,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
         new(NUMBER_OF_FUTURE_WEATHER);
     public (string name, PassengerStatus status)[] Passengers { get; } =
         new (string, PassengerStatus)[NUMBER_OF_PASSENGERS];
-    public int[] CrewCooldowns { get; } = new int[NUMBER_OF_CREWS] { 0, 0, 0, 0, 0 };
+    public int[] CrewCooldowns { get; } = CampaignModeCrewContainer.crewImages.Select(x => 0).ToArray();
     public static string SaveFilePath
     {
         get

@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class CampaignModeCrewContainer : VisualElement
 {
+    public static readonly string[] crewImages = { "farin_head", "olivia_head", "cooper_head", "samson_head", "owen_head" };
     public static readonly Color backgroundColor = UiUtils.HexToRgb("#384246");
     public List<CrewCooldownIndicator> cooldownIndicators = new();
 
@@ -27,7 +28,7 @@ public partial class CampaignModeCrewContainer : VisualElement
         UiUtils.ToggleBorder(this, true, Color.white);
         UiUtils.SetBorderWidth(this, 1);
 
-        for (int i = 0; i < CampaignModeManager.NUMBER_OF_CREWS; i++)
+        foreach (string image in crewImages)
         {
             VisualElement imageContainer = new()
             {
@@ -42,7 +43,7 @@ public partial class CampaignModeCrewContainer : VisualElement
             imageContainer.Add(
                 new Image()
                 {
-                    sprite = UiUtils.LoadSprite("crew_icon", Scene.CampaignMode),
+                    sprite = UiUtils.LoadSprite(image, Scene.CampaignMode),
                     style =
                     {
                         width = 100,

@@ -34,11 +34,11 @@ public partial class ChoiceButton : VisualElement
         };
 
         UiUtils.ToggleBorder(button, false);
+        button.style.backgroundColor = MainChoicesContainer.blueColor;
+        button.style.color = Color.white;
 
         if (actionSO.type == ActionType.Warming)
         {
-            button.style.backgroundColor = MainChoicesContainer.redColor;
-            button.style.color = Color.white;
             button.Add(
                 new Label(
                     $"{actionSO.name}: <b>+{actionSO.valueIncrease}{WeatherBar.DEGREE_SYMBOL}</b>"
@@ -56,8 +56,6 @@ public partial class ChoiceButton : VisualElement
         }
         else
         {
-            button.style.backgroundColor = Color.white;
-            button.style.color = MainChoicesContainer.redColor;
             button.Add(
                 new Label($"{actionSO.name}: <b>+{actionSO.valueIncrease} health</b>")
                 {

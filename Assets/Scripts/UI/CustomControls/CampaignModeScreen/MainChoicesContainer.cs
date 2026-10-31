@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 [UxmlElement]
 public partial class MainChoicesContainer : VisualElement
 {
-    public static readonly Color redColor = UiUtils.HexToRgb("#c1272c");
+    public static readonly Color blueColor = UiUtils.HexToRgb("#3a4964");
 
     private readonly VisualElement _choicesContainer = new()
     {
@@ -76,7 +76,7 @@ public partial class MainChoicesContainer : VisualElement
                 display = DisplayStyle.Flex,
                 flexDirection = FlexDirection.Row,
                 width = UiUtils.GetLengthPercentage(60),
-                justifyContent = Justify.SpaceBetween,
+                justifyContent = Justify.Center,
             },
         };
 
@@ -90,7 +90,7 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomLeftRadius = 8,
                 borderBottomRightRadius = 8,
                 fontSize = 20,
-                backgroundColor = redColor,
+                backgroundColor = blueColor,
                 color = Color.white,
                 width = UiUtils.GetLengthPercentage(38),
                 display = DisplayStyle.None, // temporarily hide the button from UI
@@ -112,7 +112,7 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomRightRadius = 8,
                 fontSize = 20,
                 backgroundColor = Color.white,
-                color = redColor,
+                color = blueColor,
                 width = UiUtils.GetLengthPercentage(38),
                 display = DisplayStyle.None, // temporarily hide the button from UI
             },
@@ -134,7 +134,6 @@ public partial class MainChoicesContainer : VisualElement
                 borderBottomRightRadius = 8,
                 fontSize = 20,
                 color = Color.white,
-                width = UiUtils.GetLengthPercentage(100),
             },
         };
 
