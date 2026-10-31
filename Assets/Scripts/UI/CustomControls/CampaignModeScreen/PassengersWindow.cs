@@ -113,11 +113,11 @@ public partial class PassengersWindow : VisualElement
             statusLabelContainer.Add(
                 new Label()
                 {
-                    text = status == PassengerStatus.Death ? $"<s>{status}</s>" : status.ToString(),
+                    text = status == PassengerStatus.Hypothermic ? $"<s>{status}</s>" : status.ToString(),
                     style =
                     {
                         color =
-                            status == PassengerStatus.Death
+                            status == PassengerStatus.Hypothermic
                                 ? Color.white
                                 : Passenger.StatusToColor(status),
                         paddingTop = 0,
@@ -125,7 +125,7 @@ public partial class PassengersWindow : VisualElement
                         paddingLeft = 0,
                         paddingRight = 0,
                         marginTop = 0,
-                        marginBottom = status == PassengerStatus.Death ? 0 : 8,
+                        marginBottom = status == PassengerStatus.Hypothermic ? 0 : 8,
                         marginLeft = 0,
                         marginRight = 0,
                     },
@@ -197,7 +197,7 @@ public partial class PassengersWindow : VisualElement
                 }
             );
 
-            if (status == PassengerStatus.Death)
+            if (status == PassengerStatus.Hypothermic)
                 aspectRatio.Add(
                     new()
                     {
@@ -221,7 +221,7 @@ public partial class PassengersWindow : VisualElement
             container.Add(
                 new Label()
                 {
-                    text = status == PassengerStatus.Death ? $"<s>{name}</s>" : name,
+                    text = status == PassengerStatus.Hypothermic ? $"<s>{name}</s>" : name,
                     style =
                     {
                         color = Color.white,
@@ -256,7 +256,7 @@ public partial class PassengersWindow : VisualElement
 
             container.Add(statusLabel);
 
-            if (status == PassengerStatus.Death)
+            if (status == PassengerStatus.Hypothermic)
                 statusLabel.visible = false;
 
             _passengersContainer.Add(container);

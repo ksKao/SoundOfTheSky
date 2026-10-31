@@ -297,7 +297,7 @@ public class ResupplyMission : Mission
     {
         // get a random crew that is in one condition above death
         Crew randomCrew = Random.GetFromArray(
-            Crews.Where(c => c.Status < PassengerStatus.Death - 1).ToArray()
+            Crews.Where(c => c.Status < PassengerStatus.Hypothermic - 1).ToArray()
         );
 
         // (50 - (crew endurance level - 1) * 5)% chance for an event to occur

@@ -235,7 +235,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
                 if (
                     Random.ShouldOccur(sickChance)
-                    && (!_skippedThisInterval || Passengers[i].status < (PassengerStatus.Death - 1))
+                    && (!_skippedThisInterval || Passengers[i].status < (PassengerStatus.Hypothermic - 1))
                 ) // passengers cannot die when today is skipped
                     ChangePassengerHealth(i, false);
                 if (Random.ShouldOccur(recoverChance)) // cannot revive dead passengers
@@ -280,7 +280,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
     private void ChangePassengerHealth(int index, bool isMakeBetter)
     {
         // cannot revive dead passengers
-        if (isMakeBetter && Passengers[index].status == PassengerStatus.Death)
+        if (isMakeBetter && Passengers[index].status == PassengerStatus.Hypothermic)
             return;
 
         IEnumerable<int> values = Enum.GetValues(typeof(PassengerStatus)).Cast<int>();
@@ -297,7 +297,7 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
 
         UiManager.Instance.CampaignModeScreen.passengersWindow.Refresh();
 
-        if (Passengers.All(p => p.status == PassengerStatus.Death))
+        if (Passengers.All(p => p.status == PassengerStatus.Hypothermic))
             Lose();
     }
 

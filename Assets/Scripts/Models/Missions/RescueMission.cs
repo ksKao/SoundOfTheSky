@@ -396,7 +396,7 @@ public class RescueMission : Mission
         double rewardMultiplier = 1 + weatherSO.rewardMultiplier;
         NumberOfResidents = (int)
             Math.Round(
-                Passengers.Where(p => p.Status != PassengerStatus.Death).ToArray().Length
+                Passengers.Where(p => p.Status != PassengerStatus.Hypothermic).ToArray().Length
                     * rewardMultiplier
             );
         NumberOfNewResources = (int)Math.Round(NumberOfResources * rewardMultiplier);
@@ -471,10 +471,10 @@ public class RescueMission : Mission
 
         // remove all dead passengers and crews
         int numberOfPassengers = Passengers.Count;
-        Passengers.RemoveAll(p => p.Status == PassengerStatus.Death);
+        Passengers.RemoveAll(p => p.Status == PassengerStatus.Hypothermic);
         NumberOfDeaths += numberOfPassengers - Passengers.Count;
 
-        CityModeManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Death);
+        CityModeManager.Instance.crews.RemoveAll(c => c.Status == PassengerStatus.Hypothermic);
 
         _deployedMissionCrewLabel.text = $"{Crews.Length} crew(s)";
         _deployedMissionPassengerLabel.text = $"{Passengers.Count} passenger(s)";

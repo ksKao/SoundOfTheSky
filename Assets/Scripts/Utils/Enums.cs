@@ -8,11 +8,11 @@ public enum MissionType
 public enum PassengerStatus
 {
     Comfortable,
-    Cold,
-    Sick,
-    Terminal,
-    Critical,
-    Death,
+    Chilled,
+    Sluggish,
+    Shivering,
+    Numbness,
+    Hypothermic,
 }
 
 public enum MaterialType

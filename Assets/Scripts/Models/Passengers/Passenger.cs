@@ -13,11 +13,11 @@ public class Passenger
         "passenger_selection_background_glow"
     );
     private static readonly Color _comfortableColor = UiUtils.HexToRgb("#39b54a");
-    private static readonly Color _coldColor = UiUtils.HexToRgb("#0000ff");
-    private static readonly Color _sickColor = UiUtils.HexToRgb("#ff00ff");
-    private static readonly Color _terminalColor = UiUtils.HexToRgb("#662d91");
-    private static readonly Color _criticalColor = UiUtils.HexToRgb("#ff0000");
-    private static readonly Color _deathColor = Color.black;
+    private static readonly Color _chilledColor = UiUtils.HexToRgb("#0000ff");
+    private static readonly Color _sluggishColor = UiUtils.HexToRgb("#ff00ff");
+    private static readonly Color _shiveringColor = UiUtils.HexToRgb("#662d91");
+    private static readonly Color _numbnessColor = UiUtils.HexToRgb("#ff0000");
+    private static readonly Color _hypothermicColor = Color.black;
 
     public bool selectable = true;
     public readonly VisualElement ui = new()
@@ -90,11 +90,11 @@ public class Passenger
         return status switch
         {
             PassengerStatus.Comfortable => _comfortableColor,
-            PassengerStatus.Cold => _coldColor,
-            PassengerStatus.Sick => _sickColor,
-            PassengerStatus.Terminal => _terminalColor,
-            PassengerStatus.Critical => _criticalColor,
-            _ => _deathColor,
+            PassengerStatus.Chilled => _chilledColor,
+            PassengerStatus.Sluggish => _sluggishColor,
+            PassengerStatus.Shivering => _shiveringColor,
+            PassengerStatus.Numbness => _numbnessColor,
+            _ => _hypothermicColor,
         };
     }
 
