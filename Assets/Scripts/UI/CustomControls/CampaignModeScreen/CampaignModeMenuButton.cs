@@ -18,7 +18,7 @@ public partial class CampaignModeMenuButton : VisualElement
         style.unityFontDefinition = new StyleFontDefinition(
             Resources.Load<FontAsset>("Fonts/ronix")
         );
-        style.width = 192;
+        style.width = 250;
         style.height = UiUtils.GetLengthPercentage(60);
 
         VisualElement menu = new()
@@ -94,6 +94,26 @@ public partial class CampaignModeMenuButton : VisualElement
                 )
             );
         };
+
+        Button settingsButton = new()
+        {
+            text = "Settings",
+            style =
+            {
+                backgroundColor = Color.clear,
+                fontSize = 20,
+                color = Color.white,
+            },
+        };
+
+        UiUtils.ToggleBorder(settingsButton, false);
+
+        settingsButton.clicked += () =>
+        {
+            UiManager.Instance.Modal.Show(new SettingsMenu());
+        };
+
+        menu.Add(settingsButton);
 
         Button exitButton = new()
         {
