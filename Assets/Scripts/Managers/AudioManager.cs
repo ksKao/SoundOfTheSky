@@ -19,6 +19,9 @@ public class AudioManager : Singleton<AudioManager>
 
         _voiceAudioSource = gameObject.AddComponent<AudioSource>();
         _voiceAudioSource.loop = false;
+
+        AudioListener.volume =
+            PlayerPrefs.GetInt(SettingsMenu.PLAYER_PREFS_VOLUME_KEY, 100) / 100f;
     }
 
     public void Update()

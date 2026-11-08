@@ -35,6 +35,9 @@ public class UiManager : Singleton<UiManager>
     {
         base.Awake();
 
+        Screen.fullScreen =
+            PlayerPrefs.GetInt(SettingsMenu.PLAYER_PREFS_FULLSCREEN_ENABLED_KEY, 1) == 1;
+
         UIDocument uiDocument = FindFirstObjectByType<UIDocument>();
 
         if (uiDocument == null)

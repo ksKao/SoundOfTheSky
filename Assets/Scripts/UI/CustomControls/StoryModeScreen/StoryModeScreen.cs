@@ -16,6 +16,11 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 {
     public readonly TwoButtonMenu twoButtonMenu;
 
+    private const int AutoAdvancePollIntervalMs = 100;
+    private const int AutoAdvanceReadDelayMs = 1500;
+    private const int AutoAdvanceMinReadDelayMs = 1000;
+    private const int AutoAdvanceReadDelayMsPerCharacter = 50;
+
     private Story _story;
     private DialogSceneType _dialogSceneType = DialogSceneType.Title;
     private float _delayDuration = 0;
@@ -23,6 +28,9 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     private string _currentVideoFileName = "";
     private bool _currentVideoLoop = false;
     private StoryModeState _stateBeforeCurrentLine;
+    private IVisualElementScheduledItem _autoAdvanceTask;
+    private double _autoAdvanceReadySinceMs = -1;
+    private bool _screenInputEnabled = true;
     private readonly TitleScene _titleScene = new();
     private readonly SubtitleScene _subtitleScene = new();
     private readonly DialogScene _dialogScene = new();
@@ -238,6 +246,8 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
     {
         if (_story == null || !_story.canContinue)
         {
+            _autoAdvanceTask?.Pause();
+            _autoAdvanceTask = null;
             AudioManager.Instance.StopAllAudio();
             SceneManager.LoadScene((int)Scene.MainMenu);
             return;
@@ -249,6 +259,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
         string text = _story.Continue().Replace("\\n", "\n");
         Dictionary<string, string> tags = GetCurrentTags();
         _delayDuration = 0;
+        long readDelayMs = AutoAdvanceReadDelayMs;
 
         switch (_dialogSceneType)
         {
@@ -260,13 +271,16 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
                 _subtitleScene.titleLabel.text = tags.GetValueOrDefault("title", "");
                 break;
             case DialogSceneType.Dialog:
+                string dialogVoice = tags.GetValueOrDefault("voice", "");
+                if (string.IsNullOrEmpty(dialogVoice))
+                    readDelayMs = GetNoVoiceReadDelayMs(text);
                 _dialogScene.SetText(
                     text: text,
                     speaker: CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
                         tags.GetValueOrDefault("speaker", "")
                     ),
                     subtext: tags.GetValueOrDefault("subtext", ""),
-                    voice: tags.GetValueOrDefault("voice", "")
+                    voice: dialogVoice
                 );
                 List<string> leftPortraits = tags.GetValueOrDefault("left_portraits", "")
                     .Split(",")
@@ -302,7 +316,58 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
                 );
                 break;
         }
+
+        ScheduleAutoAdvance(readDelayMs);
     }
+
+    // dialog lines without a voice clip have no natural pacing, so scale their wait with how much
+    // there is to read instead of using the flat delay.
+    private static long GetNoVoiceReadDelayMs(string text) =>
+        Math.Max(AutoAdvanceMinReadDelayMs, text.Length * AutoAdvanceReadDelayMsPerCharacter);
+
+    // auto mode advances the story on its own once the current line is done typing/playing voice,
+    // after readDelayMs so the player has time to read it. it re-checks every poll so toggling the
+    // setting or opening the pause menu mid-line takes effect immediately.
+    private void ScheduleAutoAdvance(long readDelayMs)
+    {
+        _autoAdvanceTask?.Pause();
+        _autoAdvanceReadySinceMs = -1;
+
+        _autoAdvanceTask = schedule
+            .Execute(() =>
+            {
+                bool autoEnabled =
+                    PlayerPrefs.GetInt(SettingsMenu.PLAYER_PREFS_AUTO_ENABLED_KEY, 1) != 0;
+
+                if (!autoEnabled || !_screenInputEnabled || !IsCurrentSceneReadyToAdvance())
+                {
+                    _autoAdvanceReadySinceMs = -1;
+                    return;
+                }
+
+                if (_autoAdvanceReadySinceMs < 0)
+                {
+                    _autoAdvanceReadySinceMs = Time.unscaledTimeAsDouble * 1000;
+                    return;
+                }
+
+                if (Time.unscaledTimeAsDouble * 1000 - _autoAdvanceReadySinceMs < readDelayMs)
+                    return;
+
+                _autoAdvanceTask.Pause();
+                _autoAdvanceTask = null;
+                ContinueStory();
+            })
+            .Every(AutoAdvancePollIntervalMs);
+    }
+
+    // only dialog lines auto-advance; every other scene type requires a manual click to continue.
+    private bool IsCurrentSceneReadyToAdvance() =>
+        _dialogSceneType switch
+        {
+            DialogSceneType.Dialog => _dialogScene.IsReadyToContinue,
+            _ => false,
+        };
 
     public void ChangeScene(DialogSceneType sceneType)
     {
@@ -578,6 +643,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
 
     public void DisableScreenInput()
     {
+        _screenInputEnabled = false;
         InputManager.Instance.InputAction.StoryMode.Disable();
     }
 
@@ -587,6 +653,7 @@ public partial class StoryModeScreen : VisualElement, TwoButtonMenuScreen
         if (StoryModeManager.Instance == null || !StoryModeManager.Instance.isActiveAndEnabled)
             return;
 
+        _screenInputEnabled = true;
         InputManager.Instance.InputAction.StoryMode.Enable();
     }
 }

@@ -63,6 +63,10 @@ public partial class DialogScene : VisualElement
     private readonly VisualElement _centerPortraitContainer = CreatePortraitContainer();
     private readonly VisualElement _rightPortraitContainer = CreatePortraitContainer();
 
+    public bool IsReadyToContinue =>
+        !AudioManager.Instance.IsVoicePlaying
+        && (_currentTween == null || !_currentTween.IsActive() || _currentTween.IsComplete());
+
     public DialogScene()
     {
         style.width = UiUtils.GetLengthPercentage(100);

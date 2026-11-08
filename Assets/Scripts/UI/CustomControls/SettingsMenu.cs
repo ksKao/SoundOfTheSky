@@ -17,7 +17,7 @@ public partial class SettingsMenu : VisualElement
 
     private readonly Button _fullscreenButton = new()
     {
-        text = PlayerPrefs.GetInt(PLAYER_PREFS_FULLSCREEN_ENABLED_KEY, 1) == 0 ? "Enable Fullscreen" : "Enabled Windowed",
+        text = PlayerPrefs.GetInt(PLAYER_PREFS_FULLSCREEN_ENABLED_KEY, 1) == 0 ? "Enable Fullscreen" : "Enable Windowed",
         style =
         {
             backgroundColor = Color.clear,
@@ -66,11 +66,13 @@ public partial class SettingsMenu : VisualElement
             if (isFullscreen == 0)
             {
                 PlayerPrefs.SetInt(PLAYER_PREFS_FULLSCREEN_ENABLED_KEY, 1);
+                Screen.fullScreen = true;
                 _fullscreenButton.text = "Enable Windowed";
             }
             else
             {
                 PlayerPrefs.SetInt(PLAYER_PREFS_FULLSCREEN_ENABLED_KEY, 0);
+                Screen.fullScreen = false;
                 _fullscreenButton.text = "Enable Fullscreen";
             }
         };
@@ -125,6 +127,7 @@ public partial class SettingsMenu : VisualElement
         {
             _volume = Math.Max(_volume - 1, 0);
             PlayerPrefs.SetInt(PLAYER_PREFS_VOLUME_KEY, _volume);
+            AudioListener.volume = _volume / 100f;
             volumeLabel.text = $"{_volume}%";
         }
 
@@ -144,6 +147,7 @@ public partial class SettingsMenu : VisualElement
         {
             _volume = Math.Min(_volume + 1, 100);
             PlayerPrefs.SetInt(PLAYER_PREFS_VOLUME_KEY, _volume);
+            AudioListener.volume = _volume / 100f;
             volumeLabel.text = $"{_volume}%";
         }
 
