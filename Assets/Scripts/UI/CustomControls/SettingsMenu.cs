@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
@@ -10,6 +9,9 @@ public partial class SettingsMenu : VisualElement
     public const string PLAYER_PREFS_FULLSCREEN_ENABLED_KEY = "fullscreenEnabled";
     public const string PLAYER_PREFS_AUTO_ENABLED_KEY = "autoEnabled";
     public const string PLAYER_PREFS_VOLUME_KEY = "volume";
+
+    private const long VOLUME_HOLD_INITIAL_DELAY_MS = 400;
+    private const long VOLUME_HOLD_REPEAT_INTERVAL_MS = 75;
 
     private int _volume = PlayerPrefs.GetInt(PLAYER_PREFS_VOLUME_KEY, 100);
 
@@ -119,12 +121,14 @@ public partial class SettingsMenu : VisualElement
         };
         UiUtils.ToggleBorder(minus, false);
 
-        minus.clicked += () =>
+        void DecreaseVolume()
         {
             _volume = Math.Max(_volume - 1, 0);
             PlayerPrefs.SetInt(PLAYER_PREFS_VOLUME_KEY, _volume);
             volumeLabel.text = $"{_volume}%";
-        };
+        }
+
+        RegisterHoldButton(minus, DecreaseVolume);
 
         Button plus = new()
         {
@@ -136,13 +140,14 @@ public partial class SettingsMenu : VisualElement
         };
         UiUtils.ToggleBorder(plus, false);
 
-        plus.clicked += () =>
+        void IncreaseVolume()
         {
-            _volume++;
             _volume = Math.Min(_volume + 1, 100);
             PlayerPrefs.SetInt(PLAYER_PREFS_VOLUME_KEY, _volume);
             volumeLabel.text = $"{_volume}%";
-        };
+        }
+
+        RegisterHoldButton(plus, IncreaseVolume);
 
         container.Add(new Label("Volume"));
         container.Add(minus);
@@ -150,5 +155,34 @@ public partial class SettingsMenu : VisualElement
         container.Add(plus);
 
         Add(container);
+    }
+
+    private static void RegisterHoldButton(Button button, Action step)
+    {
+        IVisualElementScheduledItem repeatTask = null;
+
+        void StopRepeating()
+        {
+            repeatTask?.Pause();
+            repeatTask = null;
+        }
+
+        button.RegisterCallback<PointerDownEvent>(
+            _ =>
+            {
+                step();
+                repeatTask = button.schedule.Execute(step)
+                    .StartingIn(VOLUME_HOLD_INITIAL_DELAY_MS)
+                    .Every(VOLUME_HOLD_REPEAT_INTERVAL_MS);
+            },
+            TrickleDown.TrickleDown
+        );
+
+        button.RegisterCallback<PointerUpEvent>(_ => StopRepeating(), TrickleDown.TrickleDown);
+        button.RegisterCallback<PointerLeaveEvent>(_ => StopRepeating(), TrickleDown.TrickleDown);
+        button.RegisterCallback<PointerCaptureOutEvent>(
+            _ => StopRepeating(),
+            TrickleDown.TrickleDown
+        );
     }
 }
