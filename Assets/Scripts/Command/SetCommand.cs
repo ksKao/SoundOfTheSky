@@ -27,6 +27,10 @@ public class SetCommand : Command
                 "Set the hour in campaign mode. Valid values: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22. Preserves current day."
             },
             { "set temperature <value>", "Set the current temperature in campaign mode." },
+            {
+                "set skip_voice_enabled <value>",
+                "Set whether the voice in dialog mode can be skipped by clicking. Only allow 'true' or 'false'"
+            }
         };
 
     public override void Execute(string[] args)
@@ -88,6 +92,18 @@ public class SetCommand : Command
                     throw new Exception($"\"{args[1]}\" is not a valid integer.");
                 CampaignModeManager.Instance.Temperature = value;
                 ConsoleManager.Instance.Output($"Temperature has been set to {args[1]}.");
+                break;
+            }
+            case "skip_voice_enabled":
+            {
+                string arg = args[1];
+                if (arg != "true" &&  arg != "false" )
+                {
+                    throw new Exception("Only 'true' or 'false' is allowed.");
+                }
+
+                StoryModeManager.SkipVoiceEnabled = arg == "true";
+                ConsoleManager.Instance.Output($"Skip voice has been {(arg == "true" ? "enabled" : "disabled")}.");
                 break;
             }
             default:

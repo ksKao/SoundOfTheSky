@@ -339,6 +339,15 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Open Console"",
+                    ""type"": ""Button"",
+                    ""id"": ""5aac9e85-749e-4c66-8fc8-a547b3cd71f6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -396,6 +405,17 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Open Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""11c41b3f-32cc-4ec1-ab22-19d3ab789027"",
+                    ""path"": ""<Keyboard>/f11"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open Console"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -425,6 +445,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_StoryMode_D = m_StoryMode.FindAction("D", throwIfNotFound: true);
         m_StoryMode_F = m_StoryMode.FindAction("F", throwIfNotFound: true);
         m_StoryMode_OpenMenu = m_StoryMode.FindAction("Open Menu", throwIfNotFound: true);
+        m_StoryMode_OpenConsole = m_StoryMode.FindAction("Open Console", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -942,6 +963,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_StoryMode_D;
     private readonly InputAction m_StoryMode_F;
     private readonly InputAction m_StoryMode_OpenMenu;
+    private readonly InputAction m_StoryMode_OpenConsole;
     /// <summary>
     /// Provides access to input actions defined in input action map "Story Mode".
     /// </summary>
@@ -973,6 +995,10 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "StoryMode/OpenMenu".
         /// </summary>
         public InputAction @OpenMenu => m_Wrapper.m_StoryMode_OpenMenu;
+        /// <summary>
+        /// Provides access to the underlying input action "StoryMode/OpenConsole".
+        /// </summary>
+        public InputAction @OpenConsole => m_Wrapper.m_StoryMode_OpenConsole;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1014,6 +1040,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @OpenMenu.started += instance.OnOpenMenu;
             @OpenMenu.performed += instance.OnOpenMenu;
             @OpenMenu.canceled += instance.OnOpenMenu;
+            @OpenConsole.started += instance.OnOpenConsole;
+            @OpenConsole.performed += instance.OnOpenConsole;
+            @OpenConsole.canceled += instance.OnOpenConsole;
         }
 
         /// <summary>
@@ -1040,6 +1069,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @OpenMenu.started -= instance.OnOpenMenu;
             @OpenMenu.performed -= instance.OnOpenMenu;
             @OpenMenu.canceled -= instance.OnOpenMenu;
+            @OpenConsole.started -= instance.OnOpenConsole;
+            @OpenConsole.performed -= instance.OnOpenConsole;
+            @OpenConsole.canceled -= instance.OnOpenConsole;
         }
 
         /// <summary>
@@ -1203,5 +1235,12 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOpenMenu(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Open Console" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenConsole(InputAction.CallbackContext context);
     }
 }

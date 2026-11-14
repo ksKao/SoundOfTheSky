@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class StoryModeManager : Singleton<StoryModeManager>
 {
+    public static bool SkipVoiceEnabled { get; set; } = false;
     public static string SaveFilePath
     {
         get
@@ -50,6 +51,8 @@ public class StoryModeManager : Singleton<StoryModeManager>
             );
         InputManager.Instance.InputAction.StoryMode.OpenMenu.performed += ctx =>
             UiManager.Instance.Modal.Show(UiManager.Instance.StoryModeScreen.twoButtonMenu);
+        InputManager.Instance.InputAction.StoryMode.OpenConsole.performed += ctx =>
+            ConsoleManager.Instance.OpenConsole();
     }
 
     private void OnEnable()

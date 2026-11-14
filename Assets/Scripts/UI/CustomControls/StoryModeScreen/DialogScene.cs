@@ -12,22 +12,22 @@ public partial class DialogScene : VisualElement
 {
     // portrait height as a fraction of the scene height. portraits always use this size, no matter
     // how many of them share a side.
-    private const float PortraitHeightRatio = 0.8f;
+    private const float PORTRAIT_HEIGHT_RATIO = 0.8f;
 
     // gap kept between the outermost portrait and the edge of the left/right side.
-    private const float PortraitEdgeInset = 24;
+    private const float PORTRAIT_EDGE_INSET = 24;
 
     // portraits slide over each other when a side runs out of room, but never by more than this
     // much of the narrowest portrait, so nobody gets completely hidden.
-    private const float MaxPortraitOverlapRatio = 0.4f;
+    private const float MAX_PORTRAIT_OVERLAP_RATIO = 0.4f;
 
-    private const float DialogFontSize = 29f;
+    private const float DIALOG_FONT_SIZE = 29f;
 
     // approximate rendered line height as a multiple of font size, used to size the dialogue box
     // to show a fixed number of lines at once.
-    private const float LineHeightMultiplier = 1.3f;
-    private const int VisibleLineCount = 4;
-    private const int MaxLineLength = 80;
+    private const float LINE_HEIGHT_MULTIPLIER = 1.3f;
+    private const int VISIBLE_LINE_COUNT = 4;
+    private const int MAX_LINE_LENGTH = 80;
 
     private string _text = "";
     private string _speaker = "";
@@ -46,7 +46,7 @@ public partial class DialogScene : VisualElement
     private readonly ScrollView _textScrollView =
         new(ScrollViewMode.Vertical)
         {
-            style = { height = DialogFontSize * LineHeightMultiplier * VisibleLineCount },
+            style = { height = DIALOG_FONT_SIZE * LINE_HEIGHT_MULTIPLIER * VISIBLE_LINE_COUNT },
         };
     private readonly VisualElement _nameLabelContainer =
         new()
@@ -87,7 +87,7 @@ public partial class DialogScene : VisualElement
                     left = UiUtils.GetLengthPercentage(50),
                     translate = new Translate(UiUtils.GetLengthPercentage(-50), 0),
                     backgroundColor = new Color(0.165f, 0.18f, 0.243f, 0.9f),
-                    fontSize = DialogFontSize,
+                    fontSize = DIALOG_FONT_SIZE,
                     color = Color.white,
                     paddingTop = 16,
                     paddingBottom = 16,
@@ -116,7 +116,7 @@ public partial class DialogScene : VisualElement
 
         RegisterCallback<ClickEvent>(_ =>
         {
-            if (AudioManager.Instance.IsVoicePlaying)
+            if (AudioManager.Instance.IsVoicePlaying && !StoryModeManager.SkipVoiceEnabled)
             {
                 return;
             }
@@ -189,7 +189,7 @@ public partial class DialogScene : VisualElement
             _textLabel.style.unityFontStyleAndWeight = FontStyle.Normal;
         }
 
-        string wrappedText = WrapText(text, MaxLineLength);
+        string wrappedText = WrapText(text, MAX_LINE_LENGTH);
         float visibleChars = 0;
 
         _currentTween = DOTween
@@ -343,7 +343,7 @@ public partial class DialogScene : VisualElement
             .OrderBy(portrait => (int)portrait.userData)
             .ToList();
 
-        float portraitHeight = containerHeight * PortraitHeightRatio;
+        float portraitHeight = containerHeight * PORTRAIT_HEIGHT_RATIO;
         float[] widths = new float[portraits.Count];
         float totalWidth = 0;
         float narrowestWidth = float.MaxValue;
@@ -356,7 +356,7 @@ public partial class DialogScene : VisualElement
             narrowestWidth = Mathf.Min(narrowestWidth, widths[i]);
         }
 
-        float inset = anchor == PortraitAnchor.Center ? 0 : PortraitEdgeInset;
+        float inset = anchor == PortraitAnchor.Center ? 0 : PORTRAIT_EDGE_INSET;
         float availableWidth = containerWidth - inset;
         float overlap = 0;
 
@@ -365,7 +365,7 @@ public partial class DialogScene : VisualElement
         {
             overlap = Mathf.Min(
                 (totalWidth - availableWidth) / (portraits.Count - 1),
-                narrowestWidth * MaxPortraitOverlapRatio
+                narrowestWidth * MAX_PORTRAIT_OVERLAP_RATIO
             );
         }
 
