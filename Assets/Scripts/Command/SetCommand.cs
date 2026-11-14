@@ -78,8 +78,7 @@ public class SetCommand : Command
                     throw new Exception(
                         $"\"{args[1]}\" is not a valid hour (must be 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, or 22)."
                     );
-                int currentDay = CampaignModeManager.Instance.Interval / 12;
-                CampaignModeManager.Instance.Interval = currentDay * 12 + value / 2;
+                CampaignModeManager.Instance.Interval = (CampaignModeManager.Instance.CurrentTime.day - 1) * 12 + value / 2;
                 ConsoleManager.Instance.Output($"Hours has been set to {value}:00.");
                 break;
             }

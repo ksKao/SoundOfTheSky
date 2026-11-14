@@ -96,4 +96,9 @@ public partial class CampaignModeScreen : VisualElement
             _bottomContainer.style.marginTop = UiUtils.GetLengthPercentage(100);
         }
     }
+
+    public void SetBackground(string image)
+    {
+        style.backgroundImage = UiUtils.LoadTexture(image, Scene.CampaignMode);
+    }
 }

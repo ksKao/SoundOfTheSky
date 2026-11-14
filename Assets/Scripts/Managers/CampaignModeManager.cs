@@ -251,9 +251,12 @@ public class CampaignModeManager : Singleton<CampaignModeManager>
             UiManager.Instance.CampaignModeScreen.weatherBar.weatherBarIcons.Transition();
         }
 
+        UiManager.Instance.CampaignModeScreen.SetBackground($"transition_background_{(CurrentTime.day < 15 ? "1" : "2")}");
+
         yield return new WaitForSeconds(DayTransitionDuration);
         _transitioning = false;
 
+        UiManager.Instance.CampaignModeScreen.SetBackground("background");
         AdvanceToNextInterval();
     }
 
